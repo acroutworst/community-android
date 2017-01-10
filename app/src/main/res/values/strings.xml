@@ -15,9 +15,16 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_home">Community</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- Home Fragments -->
+    <string name="hello_blank_fragment">"Hello this is the Community's home!"</string>
+    <string name="hello_blank_fragment_event">Welcome to Events</string>
+    <string name="hello_blank_fragment_meetup">Sit down for a cup of coffee with a new friend</string>
+    <string name="hello_blank_fragment_group">join a group or start your own</string>
+    <string name="hello_blank_fragment_notif">Ugh...these notifications</string>
 
     <!-- Font Names -->
 </resources>
