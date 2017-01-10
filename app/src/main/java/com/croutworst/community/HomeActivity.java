@@ -130,18 +130,6 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-//            switch (position) {
-//                case 0:
-//                    return "HOME";
-//                case 1:
-//                    return "EVENTS";
-//                case 2:
-//                    return "MEETUPS";
-//                case 3:
-//                    return "GROUPS";
-//                case 4:
-//                    return "NOTIFS";
-//            }
             return null;
         }
     }

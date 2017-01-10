@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/appbar_padding_top"
         android:background="@android:color/white"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/TabbedTheme">
+
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -23,6 +24,12 @@
             android:background="@android:color/white"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:src="@drawable/comm_copperplate"/>
 
         </android.support.v7.widget.Toolbar>
 

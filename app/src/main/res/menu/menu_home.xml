@@ -2,9 +2,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.croutworst.community.HomeActivity">
+
+    <item android:id="@+id/search"
+        android:title="@string/search_title"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        android:actionViewClass="android.widget.SearchView" />
+
+    <item android:id="@+id/action_About"
+        android:orderInCategory="100"
+        android:title="@string/action_About"
+        app:showAsAction="never"/>
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+    <item android:id="@+id/action_Profile"
+        android:orderInCategory="100"
+        android:title="@string/action_Profile"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_SignOut"
+        android:orderInCategory="100"
+        android:title="@string/action_signout"
+        app:showAsAction="never"/>
 </menu>

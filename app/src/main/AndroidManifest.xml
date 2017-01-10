@@ -28,7 +28,7 @@
             android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home"
+            android:label=""
             android:theme="@style/TabbedTheme"></activity>
     </application>
 
