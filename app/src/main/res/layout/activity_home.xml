@@ -25,10 +25,11 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <ImageView
+            <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
+                android:background="@color/colorWhite"
                 android:src="@drawable/comm_copperplate"/>
 
         </android.support.v7.widget.Toolbar>

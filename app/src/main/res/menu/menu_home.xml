@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.croutworst.community.HomeActivity">
 
-    <item android:id="@+id/search"
+    <item android:id="@+id/action_search"
         android:title="@string/search_title"
         android:icon="@drawable/ic_search"
         app:showAsAction="collapseActionView|ifRoom"

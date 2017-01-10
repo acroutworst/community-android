@@ -20,7 +20,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:gravity="center_horizontal"
-        card_view:cardElevation="5dp"
+        card_view:cardElevation="16dp"
         card_view:cardMaxElevation="10dp"
         card_view:cardCornerRadius="4dp">
 
