@@ -1,5 +1,6 @@
 package com.croutworst.community;
 
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,9 +15,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -43,7 +51,56 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Drawer drawer = new DrawerBuilder().withActivity(this).build();
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.action_About);
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.action_Profile);
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.action_Notif);
+        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.action_signout);
+
+        item3.withBadge("8").withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.colorPrimaryDark));
+
+        item1.withIcon(GoogleMaterial.Icon.gmd_flare);
+        item2.withIcon(GoogleMaterial.Icon.gmd_perm_identity);
+        item3.withIcon(GoogleMaterial.Icon.gmd_language);
+        //item3.withIcon(GoogleMaterial.Icon.gmd_error_outline);
+        item4.withIcon(GoogleMaterial.Icon.gmd_power_settings_new);
+
+        Drawer drawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .addDrawerItems(
+                        item1,
+                        item2,
+                        item3,
+                        item4
+                ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        // do something with the clicked item
+                        switch(position) {
+//                            case 0:
+//                                Toast.makeText(getApplicationContext(), "About page",
+//                                        Toast.LENGTH_SHORT).show();
+//                            case 1:
+//                                Toast.makeText(getApplicationContext(), "Profile",
+//                                        Toast.LENGTH_SHORT).show();
+//                            case 2:
+//                                Toast.makeText(getApplicationContext(), "Notifications!",
+//                                        Toast.LENGTH_SHORT).show();
+//                            case 3:
+//                                Toast.makeText(getApplicationContext(), "Sign out?",
+//                                        Toast.LENGTH_SHORT).show();
+                            default:
+                            Toast.makeText(getApplicationContext(), "This will go to Settings",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        return true;
+                    }
+                })
+                .build();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         // Create the adapter that will return a fragment for each of the five
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -71,7 +128,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,7 +181,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 5 total pages.
             return 5;
         }
 

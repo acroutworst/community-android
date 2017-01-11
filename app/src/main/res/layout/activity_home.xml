@@ -22,15 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/white"
+            android:gravity="center_horizontal"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:background="@color/colorWhite"
-                android:src="@drawable/comm_copperplate"/>
+                android:src="@drawable/comm_copperplate"
+                android:layout_marginRight="12dp"
+                android:contentDescription="community_logo" />
 
         </android.support.v7.widget.Toolbar>
 
