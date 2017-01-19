@@ -25,11 +25,13 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".HomeActivity"
             android:label=""
-            android:theme="@style/TabbedTheme"></activity>
+            android:theme="@style/TabbedTheme" />
+        <activity android:name=".RegProfilePhotoActivity" />
+        <activity android:name=".RegisterActivity"></activity>
     </application>
 
 </manifest>

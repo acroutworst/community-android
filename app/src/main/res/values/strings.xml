@@ -23,9 +23,17 @@
     <string name="action_Profile">Profile</string>
     <string name="action_Notif">Notifications</string>
     <string name="action_signout">Sign Out</string>
+    <string name="action_sign_up">Finish</string>
+    <string name="action_next">Next</string>
     <string name="search_title">Search</string>
     <string name="drawer_layout">Drawer</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- Register Prompts -->
+    <string name="prompt_confirm_password">Confirm Password</string>
+    <string name="prompt_first_name">First Name</string>
+    <string name="prompt_last_name">Last Name</string>
+    <string name="prompt_username">Username</string>
 
     <!-- Home Fragments -->
     <string name="hello_blank_fragment">"Hello this is the Community's home!"</string>
