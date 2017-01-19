@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/take_photo"
+        android:title="@string/action_take_photo"
+        android:icon="@drawable/take_photo"/>
+    <item
+        android:id="@+id/upload_photo"
+        android:title="@string/action_upload_photo"
+        android:icon="@drawable/upload_photo"/>
+    <item
+        android:id="@+id/download_photo"
+        android:title="@string/action_download_photo"
+        android:icon="@drawable/download_photo"/>
+    <item
+        android:id="@+id/remove_photo"
+        android:title="@string/action_remove_photo"
+        android:icon="@drawable/remove_photo"/>
+</menu>

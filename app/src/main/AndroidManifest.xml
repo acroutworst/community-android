@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashActivity"
+            android:name="com.croutworst.com.android.community.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,15 +23,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.croutworst.com.android.community.LoginActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".HomeActivity"
+            android:name="com.croutworst.com.android.community.HomeActivity"
             android:label=""
             android:theme="@style/TabbedTheme" />
-        <activity android:name=".RegProfilePhotoActivity" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name="com.croutworst.com.android.community.RegProfilePhotoActivity"></activity>
+        <activity android:name="com.croutworst.com.android.community.RegisterActivity"></activity>
     </application>
 
 </manifest>

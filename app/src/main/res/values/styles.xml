@@ -38,6 +38,13 @@
         <item name="material_drawer_header_selection_text">@color/material_drawer_header_selection_text</item>
     </style>
 
+    <style name="CommunityEditText">
+        <item name="@android:layout_width">@dimen/edittext_width</item>
+        <item name="@android:layout_height">@dimen/edittext_height</item>
+        <item name="@android:background">@drawable/edittext_background</item>
+        <item name="@android:layout_marginBottom">@dimen/edittext_bottom</item>
+    </style>
+
     <style name="DayNightTheme" parent="Theme.AppCompat.DayNight.NoActionBar"></style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

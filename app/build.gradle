@@ -35,5 +35,8 @@ dependencies {
     }
     compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar' //Google Material Icons
     compile 'com.mikepenz:fontawesome-typeface:4.7.0.0@aar'
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+    compile 'com.google.android.gms:play-services-auth:9.8.0'
+    compile 'com.cocosw:bottomsheet:1.+@aar'
     testCompile 'junit:junit:4.12'
 }

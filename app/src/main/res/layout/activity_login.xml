@@ -50,6 +50,7 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:layout_marginBottom="@dimen/edittext_bottom"
+                    android:imeOptions="actionNext"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>

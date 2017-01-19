@@ -35,6 +35,13 @@
     <string name="prompt_last_name">Last Name</string>
     <string name="prompt_username">Username</string>
 
+    <!-- Bottom Sheet -->
+    <string name="action_take_photo">Take Photo</string>
+    <string name="action_upload_photo">Upload Photo</string>
+    <string name="action_download_photo">Download Photo</string>
+    <string name="action_remove_photo">Remove Photo</string>
+
+
     <!-- Home Fragments -->
     <string name="hello_blank_fragment">"Hello this is the Community's home!"</string>
     <string name="hello_blank_fragment_event">Welcome to Events</string>
