@@ -1,4 +1,4 @@
-package com.croutworst.community;
+package com.android.community;
 
 import android.content.Intent;
 import android.os.Bundle;

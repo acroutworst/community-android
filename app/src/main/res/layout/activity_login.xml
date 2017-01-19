@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_align_top"
     android:background="@color/colorPrimary"
-    tools:context="com.croutworst.community.LoginActivity">
+    tools:context="com.android.community.LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar

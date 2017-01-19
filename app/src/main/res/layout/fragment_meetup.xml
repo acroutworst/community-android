@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.croutworst.community.MeetupFragment">
+    tools:context="com.android.community.MeetupFragment">
 
     <TextView
         android:layout_width="match_parent"

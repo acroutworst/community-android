@@ -1,4 +1,4 @@
-package com.croutworst.community;
+package com.android.community;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

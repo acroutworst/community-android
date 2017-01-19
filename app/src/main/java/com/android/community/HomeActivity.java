@@ -1,4 +1,4 @@
-package com.croutworst.community;
+package com.android.community;
 
 import android.graphics.Color;
 import android.support.design.widget.TabLayout;

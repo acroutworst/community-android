@@ -1,4 +1,4 @@
-package com.croutworst.community;
+package com.android.community;
 
 import android.app.Activity;
 import android.content.DialogInterface;
