@@ -34,7 +34,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/comm_logo"
+                android:src="@drawable/communitylogo_small"
                 android:layout_marginBottom="@dimen/imageview_bottom"/>
 
             <android.support.design.widget.TextInputLayout

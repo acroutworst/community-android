@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhite"
-                android:src="@drawable/comm_copperplate"
+                android:src="@drawable/community_small"
                 android:layout_marginRight="12dp"
                 android:contentDescription="community_logo" />
 

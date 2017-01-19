@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -99,8 +100,19 @@ public class HomeActivity extends AppCompatActivity {
                 })
                 .build();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+        new DrawerBuilder()
+                .withActivity(this)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withIdentifier(1).withName("Communities"),
+                        new SecondaryDrawerItem().withIdentifier(2).withName("University of Washington"),
+                        new SecondaryDrawerItem().withIdentifier(3).withName("UW"),
+                        new SecondaryDrawerItem().withIdentifier(4).withName("Apple")
+                )
+                .withDrawerGravity(Gravity.END)
+                .append(drawer);
+
+        drawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Drawer Footer"));
+
         // Create the adapter that will return a fragment for each of the five
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
