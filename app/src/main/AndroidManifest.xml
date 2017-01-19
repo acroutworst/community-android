@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.android.com.android.community.SplashActivity"
+            android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,15 +23,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.android.com.android.community.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.android.com.android.community.HomeActivity"
+            android:name=".HomeActivity"
             android:label=""
             android:theme="@style/TabbedTheme" />
-        <activity android:name="com.android.com.android.community.RegProfilePhotoActivity"></activity>
-        <activity android:name="com.android.com.android.community.RegisterActivity"></activity>
+        <activity android:name=".RegProfilePhotoActivity"></activity>
+        <activity android:name=".RegisterActivity"></activity>
     </application>
 
 </manifest>
