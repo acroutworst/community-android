@@ -29,11 +29,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.android.community.R.id.username;
 
 /**
  * A login screen that offers login via email/password.
@@ -103,6 +110,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        BusProvider.getInstance().unregister(this);
     }
 
     private void attemptRegister() {
@@ -317,6 +336,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private Communicator communicator;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -325,24 +345,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
+            // Retrofit HTTP call to login
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                communicator.loginPost("admin", "Dubhub2016");
+            } catch (Exception e) {
+                e.printStackTrace();
+
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-
+//            try {
+//                // Simulate network access.
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                return false;
+//            }
+//
+//            for (String credential : DUMMY_CREDENTIALS) {
+//                String[] pieces = credential.split(":");
+//                if (pieces[0].equals(mEmail)) {
+//                    // Account exists, return true if the password matches.
+//                    return pieces[1].equals(mPassword);
+//                }
+//            }
 
             return true;
         }
@@ -367,4 +393,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 }
+
+
+/*    @Subscribe
+public void onServerEvent(ServerEvent serverEvent){
+    Toast.makeText(this, ""+serverEvent.getServerResponse().getMessage(), Toast.LENGTH_SHORT).show();
+    if(serverEvent.getServerResponse().getUsername() != null){
+        information.setText("Username: "+serverEvent.getServerResponse().getUsername() + " || Password: "+serverEvent.getServerResponse().getPassword());
+    }
+    extraInformation.setText("" + serverEvent.getServerResponse().getMessage());
+}
+
+@Subscribe
+public void onErrorEvent(ErrorEvent errorEvent){
+    Toast.makeText(this,""+errorEvent.getErrorMsg(),Toast.LENGTH_SHORT).show();
+}*/
 
