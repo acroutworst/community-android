@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -223,8 +224,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
 
-            Intent homeIntent = new Intent(this, HomeActivity.class);
-            startActivity(homeIntent);
+//           if(mAuthTask.passed == true) {
+               Toast.makeText(this, "SUCCESS!",
+                       Toast.LENGTH_SHORT).show();
+
+                Intent homeIntent = new Intent(this, HomeActivity.class);
+                startActivity(homeIntent);
+//            } else {
+//               Toast.makeText(this, "Login POST was unsuccessful!",
+//                       Toast.LENGTH_SHORT).show();
+//           }
+
+
         }
     }
 
@@ -337,20 +348,40 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         private Communicator communicator;
+        private boolean passed;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }
 
+        public boolean getPassed() {
+            return passed;
+        }
+
+        private boolean usePost(String username, String password, String email){
+            communicator = new Communicator();
+            return true;
+            //return communicator.loginPost(username, password, email);
+        }
+
         @Override
         protected Boolean doInBackground(Void... params) {
             // Retrofit HTTP call to login
 
+            // for debug worker thread
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+
             try {
-                communicator.loginPost("admin", "Dubhub2016");
+                //passed = usePost("admin", "Dubhub2016", "");
+                communicator = new Communicator();
+                communicator.loginPost("admin", "Dubhub2016", "");
+                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL");
             } catch (Exception e) {
                 e.printStackTrace();
+                passed = false;
+                Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
 
                 return false;
             }

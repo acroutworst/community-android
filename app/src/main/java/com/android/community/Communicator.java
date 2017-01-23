@@ -26,7 +26,9 @@ public class Communicator {
     private static String CLIENT_SECRET = "pemkNdWdYU4rrJ6AQxvKsJAivx9Gz1fh0zRVBSYkDMofahmGxDUO4vEF5dBAmU5mwrXLkp6BVZO5iK5irszy4CWKpcrdY3f1511q9nZH68vkkrFl59GU8rGqx5fwK34U";
     private static String GRANT_TYPE = "client_credentials";
 
-    public void loginPost(String username, String password) {
+    public void loginPost(String username, String password, String email) {
+
+        final boolean[] passed = new boolean[1];
 
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -46,7 +48,7 @@ public class Communicator {
 
         GetToken(service);
 
-        Call<ServerResponse> call = service.apiPost(API_TOKEN, makeQuery(username, password));
+        Call<ServerResponse> call = service.apiPost(API_TOKEN, makeQuery(username, password, email));
 
         call.enqueue(new Callback<ServerResponse>() {
             @Override
@@ -54,13 +56,16 @@ public class Communicator {
                 BusProvider.getInstance().post(new ServerEvent(response.body()));
                 Log.e(TAG, "Success");
 
-
+                passed[0] = true;
             }
 
             @Override
             public void onFailure(Call<ServerResponse> call, Throwable t) {
                 // handle execution failures like no internet connectivity
                 BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
+                Log.e(TAG, "Failure");
+
+                passed[0] = false;
             }
         });
     }
@@ -84,6 +89,7 @@ public class Communicator {
             public void onFailure(Call<ServerResponse> call, Throwable t) {
                 // handle execution failures like no internet connectivity
                 BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
+                Log.e(TAG, "Failure");
             }
         });
 
@@ -92,10 +98,12 @@ public class Communicator {
 
     //private boolean checkStaleToken() { return false; }
 
-    private String makeQuery(String user, String pass) {
-        return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",
+    private String makeQuery(String user, String pass, String email) {
+        return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"{2}\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",
                 user,
-                pass);
+                pass,
+                email
+        );
     }
 
     @Produce
