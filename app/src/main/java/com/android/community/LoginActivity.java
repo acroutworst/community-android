@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private AsyncTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -207,11 +207,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
         }
+//        else if (!isEmailValid(email)) {
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+//            focusView = mEmailView;
+//            cancel = true;
+//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -221,8 +222,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask = new UserLoginTask().execute(email, password);
 
 //           if(mAuthTask.passed == true) {
                Toast.makeText(this, "SUCCESS!",
@@ -343,17 +343,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
+//        private final String mEmail;
+//        private final String mPassword;
         private Communicator communicator;
         private boolean passed;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
+//        UserLoginTask(String email, String password) {
+//            mEmail = email;
+//            mPassword = password;
+//        }
 
         public boolean getPassed() {
             return passed;
@@ -366,7 +366,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
             // Retrofit HTTP call to login
 
             // for debug worker thread
@@ -376,7 +376,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 //passed = usePost("admin", "Dubhub2016", "");
                 communicator = new Communicator();
-                communicator.loginPost("admin", "Dubhub2016", "");
+                communicator.loginPost(params[0], params[1], "");
                 Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL");
             } catch (Exception e) {
                 e.printStackTrace();
