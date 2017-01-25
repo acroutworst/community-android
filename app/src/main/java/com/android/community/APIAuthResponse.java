@@ -15,4 +15,6 @@ public class APIAuthResponse {
     public String getToken() {
         return this.access_token;
     }
+
+
 }

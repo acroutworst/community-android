@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ import static com.android.community.R.id.username;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+
+    private static final int HTTP_OK_RESPONSE_CODE = 200;
+    private static final int HTTP_FORBIDDEN_ACCESS_RESPONSE_CODE = 403;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -233,11 +237,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask().execute(email, password);
 
 //           if(mAuthTask.passed == true) {
-               Toast.makeText(this, "SUCCESS!",
-                       Toast.LENGTH_SHORT).show();
 
-                Intent homeIntent = new Intent(this, HomeActivity.class);
-                startActivity(homeIntent);
 //            } else {
 //               Toast.makeText(this, "Login POST was unsuccessful!",
 //                       Toast.LENGTH_SHORT).show();
@@ -351,73 +351,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
-
-//        private final String mEmail;
-//        private final String mPassword;
+    public class UserLoginTask extends AsyncTask<String, Void, Integer> {
         private Communicator communicator;
         private boolean passed;
 
-//        UserLoginTask(String email, String password) {
-//            mEmail = email;
-//            mPassword = password;
-//        }
-
-        public boolean getPassed() {
-            return passed;
-        }
-
-        private boolean usePost(String username, String password, String email){
-            communicator = new Communicator();
-            return true;
-            //return communicator.loginPost(username, password, email);
-        }
-
         @Override
-        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
+        protected Integer doInBackground(String... params) { // params[0] = username; params[1] = password
             // Retrofit HTTP call to login
 
             // for debug worker thread
             if(android.os.Debug.isDebuggerConnected())
                 android.os.Debug.waitForDebugger();
 
+            int rc = 0;
+
             try {
-                //passed = usePost("admin", "Dubhub2016", "");
                 communicator = new Communicator();
-                communicator.loginPost(params[0], params[1], "");
+                communicator.client = Communicator.ClientType.USERCLIENT;
+                communicator.loginPost(params[0], params[1]);
+                rc = communicator.getServerResponseCode();
                 Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL");
             } catch (Exception e) {
                 e.printStackTrace();
                 passed = false;
                 Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
 
-                return false;
+                return HTTP_FORBIDDEN_ACCESS_RESPONSE_CODE;
             }
 
-//            try {
-//                // Simulate network access.
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                return false;
-//            }
-//
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mEmail)) {
-//                    // Account exists, return true if the password matches.
-//                    return pieces[1].equals(mPassword);
-//                }
-//            }
-
-            return true;
+            return rc;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Integer rc) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
+            if (rc == HTTP_OK_RESPONSE_CODE) {
+                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(homeIntent);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
