@@ -3,6 +3,7 @@ package com.android.community;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,8 @@ public class RegProfilePhotoActivity extends Activity{
 
     private ImageButton mUploadPhoto;
     private ImageView mImageView;
+    private Typeface mCopperplateFont;
+    private Button mFinish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +67,16 @@ public class RegProfilePhotoActivity extends Activity{
             }
         });
 
-        Button finishButton = (Button) findViewById(R.id.finish_button);
-        finishButton.setOnClickListener(new View.OnClickListener() {
+        mCopperplateFont = Typeface.createFromAsset(getAssets(), "copperplate-regular.ttf");
+
+        mFinish = (Button) findViewById(R.id.finish_button);
+        mFinish.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(RegProfilePhotoActivity.this, HomeActivity.class);
                 RegProfilePhotoActivity.this.startActivity(i);
             }
         });
+        mFinish.setTypeface(mCopperplateFont);
     }
 
 /*    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
