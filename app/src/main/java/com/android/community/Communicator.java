@@ -56,6 +56,11 @@ public class Communicator {
                 BusProvider.getInstance().post(new ServerEvent(response.body()));
                 Log.e(TAG, "Success");
 
+                Gson gson = new Gson();
+                APIAuthResponse apiAuthResponse = gson.fromJson(response.message(), APIAuthResponse.class);
+
+                USER_TOKEN = apiAuthResponse.getToken();
+
                 passed[0] = true;
             }
 
