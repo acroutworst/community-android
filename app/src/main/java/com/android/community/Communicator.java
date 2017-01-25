@@ -71,7 +71,7 @@ public class Communicator {
         GetToken(service, username, password);
     }
 
-    public void queryPost(String username, String password, String email) {
+    /*public void queryPost(String username, String password, String email) {
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -112,7 +112,7 @@ public class Communicator {
 
             }
         });
-    }
+    }*/
 
     private boolean GetToken(ServerRequestInterface service, String username, String password) {
         Call<ServerResponse> apiCall = null;
@@ -125,17 +125,9 @@ public class Communicator {
         apiCall.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                // response.isSuccessful() is true if the response code is 2xx
                 BusProvider.getInstance().post(new ServerEvent(response.body()));
                 Log.e(TAG, "Success");
-
-//                Gson gson = new Gson();
-                Gson gson = new GsonBuilder().create();
-                Log.d(TAG, response.toString());
-
-                apiAuthResponse = gson.fromJson(response.message(), APIAuthResponse.class);
-                serverResponse = gson.fromJson(response.message(), ServerResponse.class);
-
-                USER_TOKEN = apiAuthResponse.getToken();
             }
 
             @Override
@@ -145,6 +137,14 @@ public class Communicator {
                 Log.e(TAG, "Failure");
             }
         });
+
+//        Gson gson = new GsonBuilder().create();
+//
+//        Log.d(TAG, "apiCall.toString(): " + apiCall.toString());
+//        apiAuthResponse = gson.fromJson(apiCall.toString(), APIAuthResponse.class);
+//        serverResponse = gson.fromJson(apiCall.toString(), ServerResponse.class);
+//
+//        USER_TOKEN = apiAuthResponse.getToken();
 
         return true;
     }
