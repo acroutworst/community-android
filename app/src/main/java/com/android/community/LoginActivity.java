@@ -50,6 +50,8 @@ import static com.android.community.R.id.username;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static final String TAG = "LoginActivity";
+
     private static final int HTTP_OK_RESPONSE_CODE = 200;
     private static final int HTTP_FORBIDDEN_ACCESS_RESPONSE_CODE = 403;
 
@@ -79,10 +81,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Button mEmailSignInButton;
     private Button mRegisterButton;
 
+
+    boolean successful = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mEmailView.setBackgroundResource(R.drawable.edittext_background);
@@ -185,7 +191,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -235,6 +240,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask().execute(email, password);
+            Log.d(TAG, "AFTER_USERLOGINTASK: " + successful);
+            /*Communicator communicator = null;
+            boolean successful = false;
+            communicator = new Communicator();
+            communicator.client = Communicator.ClientType.USERCLIENT;
+            communicator.loginPost(email, password);
+            successful = communicator.successful;
+            Log.d(TAG, "successful1: " + successful);*/
+            /*Communicator communicator = null;
+            boolean successful = false;
+            try {
+                communicator = new Communicator();
+                communicator.client = Communicator.ClientType.USERCLIENT;
+                *//*Thread t = new Thread(new loginTask(communicator, params[0], params[1]));
+                t.start();
+                t.join();*//*
+//                try {
+//                    t.join();
+//                } catch (InterruptedException e){
+//                    e.printStackTrace();
+//                }
+                communicator.loginPost(email, password);
+
+                successful = communicator.successful;
+                Log.d(TAG, "successful1: " + successful);
+//                rc = communicator.getServerResponseCode();
+                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL 123");
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
+            }
+
+            Log.d(TAG, "successful2: " + successful);*/
 
 //           if(mAuthTask.passed == true) {
 
@@ -244,6 +282,76 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //           }
 
 
+        }
+    }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
+        private Communicator communicator;
+        private boolean passed;
+
+        @Override
+        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
+            // Retrofit HTTP call to login
+
+            // for debug worker thread
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+
+//            int rc = 0;
+
+            try {
+                communicator = new Communicator();
+                communicator.client = Communicator.ClientType.USERCLIENT;
+                /*Thread t = new Thread(new loginTask(communicator, params[0], params[1]));
+                t.start();
+                t.join();*/
+//                try {
+//                    t.join();
+//                } catch (InterruptedException e){
+//                    e.printStackTrace();
+//                }
+                communicator.loginPost(params[0], params[1]);
+
+                successful = communicator.successful;
+                Log.d(TAG, "USERLOGINTASK_SUCCESSFUL: " + successful);
+//                rc = communicator.getServerResponseCode();
+                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL 123");
+            } catch (Exception e) {
+                e.printStackTrace();
+                passed = false;
+                Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
+
+                return false;
+            }
+
+            Log.d(TAG, "successful2: " + successful);
+            return successful;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+            mAuthTask = null;
+            showProgress(false);
+            Log.d(TAG, "inside onPostExecute");
+            if (successful) {
+                Log.d(TAG, "inside if(successful)");
+                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(homeIntent);
+                finish();
+            } else {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
         }
     }
 
@@ -347,60 +455,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<String, Void, Integer> {
-        private Communicator communicator;
-        private boolean passed;
-
-        @Override
-        protected Integer doInBackground(String... params) { // params[0] = username; params[1] = password
-            // Retrofit HTTP call to login
-
-            // for debug worker thread
-            if(android.os.Debug.isDebuggerConnected())
-                android.os.Debug.waitForDebugger();
-
-            int rc = 0;
-
-            try {
-                communicator = new Communicator();
-                communicator.client = Communicator.ClientType.USERCLIENT;
-                communicator.loginPost(params[0], params[1]);
-                rc = communicator.getServerResponseCode();
-                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL");
-            } catch (Exception e) {
-                e.printStackTrace();
-                passed = false;
-                Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
-
-                return HTTP_FORBIDDEN_ACCESS_RESPONSE_CODE;
-            }
-
-            return rc;
+    private class loginTask implements Runnable{
+        Communicator c;
+        String username;
+        String password;
+        public loginTask(Communicator c, String username, String password){
+            this.c = c;
+            this.username = username;
+            this.password = password;
         }
 
-        @Override
-        protected void onPostExecute(final Integer rc) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (rc == HTTP_OK_RESPONSE_CODE) {
-                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(homeIntent);
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+        public void run(){
+            c.loginPost(username, password);
         }
     }
 }

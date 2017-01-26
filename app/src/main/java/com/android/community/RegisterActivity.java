@@ -103,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity implements
             }
         });
 */
-        createGoogleApiClient();
+//        createGoogleApiClient();
 
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         mGoogleSignInButton.setSize(SignInButton.SIZE_WIDE);
@@ -112,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.google_sign_in_button:
-                        signIn();
+//                        signIn();
                         break;
                 }
             }
