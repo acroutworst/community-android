@@ -351,43 +351,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<String, Void, Integer> {
+    public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
         private Communicator communicator;
         private boolean passed;
 
         @Override
-        protected Integer doInBackground(String... params) { // params[0] = username; params[1] = password
+        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
             // Retrofit HTTP call to login
 
             // for debug worker thread
             if(android.os.Debug.isDebuggerConnected())
                 android.os.Debug.waitForDebugger();
 
-            int rc = 0;
+            boolean rc = false;
 
             try {
                 communicator = new Communicator();
                 communicator.client = Communicator.ClientType.USERCLIENT;
                 communicator.loginPost(params[0], params[1]);
-                rc = communicator.getServerResponseCode();
-                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL");
+                rc = communicator.getResponseCode();
+                Log.d("Server_Response", "Server Response Code: " + rc);
             } catch (Exception e) {
                 e.printStackTrace();
                 passed = false;
                 Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
 
-                return HTTP_FORBIDDEN_ACCESS_RESPONSE_CODE;
+                return false;
             }
 
             return rc;
         }
 
         @Override
-        protected void onPostExecute(final Integer rc) {
+        protected void onPostExecute(final Boolean rc) {
             mAuthTask = null;
             showProgress(false);
 
-            if (rc == HTTP_OK_RESPONSE_CODE) {
+            Log.d("onPostExecute", "RC in onPostExecute is: " + rc);
+
+            if (rc) {
                 Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(homeIntent);
                 finish();

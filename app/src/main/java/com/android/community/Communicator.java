@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -32,6 +34,7 @@ public class Communicator {
 
     public APIAuthResponse apiAuthResponse = null;
     public ServerResponse serverResponse = null;
+    public boolean serverResponseCode = false;
     public ClientType client = ClientType.BASECLIENT;
 
     public enum ClientType{
@@ -47,6 +50,7 @@ public class Communicator {
         }
     }
 
+    public boolean getResponseCode() { return serverResponseCode; }
     public int getServerResponseCode(){
         return serverResponse.getResponseCode();
     }
@@ -58,6 +62,8 @@ public class Communicator {
 
         //The logging interceptor will be added to the http client
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.connectTimeout(30, TimeUnit.SECONDS); // connect timeout
+        httpClient.readTimeout(30, TimeUnit.SECONDS);    // socket timeout
         httpClient.addInterceptor(logging);
 
         //The Retrofit builder will have the client attached, in order to get connection logs
@@ -125,8 +131,12 @@ public class Communicator {
         apiCall.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                // response.isSuccessful() is true if the response code is 2xx
+                Log.d(TAG, "response.message(): " + response.message());
+                Log.d(TAG, "response.isSuccessful(): " + response.isSuccessful());
+                serverResponseCode = response.isSuccessful(); //is true if the response code is 2xx
+                Log.d(TAG, "serverResponseCode in apiCall: " + serverResponseCode);
                 BusProvider.getInstance().post(new ServerEvent(response.body()));
+                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL");
                 Log.e(TAG, "Success");
             }
 
