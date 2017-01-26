@@ -94,16 +94,7 @@ public class RegisterActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-/*
-        Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-*/
-//        createGoogleApiClient();
+        createGoogleApiClient();
 
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         mGoogleSignInButton.setSize(SignInButton.SIZE_WIDE);
@@ -112,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.google_sign_in_button:
-//                        signIn();
+                        signIn();
                         break;
                 }
             }

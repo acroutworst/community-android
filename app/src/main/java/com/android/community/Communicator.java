@@ -73,15 +73,6 @@ public class Communicator {
 
         getToken(service, username, password);
 
-//        Runnable r = new apiCallTask(service, username, password);
-//        Thread t = new Thread(r).start();
-        /*Thread t = new Thread(new apiCallTask(service, username, password));
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }*/
     }
 
     private void getToken(ServerRequestInterface service, String username, String password) {
@@ -96,145 +87,11 @@ public class Communicator {
         try {
             successful = apiCall.execute().isSuccessful();
             Log.d(TAG, "GET_TOKEN_SUCCESSFUL_1: " + successful);
-//            int result = apiCall.execute().body().getResponseCode();
-//            Log.d(TAG, "apiCall.execute().toString(): "+ result);
         } catch(IOException e){
             e.printStackTrace();
         }
         Log.d(TAG, "GET_TOKEN_SUCCESSFUL_2: " + successful);
-        /*Thread t = new Thread(new apiCallTask1(apiCall));
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }*/
-        /*Callback<ServerResponse> cb;
-
-        apiCall.enqueue(cb = new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                // response.isSuccessful() is true if the response code is 2xx
-                if (response.isSuccessful()){
-                    BusProvider.getInstance().post(new ServerEvent(response.body()));
-                    successful = response.isSuccessful();
-                    Log.d(TAG, "response.isSuccessful(): " + response.isSuccessful());
-                    Log.d(TAG, "response code: " + response.body().getResponseCode());
-                    Log.d(TAG, "response message: " + response.body().getMessage());
-                    Log.d(TAG, "Success (2XX Response Code)");
-                } else{
-                    successful = false;
-                    Log.e(TAG, "Response Code not 2xx");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-                // handle execution failures like no internet connectivity
-                BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-                successful = false;
-                Log.e(TAG, "Failure");
-            }
-        });
-        try{
-            cb.wait();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }*/
-
-        /*//async call
-        apiCall.enqueue(new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                // response.isSuccessful() is true if the response code is 2xx
-                if (response.isSuccessful()){
-                    BusProvider.getInstance().post(new ServerEvent(response.body()));
-                    successful = response.isSuccessful();
-                    Log.d(TAG, "response.isSuccessful(): " + response.isSuccessful());
-                    Log.d(TAG, "response code: " + response.body().getResponseCode());
-                    Log.d(TAG, "response message: " + response.body().getMessage());
-                    Log.d(TAG, "Success (2XX Response Code)");
-                } else{
-                    successful = false;
-                    Log.e(TAG, "Response Code not 2xx");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-                // handle execution failures like no internet connectivity
-                BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-                successful = false;
-                Log.e(TAG, "Failure");
-            }
-        });*/
-
-
-//        Gson gson = new GsonBuilder().create();
-//
-//        Log.d(TAG, "apiCall.toString(): " + apiCall.toString());
-//        apiAuthResponse = gson.fromJson(apiCall.toString(), APIAuthResponse.class);
-//        serverResponse = gson.fromJson(apiCall.toString(), ServerResponse.class);
-//
-//        USER_TOKEN = apiAuthResponse.getToken();
-
-//        if (!successful){
-//            return false;
-//        }
-//
-//        return true;
     }
-
-    private class apiCallTask1 implements Runnable{
-        Call<ServerResponse> c;
-        public apiCallTask1(Call<ServerResponse> c){
-            this.c = c;
-        }
-
-        public void run(){
-            //async call
-            c.enqueue(new Callback<ServerResponse>() {
-                @Override
-                public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                    // response.isSuccessful() is true if the response code is 2xx
-                    if (response.isSuccessful()){
-                        BusProvider.getInstance().post(new ServerEvent(response.body()));
-                        successful = response.isSuccessful();
-                        Log.d(TAG, "response.isSuccessful(): " + response.isSuccessful());
-                        Log.d(TAG, "response code: " + response.body().getResponseCode());
-                        Log.d(TAG, "Success (2XX Response Code)");
-                    } else{
-                        successful = false;
-                        Log.e(TAG, "Response Code not 2xx");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ServerResponse> call, Throwable t) {
-                    // handle execution failures like no internet connectivity
-                    BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-                    successful = false;
-                    Log.e(TAG, "Failure");
-                }
-            });
-        }
-    }
-
-    private class apiCallTask implements Runnable{
-        ServerRequestInterface service;
-        String username;
-        String password;
-        public apiCallTask(ServerRequestInterface service, String username, String password){
-            this.service = service;
-            this.username = username;
-            this.password = password;
-        }
-
-        public void run(){
-            getToken(service, username, password);
-        }
-    }
-    //private boolean checkStaleToken() { return false; }
 
     private String makeQuery(String user, String pass, String email) {
         return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"{2}\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",

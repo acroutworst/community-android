@@ -81,9 +81,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Button mEmailSignInButton;
     private Button mRegisterButton;
 
-
-    boolean successful = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -225,11 +222,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         }
-//        else if (!isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            focusView = mEmailView;
-//            cancel = true;
-//        }
+        else if (!isEmailValid(email)) { // CHANGE isEmailValid() LATER!!!!!!!!
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -240,48 +237,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask().execute(email, password);
-            Log.d(TAG, "AFTER_USERLOGINTASK: " + successful);
-            /*Communicator communicator = null;
-            boolean successful = false;
-            communicator = new Communicator();
-            communicator.client = Communicator.ClientType.USERCLIENT;
-            communicator.loginPost(email, password);
-            successful = communicator.successful;
-            Log.d(TAG, "successful1: " + successful);*/
-            /*Communicator communicator = null;
-            boolean successful = false;
-            try {
-                communicator = new Communicator();
-                communicator.client = Communicator.ClientType.USERCLIENT;
-                *//*Thread t = new Thread(new loginTask(communicator, params[0], params[1]));
-                t.start();
-                t.join();*//*
-//                try {
-//                    t.join();
-//                } catch (InterruptedException e){
-//                    e.printStackTrace();
-//                }
-                communicator.loginPost(email, password);
-
-                successful = communicator.successful;
-                Log.d(TAG, "successful1: " + successful);
-//                rc = communicator.getServerResponseCode();
-                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL 123");
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
-            }
-
-            Log.d(TAG, "successful2: " + successful);*/
-
-//           if(mAuthTask.passed == true) {
-
-//            } else {
-//               Toast.makeText(this, "Login POST was unsuccessful!",
-//                       Toast.LENGTH_SHORT).show();
-//           }
-
-
         }
     }
 
@@ -295,30 +250,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
+            boolean successful;
             // Retrofit HTTP call to login
 
             // for debug worker thread
             if(android.os.Debug.isDebuggerConnected())
                 android.os.Debug.waitForDebugger();
 
-//            int rc = 0;
-
             try {
                 communicator = new Communicator();
                 communicator.client = Communicator.ClientType.USERCLIENT;
-                /*Thread t = new Thread(new loginTask(communicator, params[0], params[1]));
-                t.start();
-                t.join();*/
-//                try {
-//                    t.join();
-//                } catch (InterruptedException e){
-//                    e.printStackTrace();
-//                }
                 communicator.loginPost(params[0], params[1]);
 
                 successful = communicator.successful;
                 Log.d(TAG, "USERLOGINTASK_SUCCESSFUL: " + successful);
-//                rc = communicator.getServerResponseCode();
                 Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL 123");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -357,7 +302,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains(""); // CHANGE IT LATER!!!!!!!
     }
 
     private boolean isPasswordValid(String password) {
