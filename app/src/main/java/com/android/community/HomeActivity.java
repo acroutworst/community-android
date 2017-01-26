@@ -18,6 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.community.fragment.EventFragment;
+import com.android.community.fragment.GroupFragment;
+import com.android.community.fragment.HomeFragment;
+import com.android.community.fragment.MeetupFragment;
+import com.android.community.fragment.NotifFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;

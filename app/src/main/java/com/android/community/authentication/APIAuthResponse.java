@@ -1,4 +1,4 @@
-package com.android.community;
+package com.android.community.authentication;
 
 import com.google.gson.Gson;
 
