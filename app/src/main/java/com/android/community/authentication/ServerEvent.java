@@ -1,4 +1,4 @@
-package com.android.community;
+package com.android.community.authentication;
 
 /**
  * Created by adamc on 1/21/17.

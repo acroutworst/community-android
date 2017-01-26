@@ -31,19 +31,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.squareup.otto.Subscribe;
+import com.android.community.authentication.BusProvider;
+import com.android.community.authentication.Communicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 import static android.Manifest.permission.READ_CONTACTS;
-import static com.android.community.R.id.username;
 
 /**
  * A login screen that offers login via email/password.

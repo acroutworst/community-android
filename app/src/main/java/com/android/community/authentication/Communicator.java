@@ -1,9 +1,7 @@
-package com.android.community;
+package com.android.community.authentication;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
 
 import java.io.IOException;
@@ -11,8 +9,6 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
