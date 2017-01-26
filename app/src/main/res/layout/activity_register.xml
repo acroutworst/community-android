@@ -33,7 +33,7 @@
             android:orientation="vertical">
 
             <com.google.android.gms.common.SignInButton
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/google_sign_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/username"
                     style="@style/CommunityEditText"
                     android:inputType="text"
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/first_name"
                     android:inputType="text"
                     style="@style/CommunityEditText"
@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/last_name"
                     style="@style/CommunityEditText"
                     android:inputType="text"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/password"
                     style="@style/CommunityEditText"
                     android:hint="@string/prompt_password"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/password2"
                     style="@style/CommunityEditText"
                     android:hint="@string/prompt_confirm_password"
