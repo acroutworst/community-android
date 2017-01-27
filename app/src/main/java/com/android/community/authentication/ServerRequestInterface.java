@@ -14,7 +14,7 @@ public interface ServerRequestInterface {
 
     @FormUrlEncoded
     @POST("/o/token/")
-    Call<ServerResponse> postClientToken(
+    Call<APIAuthResponse> postClientToken(
             @Field("client_id") String client_id,
             @Field("client_secret") String client_secret,
             @Field("grant_type") String grant_type
@@ -22,7 +22,7 @@ public interface ServerRequestInterface {
 
     @FormUrlEncoded
     @POST("/o/token/")
-    Call<ServerResponse> postUserToken(
+    Call<APIAuthResponse> postUserToken(
             @Field("client_id") String client_id,
             @Field("client_secret") String client_secret,
             @Field("grant_type") String grant_type,
@@ -32,7 +32,7 @@ public interface ServerRequestInterface {
 
     @FormUrlEncoded
     @POST("/o/token/")
-    Call<ServerResponse> postRefreshToken(
+    Call<APIAuthResponse> postRefreshToken(
             @Field("client_id") String client_id,
             @Field("client_secret") String client_secret,
             @Field("grant_type") String grant_type,
@@ -40,8 +40,8 @@ public interface ServerRequestInterface {
     );
 
     @FormUrlEncoded
-    @POST("/o/revoke-token/")
-    Call<ServerResponse> postRevokeToken(
+    @POST("/o/revoke_token/")
+    Call<Void> postRevokeToken(
             @Field("token") String token,
             @Field("client_id") String client_id,
             @Field("client_secret") String client_secret

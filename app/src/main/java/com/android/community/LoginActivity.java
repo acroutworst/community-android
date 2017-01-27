@@ -40,7 +40,7 @@ import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-/**
+/** `
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
@@ -393,21 +393,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
-
-    private class loginTask implements Runnable{
-        Communicator c;
-        String username;
-        String password;
-        public loginTask(Communicator c, String username, String password){
-            this.c = c;
-            this.username = username;
-            this.password = password;
-        }
-
-        public void run(){
-            c.loginPost(username, password);
-        }
     }
 }
 
