@@ -2,6 +2,8 @@ package com.android.community.authentication;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
 
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -59,6 +62,31 @@ public class Communicator {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
 
+        //Gson object
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(httpClient.build())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(SERVER_URL)
+                .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        getToken(service, username, password);
+    }
+
+    public void signoutPost() {
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
         //The Retrofit builder will have the client attached, in order to get connection logs
         Retrofit retrofit = new Retrofit.Builder()
                 .client(httpClient.build())
@@ -67,12 +95,24 @@ public class Communicator {
                 .build();
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
 
-        getToken(service, username, password);
+        Call<Void> apiCall = null;
 
+        apiCall = service.postRevokeToken(USER_TOKEN, CLIENT_ID, CLIENT_SECRET);
+
+        try {
+            Response<Void> response = apiCall.execute();
+
+            successful = response.isSuccessful();
+            USER_TOKEN = "";
+            Log.d(TAG, "Response isSuccessful(): " + successful);
+            Log.d(TAG, "USER_TOKEN: " + USER_TOKEN);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getToken(ServerRequestInterface service, String username, String password) {
-        Call<ServerResponse> apiCall = null;
+        Call<APIAuthResponse> apiCall = null;
         if(client == ClientType.USERCLIENT){
             apiCall = service.postUserToken(client.clientID, client.clientSecret, client.grantType, username, password);
         } else{
@@ -81,7 +121,17 @@ public class Communicator {
 
         //synchronous call
         try {
-            successful = apiCall.execute().isSuccessful();
+            Response<APIAuthResponse> response = apiCall.execute();
+
+            successful = response.isSuccessful();
+            USER_TOKEN = response.body().getToken();
+            Log.d(TAG, "Response isSuccessful(): " + response.isSuccessful());
+            Log.d(TAG, "Access Token: " + response.body().getToken());
+            Log.d(TAG, "Refresh Token: " + response.body().getRefreshToken());
+            Log.d(TAG, "Token Type: " + response.body().getAccessType());
+            Log.d(TAG, "Scope: " + response.body().getScope());
+            Log.d(TAG, "Expire Time: " + response.body().getExpireTime());
+            Log.d(TAG, "USER_TOKEN: " + USER_TOKEN);
             Log.d(TAG, "GET_TOKEN_SUCCESSFUL_1: " + successful);
         } catch(IOException e){
             e.printStackTrace();

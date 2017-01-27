@@ -1,6 +1,8 @@
 package com.android.community;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,12 +14,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.community.authentication.Communicator;
 import com.android.community.fragment.EventFragment;
 import com.android.community.fragment.GroupFragment;
 import com.android.community.fragment.HomeFragment;
@@ -48,6 +52,8 @@ public class HomeActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private static final String TAG = "HomeActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,17 +62,16 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.action_About);
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.action_Profile);
-        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.action_Notif);
-        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.action_signout);
+        final PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.action_About);
+        final PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.action_Profile);
+        final PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.action_Notif);
+        final PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.action_signout);
 
         item3.withBadge("8").withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.colorPrimaryDark));
 
         item1.withIcon(GoogleMaterial.Icon.gmd_flare);
         item2.withIcon(GoogleMaterial.Icon.gmd_perm_identity);
         item3.withIcon(GoogleMaterial.Icon.gmd_language);
-        //item3.withIcon(GoogleMaterial.Icon.gmd_error_outline);
         item4.withIcon(GoogleMaterial.Icon.gmd_power_settings_new);
 
         Drawer drawer = new DrawerBuilder()
@@ -80,23 +85,10 @@ public class HomeActivity extends AppCompatActivity {
                 ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        // do something with the clicked item
-                        switch(position) {
-//                            case 0:
-//                                Toast.makeText(getApplicationContext(), "About page",
-//                                        Toast.LENGTH_SHORT).show();
-//                            case 1:
-//                                Toast.makeText(getApplicationContext(), "Profile",
-//                                        Toast.LENGTH_SHORT).show();
-//                            case 2:
-//                                Toast.makeText(getApplicationContext(), "Notifications!",
-//                                        Toast.LENGTH_SHORT).show();
-//                            case 3:
-//                                Toast.makeText(getApplicationContext(), "Sign out?",
-//                                        Toast.LENGTH_SHORT).show();
-                            default:
-                            Toast.makeText(getApplicationContext(), "This will go to Settings",
-                                    Toast.LENGTH_SHORT).show();
+                        if(drawerItem == item4) {
+                            Toast.makeText(getApplicationContext(), "Signout",
+                                        Toast.LENGTH_SHORT).show();
+                            new SignoutTask().execute();
                         }
 
                         return true;
@@ -167,6 +159,55 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public class SignoutTask extends AsyncTask<String, Void, Boolean> {
+        private Communicator communicator;
+
+        @Override
+        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
+            boolean successful;
+            // Retrofit HTTP call to login
+
+            // for debug worker thread
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+
+            try {
+                communicator = new Communicator();
+                communicator.signoutPost();
+
+                successful = communicator.successful;
+
+                Log.d(TAG, "Signout isSuccessful: " + communicator.successful);
+                Log.d(TAG, "SIGNOUTTASK_SUCCESSFUL: " + successful);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("SIGNOUT_POST_FAILURE", "THE SIGNOUT WAS A FAILURE");
+
+                return false;
+            }
+
+            Log.d(TAG, "successful2: " + successful);
+            return successful;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+            Log.d(TAG, "inside onPostExecute");
+
+            if (successful) {
+                Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
+
+                Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+                finish();
+            } else {
+                Toast.makeText(getApplicationContext(), "Signout was not Successful!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -197,7 +238,6 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 5 total pages.
             return 5;
         }
 
