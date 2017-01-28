@@ -22,18 +22,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Communicator {
     private static final String TAG = "Communicator";
     private static final String SERVER_URL = "https://community-ci.herokuapp.com";
-    private static String API_TOKEN = "";
     private static String USER_TOKEN = "";
+    private static String API_TOKEN = "Bearer " + USER_TOKEN;
     private static String CLIENT_ID = "gBP4u4xwAiB1WaaDZGbNxGCPS8upLQsdkXP1avE4";
     private static String CLIENT_SECRET = "pemkNdWdYU4rrJ6AQxvKsJAivx9Gz1fh0zRVBSYkDMofahmGxDUO4vEF5dBAmU5mwrXLkp6BVZO5iK5irszy4CWKpcrdY3f1511q9nZH68vkkrFl59GU8rGqx5fwK34U";
     private static String GRANT_TYPE = "client_credentials";
     private static String USERCLIENT_ID = "m062TLGH5WOdApYD3jXcM6jA5OnRleVmAoTw3zfu";
     private static String USERCLIENT_SECRET = "6jtLHhKuefsPogv8J8PBcPUzVrqOkcYRuPFmAqml6gukbStgl0bjSUPHFFoaDbWKZ1tCDlOrQo69irklmFTEKsYE2kCrUGZmgeLSM37yDLJhhviLujmgeZdMATHSx90a";
     private static String USER_GRANT_TYPE = "password";
+    private static String USERNAME = "";
+    private static String PASSWORD = "";
 
     public APIAuthResponse apiAuthResponse = null;
     public ServerResponse serverResponse = null;
     public boolean successful = false;
+    public String email = "";
     public ClientType client = ClientType.BASECLIENT;
 
     public enum ClientType{
@@ -54,6 +57,12 @@ public class Communicator {
     }
 
     public void loginPost(String username, String password) {
+        USERNAME = username;
+        PASSWORD = password;
+
+        Log.d(TAG, "Username: " + USERNAME);
+        Log.d(TAG, "Password: " + PASSWORD);
+
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -139,25 +148,9 @@ public class Communicator {
         Log.d(TAG, "GET_TOKEN_SUCCESSFUL_2: " + successful);
     }
 
-    private String makeQuery(String user, String pass, String email) {
-        return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"{2}\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",
-                user,
-                pass,
-                email
-        );
-    }
+    public void queryPost() {
+        successful = false;
 
-    @Produce
-    public ServerEvent produceServerEvent(ServerResponse serverResponse) {
-        return new ServerEvent(serverResponse);
-    }
-
-    @Produce
-    public ErrorEvent produceErrorEvent(int errorCode, String errorMsg) {
-        return new ErrorEvent(errorCode, errorMsg);
-    }
-
-    /*public void queryPost(String username, String password, String email) {
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -174,29 +167,51 @@ public class Communicator {
                 .build();
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
 
-        getToken(service, "" , ""); // change later
+//        getToken(service, username, password); // change later
 
-        Call<ServerResponse> call = service.apiPost(API_TOKEN, makeQuery(username, password, email));
+        Call<Account> call = null;
+        call = service.apiPost(API_TOKEN, makeProfileQuery());
 
-        call.enqueue(new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                BusProvider.getInstance().post(new ServerEvent(response.body()));
-                Log.e(TAG, "Success");
+        try {
+            Response<Account> response = call.execute();
 
-                Gson gson = new Gson();
-                apiAuthResponse = gson.fromJson(response.message(), APIAuthResponse.class);
+            successful = response.isSuccessful();
+            email = response.body().getEmail();
 
-                API_TOKEN = apiAuthResponse.getToken();
-            }
+            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
+            Log.d(TAG, "Response Token: " + response.body().getToken());
+            Log.d(TAG, "Response Message: " + response.message());
+            Log.d(TAG, "Response Email: " + response.body().getEmail());
+            Log.d(TAG, "Response FName: " + response.body().getFirstName());
+            Log.d(TAG, "Response ID: " + response.body().getId());
+            Log.d(TAG, "Response Interests: " + response.body().getInterests());
+            Log.d(TAG, "Response LName: " + response.body().getLastName());
+            Log.d(TAG, "Response Phone Number: " + response.body().getPhoneNumber());
 
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-                // handle execution failures like no internet connectivity
-                BusProvider.getInstance().post(new ErrorEvent(-2, t.getMessage()));
-                Log.e(TAG, "Failure");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-            }
-        });
-    }*/
+    private String makeQuery(String user, String pass, String email) {
+        return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"{2}\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",
+                user,
+                pass,
+                email
+        );
+    }
+
+    private String makeProfileQuery() {
+      return "query= {\n  myProfile {\n    id\n    user {\n      firstName\n      lastName\n      email\n      token\n    }\n    interests\n    phoneNumber \n  }\n}";
+    }
+
+    @Produce
+    public ServerEvent produceServerEvent(ServerResponse serverResponse) {
+        return new ServerEvent(serverResponse);
+    }
+
+    @Produce
+    public ErrorEvent produceErrorEvent(int errorCode, String errorMsg) {
+        return new ErrorEvent(errorCode, errorMsg);
+    }
 }

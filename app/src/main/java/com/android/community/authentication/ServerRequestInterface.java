@@ -50,7 +50,7 @@ public interface ServerRequestInterface {
     //This method is used for "POST"
     @FormUrlEncoded
     @POST("/api/")
-    Call<ServerResponse> apiPost(
+    Call<Account> apiPost(
             @Header("authorization") String token,
             @Field("query") String GraphQLQuery
     );

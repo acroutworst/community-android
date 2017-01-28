@@ -28,12 +28,16 @@ import com.android.community.fragment.HomeFragment;
 import com.android.community.fragment.MeetupFragment;
 import com.android.community.fragment.NotifFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -74,9 +78,29 @@ public class HomeActivity extends AppCompatActivity {
         item3.withIcon(GoogleMaterial.Icon.gmd_language);
         item4.withIcon(GoogleMaterial.Icon.gmd_power_settings_new);
 
+        ProfileDrawerItem profileItem = new ProfileDrawerItem().withName("Adam Croutworst").withEmail("mikepenz@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile2));
+
+        // Create the AccountHeader
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.header_1)
+                .addProfiles(profileItem)
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+
+                        AsyncTask mQuery = new QueryTask().execute();
+
+                        return true;
+                    }
+                })
+                .build();
+
+
         Drawer drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
+                .withAccountHeader(headerResult)
                 .addDrawerItems(
                         item1,
                         item2,
@@ -202,6 +226,57 @@ public class HomeActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Signout was not Successful!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    public class QueryTask extends AsyncTask<String, Void, Boolean> {
+        private Communicator communicator;
+        public String email;
+
+        @Override
+        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
+            boolean successful;
+            // Retrofit HTTP call to login
+
+            // for debug worker thread
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+
+            try {
+                communicator = new Communicator();
+                communicator.queryPost();
+
+                successful = communicator.successful;
+                email = communicator.email;
+
+                Log.d(TAG, "Query email: " + email);
+                Log.d(TAG, "Query isSuccessful: " + communicator.successful);
+                Log.d(TAG, "QUERYTASK_SUCCESSFUL: " + successful);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+
+                return false;
+            }
+
+            Log.d(TAG, "successful2: " + successful);
+            return successful;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+            Log.d(TAG, "inside onPostExecute");
+
+            if (successful) {
+                Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
+
+                Toast.makeText(getApplicationContext(), "Email: " + email,
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Query was not Successful!",
                         Toast.LENGTH_SHORT).show();
             }
 
