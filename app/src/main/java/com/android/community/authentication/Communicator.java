@@ -23,7 +23,7 @@ public class Communicator {
     private static final String TAG = "Communicator";
     private static final String SERVER_URL = "https://community-ci.herokuapp.com";
     private static String USER_TOKEN = "";
-    private static String API_TOKEN = "Bearer " + USER_TOKEN;
+    private static String API_TOKEN = "";
     private static String CLIENT_ID = "gBP4u4xwAiB1WaaDZGbNxGCPS8upLQsdkXP1avE4";
     private static String CLIENT_SECRET = "pemkNdWdYU4rrJ6AQxvKsJAivx9Gz1fh0zRVBSYkDMofahmGxDUO4vEF5dBAmU5mwrXLkp6BVZO5iK5irszy4CWKpcrdY3f1511q9nZH68vkkrFl59GU8rGqx5fwK34U";
     private static String GRANT_TYPE = "client_credentials";
@@ -167,9 +167,8 @@ public class Communicator {
                 .build();
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
 
-//        getToken(service, username, password); // change later
-
         Call<Account> call = null;
+        API_TOKEN = "Bearer " + USER_TOKEN;
         call = service.apiPost(API_TOKEN, makeProfileQuery());
 
         try {
@@ -202,7 +201,9 @@ public class Communicator {
     }
 
     private String makeProfileQuery() {
-      return "query= {\n  myProfile {\n    id\n    user {\n      firstName\n      lastName\n      email\n      token\n    }\n    interests\n    phoneNumber \n  }\n}";
+//      return "{\n  myProfile {\n    id\n    user {\n      email\n    }\n    interests\n    phoneNumber \n  }\n}";
+      return "{myProfile {id, user{email}, interests, phoneNumber }}";
+//      return "{\n  myProfile {\n    id\n    user {\n      email\n    user{\n firstname\n lastname\n}}\n    interests\n    phoneNumber \n  }\n}";
     }
 
     @Produce

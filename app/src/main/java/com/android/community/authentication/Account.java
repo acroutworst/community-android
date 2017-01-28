@@ -5,13 +5,13 @@ package com.android.community.authentication;
  */
 
 public class Account {
-    private String id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String token;
-    private String interests;
-    private String phoneNumber;
+    private String id = null;
+    private String firstName = null;
+    private String lastName = null;
+    private String email = null;
+    private String token = null;
+    private String interests = null;
+    private String phoneNumber = null;
 
     public String getToken() {
         return this.token;
@@ -34,5 +34,4 @@ public class Account {
     public String getPhoneNumber() {
         return this.phoneNumber;
     }
-
 }
