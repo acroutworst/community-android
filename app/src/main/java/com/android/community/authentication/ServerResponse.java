@@ -10,9 +10,9 @@ import java.io.Serializable;
 
 public class ServerResponse implements Serializable {
     @SerializedName("message")
-    private String message;
+    private String message = null;
     @SerializedName("response_code")
-    private int responseCode;
+    private int responseCode = -1;
 
     public ServerResponse(String message, int responseCode){
         this.message = message;

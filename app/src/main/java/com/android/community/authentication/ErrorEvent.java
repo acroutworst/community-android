@@ -5,8 +5,8 @@ package com.android.community.authentication;
  */
 
 public class ErrorEvent {
-    private int errorCode;
-    private String errorMsg;
+    private int errorCode = -1;
+    private String errorMsg = null;
 
     public ErrorEvent(int errorCode, String errorMsg) {
         this.errorCode = errorCode;

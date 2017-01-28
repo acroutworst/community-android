@@ -5,11 +5,11 @@ package com.android.community.authentication;
  */
 
 public class APIAuthResponse {
-    private String access_token;
-    private String token_type;
-    private String scope;
-    private String refresh_token;
-    private int expires_in;
+    private String access_token = null;
+    private String token_type = null;
+    private String scope = null;
+    private String refresh_token = null;
+    private int expires_in = -1;
 
     public String getToken() {
         return this.access_token;

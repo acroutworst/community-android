@@ -5,7 +5,7 @@ package com.android.community.authentication;
  */
 
 public class ServerEvent {
-    private ServerResponse serverResponse;
+    private ServerResponse serverResponse = null;
 
     public ServerEvent(ServerResponse serverResponse) {
         this.serverResponse = serverResponse;
