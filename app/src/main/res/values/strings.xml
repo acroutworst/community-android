@@ -48,4 +48,13 @@
     <string name="hello_blank_fragment_meetup">Sit down for a cup of coffee with a new friend</string>
     <string name="hello_blank_fragment_group">join a group or start your own</string>
     <string name="hello_blank_fragment_notif">Ugh...these notifications</string>
+
+    <!-- String Array -->
+    <string-array name="query_suggestions">
+        <item>Events</item>
+        <item>Meetups</item>
+        <item>Groups</item>
+        <item>Notifications</item>
+        <item>Profile</item>
+    </string-array>
 </resources>

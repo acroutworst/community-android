@@ -30,7 +30,14 @@
         <activity
             android:name=".HomeActivity"
             android:label=""
-            android:theme="@style/TabbedTheme" />
+            android:theme="@style/TabbedTheme"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
         <activity android:name=".RegProfilePhotoActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
     </application>
