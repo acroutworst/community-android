@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -70,6 +71,7 @@ public class Communicator {
         //The logging interceptor will be added to the http client
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
+        httpClient.connectTimeout(60, TimeUnit.SECONDS);
 
         //Gson object
         Gson gson = new GsonBuilder()
