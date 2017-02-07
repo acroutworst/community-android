@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 24
@@ -45,3 +44,4 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
     testCompile 'junit:junit:4.12'
 }
+apply plugin: 'com.google.gms.google-services' // Please always keep this at the last line of the file

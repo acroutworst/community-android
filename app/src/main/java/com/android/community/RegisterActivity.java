@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.community.authentication.Communicator;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -44,9 +45,13 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.OkHttpClient;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -60,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements
     private static final String TAG = "RegisterActivity";
 
     private static final int RC_SIGN_IN = 1;
+    private static final String OAUTH_2_CLIENT_ID = "729098681626-8tn7vipah4h7s1uqoc02ge13pa704ui2.apps.googleusercontent.com";
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -76,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity implements
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private AsyncTask mGoogleSignInTask = null;
 
     // UI references.
     private GoogleApiClient mGoogleApiClient;
@@ -141,8 +147,6 @@ public class RegisterActivity extends AppCompatActivity implements
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-
-
     }
 
     @Override
@@ -159,8 +163,24 @@ public class RegisterActivity extends AppCompatActivity implements
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.d(TAG, "GoogleSignInResult result = " + result);
             handleSignInResult(result);
+                /*OkHttpClient client = new OkHttpClient();
+                HttpPost httpPost = new HttpPost("https://yourbackend.example.com/tokensignin");
+
+                try {
+                    List nameValuePairs = new ArrayList(1);
+                    nameValuePairs.add(new BasicNameValuePair("idToken", idToken));
+                    httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                    HttpResponse response = httpClient.execute(httpPost);
+                    int statusCode = response.getStatusLine().getStatusCode();
+                    final String responseBody = EntityUtils.toString(response.getEntity());
+                    Log.i(TAG, "Signed in as: " + responseBody);
+                } catch (ClientProtocolException e) {
+                    Log.e(TAG, "Error sending ID token to backend.", e);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error sending ID token to backend.", e);
+                }*/
         }
     }
 
@@ -168,6 +188,7 @@ public class RegisterActivity extends AppCompatActivity implements
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(OAUTH_2_CLIENT_ID)
                 .requestEmail()
                 .build();
 
@@ -185,22 +206,76 @@ public class RegisterActivity extends AppCompatActivity implements
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            String s = "Hi, " + acct.getGivenName() + " " + acct.getFamilyName() + "! Or should I say, " + acct.getDisplayName();
-            String email = "\nAlso, your email is: " + acct.getEmail();
-            Toast.makeText(this, s + email,
-                    Toast.LENGTH_LONG).show();
+            Log.d(TAG, "ID Token: " + acct.getIdToken());
+            AsyncTask mGoogleSignInTask =
+                    new GoogleLoginTask(acct.getIdToken(),
+                            acct.getDisplayName(),
+                            acct.getEmail(),
+                            acct.getGivenName(),
+                            acct.getFamilyName()).execute();
         } else {
-            // Signed out, show unauthenticated UI.
-            Toast.makeText(this, "Unsuccessful sign in with Google",
-                    Toast.LENGTH_LONG).show();
+            // TODO: show unauthenticated UI.
         }
     }
 
-    private void silentSignIn() {
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user using their Google account.
+     */
+    private class GoogleLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+        private Communicator communicator = null;
+        private final String mIdToken;
+        private final String mUsername;
+        private final String mEmail;
+        private final String mFirstName;
+        private final String mLastName;
+
+        GoogleLoginTask(String idToken, String username, String email, String firstName, String lastName) {
+            communicator = new Communicator();
+            mIdToken = idToken;
+            mUsername = username;
+            mEmail = email;
+            mFirstName = firstName;
+            mLastName = lastName;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                // TODO: authenticate user ID token and register user on Community server.
+                communicator.client = Communicator.ClientType.USERCLIENT;
+                boolean success = communicator.googleLoginPost(mIdToken, mUsername, mEmail, mFirstName, mLastName);
+                return success;
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mGoogleSignInTask = null;
+            showProgress(false);
+
+            if (success) {
+                finish();
+            } else {
+                Log.d(TAG, "Unsuccessful mGoogleSignInTask");
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mGoogleSignInTask = null;
+            showProgress(false);
+        }
+    }
+
+    /*private void silentSignIn() {
         Log.d(TAG, "silentSignIn");
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.
                 silentSignIn(mGoogleApiClient);
@@ -217,7 +292,7 @@ public class RegisterActivity extends AppCompatActivity implements
             });
 
         }
-    }
+    }*/
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -262,14 +337,14 @@ public class RegisterActivity extends AppCompatActivity implements
         }
     }
 
-
+    // TODO: write attemptRegister() instead of attemptLogin()
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if (mGoogleSignInTask != null) {
             return;
         }
 
@@ -310,8 +385,8 @@ public class RegisterActivity extends AppCompatActivity implements
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+//            mGoogleSignInTask = new UserLoginTask(email, password);
+//            mGoogleSignInTask.execute((Void) null);
         }
     }
 
@@ -420,60 +495,5 @@ public class RegisterActivity extends AppCompatActivity implements
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 }

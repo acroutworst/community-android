@@ -1,33 +1,25 @@
 {
   "project_info": {
-    "project_number": "440403607963",
-    "project_id": "community-4b5be"
+    "project_number": "729098681626",
+    "project_id": "community-android"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:440403607963:android:9b6abdc17739da51",
+        "mobilesdk_app_id": "1:729098681626:android:9b6abdc17739da51",
         "android_client_info": {
           "package_name": "com.android.community"
         }
       },
       "oauth_client": [
         {
-          "client_id": "440403607963-ar7c5lo69sg8bnqc8v0rahql1us4jnv4.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.android.community",
-            "certificate_hash": "198D4E4EFD431FD4E72A01DED3016F6818D6B6CF"
-          }
-        },
-        {
-          "client_id": "440403607963-vio0fhfmdobkk61svi2rgkj42tvtajct.apps.googleusercontent.com",
+          "client_id": "729098681626-8tn7vipah4h7s1uqoc02ge13pa704ui2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCyMZSjoNH1zOZl-ixx28ZwynVU1Y_A6EQ"
+          "current_key": "AIzaSyBR4MqOs43EwDEmN5yLyUzhpCt1WeP7xUI"
         }
       ],
       "services": {
