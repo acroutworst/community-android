@@ -279,7 +279,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Log.d(TAG, "inside onPostExecute");
             if (successful) {
                 Log.d(TAG, "inside if(successful)");
-                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+//                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                Intent homeIntent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(homeIntent);
                 finish();
             } else {
