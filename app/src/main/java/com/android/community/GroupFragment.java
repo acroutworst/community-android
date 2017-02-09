@@ -1,6 +1,7 @@
 package com.android.community;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,14 +19,19 @@ import butterknife.ButterKnife;
 
 
 public class GroupFragment extends Fragment {
-    @BindView(R.id.recycler_view) RecyclerView recyclerView;
+//    @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
+    private ViewGroup view;
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_group, container, false);
-        ButterKnife.bind(this.getActivity());
+        view = (ViewGroup) inflater.inflate(R.layout.fragment_group, container, false);
+//        ButterKnife.bind(this.getActivity());
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
         int spanCount = getSpanCount();
 
@@ -35,8 +41,9 @@ public class GroupFragment extends Fragment {
         // to set our span count on the adapter and then get the span size lookup object from
         // the adapter. This look up object will delegate span size lookups to each model.
         adapter.setSpanCount(spanCount);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this.getActivity().getApplicationContext(), spanCount);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this.getContext(), spanCount);
         gridLayoutManager.setSpanSizeLookup(adapter.getSpanSizeLookup());
+        gridLayoutManager.setRecycleChildrenOnDetach(true);
 
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
