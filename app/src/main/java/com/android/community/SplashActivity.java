@@ -16,7 +16,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onResume();
 
         Intent intent = new Intent(this, LoginActivity.class);
-//        Intent intent = new Intent(this, MainActivity.class);
 
         try {
             Thread.sleep(2000);

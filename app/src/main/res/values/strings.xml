@@ -58,9 +58,9 @@
         <item>Profile</item>
     </string-array>
 
-    <!-- Epoxy Sample -->
-    <string name="epoxy">Epoxy</string>
-    <string name="header_subtitle">Composing views with ease</string>
+    <!-- Grid Content -->
+    <string name="epoxy">Meetups</string>
+    <string name="header_subtitle">Welcome to Community Groups!</string>
     <string name="button_add">Add</string>
     <string name="button_clear">Clear</string>
     <string name="button_shuffle">Shuffle</string>

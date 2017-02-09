@@ -15,7 +15,7 @@ import com.android.community.models.HeaderModel_;
 import java.util.Collections;
 import java.util.Random;
 
-class SampleAdapter extends EpoxyAdapter {
+public class GridAdapter extends EpoxyAdapter {
   private static final Random RANDOM = new Random();
 
   // These models are saved as fields so they can easily be shown or hidden as needed
@@ -23,7 +23,7 @@ class SampleAdapter extends EpoxyAdapter {
   private final ButtonModel_ shuffleButton = new ButtonModel_();
   private final ButtonModel_ changeColorsButton = new ButtonModel_();
 
-  SampleAdapter() {
+  GridAdapter() {
     // We are going to use automatic diffing, so we just have to enable it first
     enableDiffing();
 

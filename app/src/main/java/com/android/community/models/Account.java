@@ -1,4 +1,4 @@
-package com.android.community.authentication;
+package com.android.community.models;
 
 /**
  * Created by adamc on 1/26/17.

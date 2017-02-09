@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     int spanCount = getSpanCount();
 
-    SampleAdapter adapter = new SampleAdapter();
+    GridAdapter adapter = new GridAdapter();
 
     // We are using a multi span grid to show many color models in each row. To set this up we need
     // to set our span count on the adapter and then get the span size lookup object from

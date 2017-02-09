@@ -2,6 +2,7 @@ package com.android.community.authentication;
 
 import android.util.Log;
 
+import com.android.community.models.Account;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
