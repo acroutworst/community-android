@@ -50,4 +50,5 @@ dependencies {
     compile 'com.airbnb.android:epoxy:1.6.1'
     annotationProcessor 'com.airbnb.android:epoxy-processor:1.6.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.Mariovc:ImagePicker:1.0.5'
 }
