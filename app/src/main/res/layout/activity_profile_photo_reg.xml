@@ -13,11 +13,12 @@
     tools:context="com.android.community.RegProfilePhotoActivity">
 
     <ImageButton
-        android:id="@+id/upload_photo"
+        android:id="@+id/profile_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/profile_photo_picker_background"
-        android:layout_marginBottom="200dp" />
+        android:layout_marginBottom="200dp"
+        android:scaleType="fitXY"/>
 
     <Button
         android:id="@+id/finish_button"
