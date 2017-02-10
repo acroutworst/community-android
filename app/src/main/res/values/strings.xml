@@ -62,7 +62,20 @@
     <string name="epoxy">Meetups</string>
     <string name="header_subtitle">Welcome to Community Groups!</string>
     <string name="button_add">Add</string>
+    <string name="button_grid_hiking">HIKING</string>
+    <string name="button_grid_adventure">Adventure</string>
     <string name="button_clear">Clear</string>
     <string name="button_shuffle">Shuffle</string>
     <string name="button_change">Change</string>
+
+    <!-- Random Group Name -->
+    <string name="group_0">UWB</string>
+    <string name="group_1">Hiking</string>
+    <string name="group_2">Adventure</string>
+    <string name="group_3">HIKING</string>
+    <string name="group_4">ADVENTURE</string>
+    <string name="group_5">Sports</string>
+    <string name="group_6">TRIBE</string>
+    <string name="group_7">Tribe</string>
+
 </resources>

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     // Many color models are shown on screen at once. The default recycled view pool size is
     // only 5, so we manually set the pool size to avoid constantly creating new views when
     // the colors are randomized
-    recyclerView.getRecycledViewPool().setMaxRecycledViews(R.layout.model_color, 50);
+    recyclerView.getRecycledViewPool().setMaxRecycledViews(R.layout.model_group, 50);
   }
 
   private int getSpanCount() {
