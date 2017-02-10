@@ -2,6 +2,7 @@ package com.android.community;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,18 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.community.GridAdapter;
-import com.android.community.R;
-import com.android.community.VerticalGridCardSpacingDecoration;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 
 public class GroupFragment extends Fragment {
-//    @BindView(R.id.recycler_view) RecyclerView recyclerView;
 
+    private RecyclerView recyclerView;
     private ViewGroup view;
+    private GridAdapter adapter;
 
     @Nullable
     @Override
@@ -29,13 +24,11 @@ public class GroupFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         view = (ViewGroup) inflater.inflate(R.layout.fragment_group, container, false);
-//        ButterKnife.bind(this.getActivity());
-
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
         int spanCount = getSpanCount();
 
-        GridAdapter adapter = new GridAdapter();
+        adapter = new GridAdapter();
 
         // We are using a multi span grid to show many color models in each row. To set this up we need
         // to set our span count on the adapter and then get the span size lookup object from
@@ -53,7 +46,15 @@ public class GroupFragment extends Fragment {
         // Many color models are shown on screen at once. The default recycled view pool size is
         // only 5, so we manually set the pool size to avoid constantly creating new views when
         // the colors are randomized
-        recyclerView.getRecycledViewPool().setMaxRecycledViews(R.layout.model_color, 50);
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(R.layout.model_group, 50);
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_group);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.onAddClicked();
+            }
+        });
 
         return view;
     }
