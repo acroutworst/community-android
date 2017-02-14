@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.community.authentication.Communicator;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -50,6 +51,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -121,19 +123,16 @@ public class RegisterActivity extends AppCompatActivity implements
         });
 
         // Set up the register form.
-        mUsernameView = (EditText) findViewById(R.id.username);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
-
-
 
         mPasswordView = (EditText) findViewById(R.id.password2);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.register || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptRegister();
                     return true;
                 }
                 return false;
@@ -281,7 +280,7 @@ public class RegisterActivity extends AppCompatActivity implements
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptRegister() {
         if (mAuthTask != null) {
             return;
         }
@@ -296,6 +295,7 @@ public class RegisterActivity extends AppCompatActivity implements
         String email = mEmailView.getText().toString();
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String confirmPassword = mConfirmPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -304,6 +304,12 @@ public class RegisterActivity extends AppCompatActivity implements
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
+            cancel = true;
+        }
+
+        if (password != confirmPassword){
+            mConfirmPasswordView.setError(getString(R.string.error_different_password));
+            focusView = mConfirmPasswordView;
             cancel = true;
         }
 
@@ -442,6 +448,8 @@ public class RegisterActivity extends AppCompatActivity implements
      */
     public class RegisterUserTask extends AsyncTask<Void, Void, Boolean> {
 
+        private Communicator communicator;
+
         private final String mLastName;
         private final String mFirstName;
         private final String mEmail;
@@ -457,39 +465,44 @@ public class RegisterActivity extends AppCompatActivity implements
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        protected Boolean doInBackground(Void... params) { // params[0] = username; params[1] = password
+            boolean successful;
+            // Retrofit HTTP call to login
+
+            // for debug worker thread
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                communicator = new Communicator();
+                communicator.registerUserPost(mUsername, mEmail, mFirstName, mLastName, mPassword);
+
+                successful = communicator.successful;
+
+                Log.d(TAG, "Query isSuccessful: " + communicator.successful);
+                Log.d(TAG, "QUERYTASK_SUCCESSFUL: " + successful);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            Log.d(TAG, "successful2: " + successful);
+            return successful;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
+        protected void onPostExecute(final Boolean successful) {
+            Log.d(TAG, "inside onPostExecute");
 
-            if (success) {
-                finish();
+            if (successful) {
+                Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                Toast.makeText(getApplicationContext(), "Query was not Successful!",
+                        Toast.LENGTH_SHORT).show();
             }
+
         }
 
         @Override
