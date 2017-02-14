@@ -48,6 +48,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -76,18 +79,26 @@ public class RegisterActivity extends AppCompatActivity implements
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private AsyncTask mAuthTask = null;
 
     // UI references.
     private GoogleApiClient mGoogleApiClient;
     private SignInButton mGoogleSignInButton;
-    private EditText mUsernameView;
+
+//    private EditText mUsernameView;
+    @BindView(R.id.username) EditText mUsernameView;
     private AutoCompleteTextView mEmailView;
+    private EditText mFirstNameView;
+    private EditText mLastNameView;
     private EditText mPasswordView;
-    private Typeface mCopperplateFont;
+    private EditText mConfirmPasswordView;
+
     private Button mNext;
+
+    private Typeface mCopperplateFont;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +125,8 @@ public class RegisterActivity extends AppCompatActivity implements
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+
 
         mPasswordView = (EditText) findViewById(R.id.password2);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -142,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity implements
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -278,7 +291,10 @@ public class RegisterActivity extends AppCompatActivity implements
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String lastName = mLastNameView.getText().toString();
+        String firstName = mFirstNameView.getText().toString();
         String email = mEmailView.getText().toString();
+        String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -310,7 +326,7 @@ public class RegisterActivity extends AppCompatActivity implements
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new RegisterUserTask(lastName, firstName, email, username, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -421,16 +437,22 @@ public class RegisterActivity extends AppCompatActivity implements
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
+     * Represents an asynchronous registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class RegisterUserTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mLastName;
+        private final String mFirstName;
         private final String mEmail;
+        private final String mUsername;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        RegisterUserTask(String lastName, String firstName, String email, String username, String password) {
+            mLastName = lastName;
+            mFirstName = firstName;
             mEmail = email;
+            mUsername = username;
             mPassword = password;
         }
 
