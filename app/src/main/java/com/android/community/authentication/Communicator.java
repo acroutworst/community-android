@@ -2,6 +2,8 @@ package com.android.community.authentication;
 
 import android.util.Log;
 
+import com.android.community.models.AccountRegistration;
+import com.android.community.deserializer.AccountDeserializer;
 import com.android.community.models.Account;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -103,8 +105,8 @@ public class Communicator {
 
         //Gson object
         Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-            .create();
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
 
         //The Retrofit builder will have the client attached, in order to get connection logs
         Retrofit retrofit = new Retrofit.Builder()
@@ -232,30 +234,35 @@ public class Communicator {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
 
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(AccountRegistration.class, new AccountDeserializer())
+                .create();
+
         //The Retrofit builder will have the client attached, in order to get connection logs
         Retrofit retrofit = new Retrofit.Builder()
                 .client(httpClient.build())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(SERVER_URL)
                 .build();
+
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
 
-        Call<Account> call = null;
+        Call<AccountRegistration> call = null;
         API_TOKEN = "Bearer " + USER_TOKEN;
-        call = service.apiPost(API_TOKEN, registerUserQuery(username, email, firstName, lastName, password));
+        call = service.postAccountRegistration(API_TOKEN, registerUserQuery(username, email, firstName, lastName, password));
 
         try {
-            Response<Account> response = call.execute();
+            Response<AccountRegistration> response = call.execute();
 
             successful = response.isSuccessful();
-            email = response.body().getEmail();
 
             Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
+            Log.d(TAG, "Response username: " + response.body().getUsername());
+            Log.d(TAG, "Response Email: " + response.body().getEmail());
             Log.d(TAG, "Response FName: " + response.body().getFirstName());
             Log.d(TAG, "Response LName: " + response.body().getLastName());
             Log.d(TAG, "Response Token: " + response.body().getToken());
             Log.d(TAG, "Response Email: " + response.body().getEmail());
-
         } catch (IOException e) {
             e.printStackTrace();
         }

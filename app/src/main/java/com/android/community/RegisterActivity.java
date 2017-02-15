@@ -473,6 +473,11 @@ public class RegisterActivity extends AppCompatActivity implements
             mEmail = email;
             mUsername = username;
             mPassword = password;
+            Log.d(TAG, "lastName: " + lastName);
+            Log.d(TAG, "firstName: " + firstName);
+            Log.d(TAG, "email: " + email);
+            Log.d(TAG, "username: " + username);
+            Log.d(TAG, "password: " + password);
         }
 
         @Override

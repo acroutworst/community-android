@@ -17,13 +17,13 @@ import java.util.Collections;
 import java.util.Random;
 
 public class GridAdapter extends EpoxyAdapter {
-  private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
   // These models are saved as fields so they can easily be shown or hidden as needed
-  private final ButtonModel_ clearButton = new ButtonModel_();
-  private final ButtonModel_ shuffleButton = new ButtonModel_();
-  public final ButtonModel_ changeColorsButton = new ButtonModel_();
-	public final HeaderModel headerModel;
+    private final ButtonModel_ clearButton = new ButtonModel_();
+    private final ButtonModel_ shuffleButton = new ButtonModel_();
+    public final ButtonModel_ changeColorsButton = new ButtonModel_();
+    public final HeaderModel headerModel;
 
   GridAdapter() {
     // We are going to use automatic diffing, so we just have to enable it first
