@@ -62,8 +62,10 @@ public class RegisterActivity extends AppCompatActivity implements
         LoaderCallbacks<Cursor>,
         GoogleApiClient.OnConnectionFailedListener {
 
+    // Debug purposes
     private static final String TAG = "RegisterActivity";
 
+    // Response codes
     private static final int RC_SIGN_IN = 1;
 
     /**
@@ -84,11 +86,9 @@ public class RegisterActivity extends AppCompatActivity implements
     private AsyncTask mAuthTask = null;
 
     // UI references.
-    private GoogleApiClient mGoogleApiClient;
     private SignInButton mGoogleSignInButton;
 
-//    private EditText mUsernameView;
-    @BindView(R.id.username) EditText mUsernameView;
+    private EditText mUsernameView;
     private AutoCompleteTextView mEmailView;
     private EditText mFirstNameView;
     private EditText mLastNameView;
@@ -97,9 +97,12 @@ public class RegisterActivity extends AppCompatActivity implements
 
     private Button mNext;
 
-    private Typeface mCopperplateFont;
     private View mProgressView;
     private View mLoginFormView;
+
+    // Utilities
+    private Typeface mCopperplateFont;
+    private GoogleApiClient mGoogleApiClient;
 
 
     @Override
@@ -107,8 +110,7 @@ public class RegisterActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        createGoogleApiClient();
-
+        // Set up the register form.
         mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         mGoogleSignInButton.setSize(SignInButton.SIZE_WIDE);
         mGoogleSignInButton.setOnClickListener(new OnClickListener() {
@@ -122,28 +124,28 @@ public class RegisterActivity extends AppCompatActivity implements
             }
         });
 
-        // Set up the register form.
-
-				mLastNameView = (EditText) findViewById(R.id.last_name);
-				mFirstNameView = (EditText) findViewById(R.id.first_name);
-				mConfirmPasswordView = (EditText) findViewById(R.id.password_confirm);
+        mUsernameView = (EditText) findViewById(R.id.username);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password_register);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.register || id == EditorInfo.IME_NULL) {
-                    attemptRegister();
-                    return true;
-                }
-                return false;
-            }
-        });
+        mFirstNameView = (EditText) findViewById(R.id.first_name);
 
-        mCopperplateFont = Typeface.createFromAsset(getAssets(), "copperplate-regular.ttf");
+        mLastNameView = (EditText) findViewById(R.id.last_name);
+
+        mPasswordView = (EditText) findViewById(R.id.password_register);
+//        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+//                if (id == R.id.register || id == EditorInfo.IME_NULL) {
+//                    attemptRegister();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+
+        mConfirmPasswordView = (EditText) findViewById(R.id.password_confirm);
 
         mNext = (Button) findViewById(R.id.next_button);
         mNext.setOnClickListener(new OnClickListener() {
@@ -157,9 +159,12 @@ public class RegisterActivity extends AppCompatActivity implements
         mNext.setTypeface(mCopperplateFont);
 
         mLoginFormView = findViewById(R.id.login_form);
+
         mProgressView = findViewById(R.id.login_progress);
 
-        ButterKnife.bind(this);
+        mCopperplateFont = Typeface.createFromAsset(getAssets(), "copperplate-regular.ttf");
+
+        createGoogleApiClient();
     }
 
     @Override
@@ -349,12 +354,10 @@ public class RegisterActivity extends AppCompatActivity implements
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -457,8 +460,7 @@ public class RegisterActivity extends AppCompatActivity implements
      * Represents an asynchronous registration task used to authenticate
      * the user.
      */
-    public class RegisterUserTask extends AsyncTask<Void, Void, Boolean> {
-
+    private class RegisterUserTask extends AsyncTask<Void, Void, Boolean> {
         private Communicator communicator;
 
         private final String mLastName;
@@ -473,38 +475,31 @@ public class RegisterActivity extends AppCompatActivity implements
             mEmail = email;
             mUsername = username;
             mPassword = password;
-            Log.d(TAG, "lastName: " + lastName);
-            Log.d(TAG, "firstName: " + firstName);
-            Log.d(TAG, "email: " + email);
-            Log.d(TAG, "username: " + username);
-            Log.d(TAG, "password: " + password);
         }
 
         @Override
         protected Boolean doInBackground(Void... params) { // params[0] = username; params[1] = password
             boolean successful;
-            // Retrofit HTTP call to login
 
             // for debug worker thread
             if(android.os.Debug.isDebuggerConnected())
                 android.os.Debug.waitForDebugger();
 
             try {
+                // Retrofit HTTP call to login
                 communicator = new Communicator();
                 communicator.registerUserPost(mUsername, mEmail, mFirstName, mLastName, mPassword);
 
                 successful = communicator.successful;
 
-                Log.d(TAG, "Query isSuccessful: " + communicator.successful);
-                Log.d(TAG, "QUERYTASK_SUCCESSFUL: " + successful);
+                Log.d(TAG, "REGISTER_USER_TASK_SUCCESSFUL: " + successful);
             } catch (Exception e) {
-                e.printStackTrace();
                 Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+
+                e.printStackTrace();
 
                 return false;
             }
-
-            Log.d(TAG, "successful2: " + successful);
             return successful;
         }
 
@@ -512,21 +507,18 @@ public class RegisterActivity extends AppCompatActivity implements
         protected void onPostExecute(final Boolean successful) {
             mAuthTask = null;
             showProgress(false);
-            Log.d(TAG, "inside onPostExecute");
 
             if (successful) {
-                Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
-								Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
+                Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
                 startActivity(i);
-								finish();
+				finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Query was not Successful!",
                         Toast.LENGTH_SHORT).show();
 
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+//                mPasswordView.setError(getString(R.string.error_incorrect_password));
+//                mPasswordView.requestFocus();
             }
-
         }
 
         @Override

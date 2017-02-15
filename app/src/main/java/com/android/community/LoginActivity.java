@@ -45,10 +45,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    // Debug purposes
     private static final String TAG = "LoginActivity";
-
-    private static final int HTTP_OK_RESPONSE_CODE = 200;
-    private static final int HTTP_FORBIDDEN_ACCESS_RESPONSE_CODE = 403;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -62,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -72,9 +71,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private Typeface mCopperplateFont;
     private Button mEmailSignInButton;
     private Button mRegisterButton;
+
+    // Utilities
+    private Typeface mCopperplateFont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,11 +136,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         BusProvider.getInstance().unregister(this);
     }
 
-    private void attemptRegister() {
-        Intent regIntent = new Intent(this, RegisterActivity.class);
-        startActivity(regIntent);
-    }
-
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -183,6 +179,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    private void attemptRegister() {
+        Intent regIntent = new Intent(this, RegisterActivity.class);
+        startActivity(regIntent);
+    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -217,7 +218,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         }
-        else if (!isEmailValid(email)) { // CHANGE isEmailValid() LATER!!!!!!!!
+        else if (!isEmailValid(email)) { // TODO: change isEmailValid() later
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -231,44 +232,47 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask().execute(email, password);
+            mAuthTask = new UserLoginTask(email, password).execute();
         }
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Represents an asynchronous login task used to authenticate the user.
      */
-    public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
+    private class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         private Communicator communicator;
-        private boolean passed;
+        private String mEmail;
+        private String mPassword;
+
+        public UserLoginTask(String email, String password){
+            mEmail = email;
+            mPassword = password;
+        }
 
         @Override
-        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
+        protected Boolean doInBackground(Void... params) {
             boolean successful;
-            // Retrofit HTTP call to login
 
             // for debug worker thread
             if(android.os.Debug.isDebuggerConnected())
                 android.os.Debug.waitForDebugger();
 
             try {
+                // Retrofit HTTP call to login
                 communicator = new Communicator();
                 communicator.client = Communicator.ClientType.USERCLIENT;
-                communicator.loginPost(params[0], params[1]);
+                communicator.loginPost(mEmail, mPassword);
 
                 successful = communicator.successful;
-                Log.d(TAG, "USERLOGINTASK_SUCCESSFUL: " + successful);
-                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL 123");
+
+                Log.d(TAG, "LOGIN_POST_SUCCESSFUL: " + successful);
             } catch (Exception e) {
-                e.printStackTrace();
-                passed = false;
                 Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
+
+                e.printStackTrace();
 
                 return false;
             }
-
-            Log.d(TAG, "successful2: " + successful);
             return successful;
         }
 
@@ -276,9 +280,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean successful) {
             mAuthTask = null;
             showProgress(false);
-            Log.d(TAG, "inside onPostExecute");
             if (successful) {
-                Log.d(TAG, "inside if(successful)");
                 Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(homeIntent);
                 finish();
@@ -296,12 +298,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains(""); // CHANGE IT LATER!!!!!!!
+        //TODO: Replace this later
+        return email.contains("");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -396,7 +397,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 }
 
-
 /*    @Subscribe
 public void onServerEvent(ServerEvent serverEvent){
     Toast.makeText(this, ""+serverEvent.getServerResponse().getMessage(), Toast.LENGTH_SHORT).show();
@@ -410,4 +410,3 @@ public void onServerEvent(ServerEvent serverEvent){
 public void onErrorEvent(ErrorEvent errorEvent){
     Toast.makeText(this,""+errorEvent.getErrorMsg(),Toast.LENGTH_SHORT).show();
 }*/
-

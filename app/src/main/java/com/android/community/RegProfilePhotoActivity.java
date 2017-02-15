@@ -26,14 +26,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class RegProfilePhotoActivity extends Activity{
+    // Debug purposes
     private static final String TAG = "RegProfilePhotoActivity";
 
+    // UI references
     private CircleImageView mProfilePhoto;
+    private Button mFinishButton;
+
+    // Utilities
     private Bitmap mBitmap;
     private Uri mImageUri;
-    private Typeface mCopperplateFont;
-    private Button mFinishButton;
     private Drawable mDrawable;
+    private Typeface mCopperplateFont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -10,7 +10,9 @@ import com.android.community.authentication.Communicator;
 
 public class SplashActivity extends AppCompatActivity {
 
+    // Debug purposes
     private static final String TAG = "SplashActivity";
+
     private AsyncTask mAuthTask = null;
 
     @Override
@@ -30,10 +32,6 @@ public class SplashActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-//        Intent intent = new Intent(this, LoginActivity.class);
-//        startActivity(intent);
-//        finish();
     }
 
     @Override
@@ -60,32 +58,26 @@ public class SplashActivity extends AppCompatActivity {
                 communicator.clientLoginPost();
 
                 successful = communicator.successful;
-                Log.d(TAG, "USERLOGINTASK_SUCCESSFUL: " + successful);
-                Log.d("LOGIN_POST_SUCCESS", "THE LOGIN POST WAS SUCCESSFUL 123");
+                Log.d(TAG, "CLIENT_LOGIN_POST_SUCCESSFUL: " + successful);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
+                Log.d("CLIENT_LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
 
                 return false;
             }
-
-            Log.d(TAG, "successful2: " + successful);
             return successful;
         }
 
         @Override
         protected void onPostExecute(final Boolean successful) {
             mAuthTask = null;
-            Log.d(TAG, "inside onPostExecute");
 
             if (successful) {
-                Log.d(TAG, "inside if(successful)");
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             } else {
                 Log.d(TAG, "Client Token POST not successful");
-
             }
         }
 
@@ -95,4 +87,3 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 }
-
