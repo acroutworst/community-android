@@ -1,5 +1,6 @@
 package com.android.community.authentication;
 
+import com.android.community.models.AccountRegistration;
 import com.android.community.models.Account;
 
 import retrofit2.Call;
@@ -63,6 +64,14 @@ public interface ServerRequestInterface {
     @FormUrlEncoded
     @POST("/api/")
     Call<Account> apiPost(
+            @Header("authorization") String token,
+            @Field("query") String GraphQLQuery
+    );
+
+    //This method is used for "POST"
+    @FormUrlEncoded
+    @POST("/api/")
+    Call<AccountRegistration> postAccountRegistration(
             @Header("authorization") String token,
             @Field("query") String GraphQLQuery
     );
