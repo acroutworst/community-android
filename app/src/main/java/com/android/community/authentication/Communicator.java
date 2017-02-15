@@ -255,6 +255,7 @@ public class Communicator {
             Log.d(TAG, "Response LName: " + response.body().getLastName());
             Log.d(TAG, "Response Token: " + response.body().getToken());
             Log.d(TAG, "Response Email: " + response.body().getEmail());
+            Log.d(TAG, "Response Data: " + response.body().getData());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -276,7 +277,7 @@ public class Communicator {
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {
-        return String.format("mutation{\nregisterAccount(lastName:\"{0}\", firstName:\"{1}\", email:\"{2}\", username:\"{3}\", password:\"{4}\"){ok, account{username, email, firstName, lastName}}}", lastName, firstName, email, username, password);
+        return String.format("mutation{\nregisterAccount(lastName:\"%s\", firstName:\"%s\", email:\"%s\", username:\"%s\", password:\"%s\"){ok, account{username, email, firstName, lastName}}}", lastName, firstName, email, username, password);
     }
 
     @Produce

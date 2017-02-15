@@ -8,10 +8,12 @@ public class Account {
     private String id = null;
     private String firstName = null;
     private String lastName = null;
+    private String username = null;
     private String email = null;
     private String token = null;
     private String interests = null;
     private String phoneNumber = null;
+    private String data = null;
 
     public String getToken() {
         return this.token;
@@ -34,4 +36,8 @@ public class Account {
     public String getPhoneNumber() {
         return this.phoneNumber;
     }
+    public String getUsername() {
+        return this.username;
+    }
+    public String getData() { return this.data; }
 }
