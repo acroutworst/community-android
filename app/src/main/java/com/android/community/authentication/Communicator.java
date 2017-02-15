@@ -2,6 +2,7 @@ package com.android.community.authentication;
 
 import android.util.Log;
 
+import com.android.community.RegisterAccount;
 import com.android.community.models.Account;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -103,8 +104,8 @@ public class Communicator {
 
         //Gson object
         Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-            .create();
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
 
         //The Retrofit builder will have the client attached, in order to get connection logs
         Retrofit retrofit = new Retrofit.Builder()
@@ -232,6 +233,11 @@ public class Communicator {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
 
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(RegisterAccount.class, new MyDeserializer<RegisterAccount>())
+                .registerTypeAdapter(com.android.community.Account.class, new MyDeserializer<com.android.community.Account>())
+                .create();
+
         //The Retrofit builder will have the client attached, in order to get connection logs
         Retrofit retrofit = new Retrofit.Builder()
                 .client(httpClient.build())
@@ -250,12 +256,13 @@ public class Communicator {
             successful = response.isSuccessful();
             email = response.body().getEmail();
 
+            Log.d(TAG, "response.body(): " + response.body());
             Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
             Log.d(TAG, "Response FName: " + response.body().getFirstName());
             Log.d(TAG, "Response LName: " + response.body().getLastName());
             Log.d(TAG, "Response Token: " + response.body().getToken());
             Log.d(TAG, "Response Email: " + response.body().getEmail());
-            Log.d(TAG, "Response Data: " + response.body().getData());
+//            Log.d(TAG, "Response Data: " + response.body().getData());
 
         } catch (IOException e) {
             e.printStackTrace();
