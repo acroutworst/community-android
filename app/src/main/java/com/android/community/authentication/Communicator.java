@@ -90,6 +90,34 @@ public class Communicator {
         getToken(service, username, password);
     }
 
+    public void clientLoginPost() {
+
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+        httpClient.connectTimeout(60, TimeUnit.SECONDS);
+
+        //Gson object
+        Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+            .create();
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(SERVER_URL)
+            .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        getToken(service, "", "");
+    }
+
+
     public void signoutPost() {
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -195,6 +223,44 @@ public class Communicator {
         }
     }
 
+    public void registerUserPost(String username, String email, String firstName, String lastName, String password) {
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(httpClient.build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(SERVER_URL)
+                .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        Call<Account> call = null;
+        API_TOKEN = "Bearer " + USER_TOKEN;
+        call = service.apiPost(API_TOKEN, registerUserQuery(username, email, firstName, lastName, password));
+
+        try {
+            Response<Account> response = call.execute();
+
+            successful = response.isSuccessful();
+            email = response.body().getEmail();
+
+            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
+            Log.d(TAG, "Response FName: " + response.body().getFirstName());
+            Log.d(TAG, "Response LName: " + response.body().getLastName());
+            Log.d(TAG, "Response Token: " + response.body().getToken());
+            Log.d(TAG, "Response Email: " + response.body().getEmail());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String makeQuery(String user, String pass, String email) {
         return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"{2}\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",
                 user,
@@ -207,6 +273,10 @@ public class Communicator {
 //      return "{\n  myProfile {\n    id\n    user {\n      email\n    }\n    interests\n    phoneNumber \n  }\n}";
       return "{myProfile {id, user{email}, interests, phoneNumber }}";
 //      return "{\n  myProfile {\n    id\n    user {\n      email\n    user{\n firstname\n lastname\n}}\n    interests\n    phoneNumber \n  }\n}";
+    }
+
+    private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {
+        return String.format("mutation{\nregisterAccount(lastName:\"%s\", firstName:\"%s\", email:\"%s\", username:\"%s\", password:\"%s\"){ok, account{username, email, firstName, lastName}}}", lastName, firstName, email, username, password);
     }
 
     @Produce

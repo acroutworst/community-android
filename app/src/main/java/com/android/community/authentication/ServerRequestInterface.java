@@ -33,6 +33,16 @@ public interface ServerRequestInterface {
     );
 
     @FormUrlEncoded
+    @POST("/api/")
+    Call<APIAuthResponse> postRegisterUser(
+            @Field("lastName") String lastName,
+            @Field("firstName") String firstName,
+            @Field("email") String email,
+            @Field("username") String username,
+            @Field("password") String password
+    );
+
+    @FormUrlEncoded
     @POST("/o/token/")
     Call<APIAuthResponse> postRefreshToken(
             @Field("client_id") String client_id,

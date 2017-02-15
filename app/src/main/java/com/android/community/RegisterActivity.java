@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.community.authentication.Communicator;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -47,6 +48,10 @@ import com.google.android.gms.common.api.ResultCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -76,18 +81,26 @@ public class RegisterActivity extends AppCompatActivity implements
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private AsyncTask mAuthTask = null;
 
     // UI references.
     private GoogleApiClient mGoogleApiClient;
     private SignInButton mGoogleSignInButton;
-    private EditText mUsernameView;
+
+//    private EditText mUsernameView;
+    @BindView(R.id.username) EditText mUsernameView;
     private AutoCompleteTextView mEmailView;
+    private EditText mFirstNameView;
+    private EditText mLastNameView;
     private EditText mPasswordView;
-    private Typeface mCopperplateFont;
+    private EditText mConfirmPasswordView;
+
     private Button mNext;
+
+    private Typeface mCopperplateFont;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,17 +123,20 @@ public class RegisterActivity extends AppCompatActivity implements
         });
 
         // Set up the register form.
-        mUsernameView = (EditText) findViewById(R.id.username);
+
+				mLastNameView = (EditText) findViewById(R.id.last_name);
+				mFirstNameView = (EditText) findViewById(R.id.first_name);
+				mConfirmPasswordView = (EditText) findViewById(R.id.password_confirm);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password2);
+        mPasswordView = (EditText) findViewById(R.id.password_register);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.register || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptRegister();
                     return true;
                 }
                 return false;
@@ -133,8 +149,9 @@ public class RegisterActivity extends AppCompatActivity implements
         mNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
-                RegisterActivity.this.startActivity(i);
+//                Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
+//                RegisterActivity.this.startActivity(i);
+                attemptRegister();
             }
         });
         mNext.setTypeface(mCopperplateFont);
@@ -142,7 +159,7 @@ public class RegisterActivity extends AppCompatActivity implements
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -268,7 +285,7 @@ public class RegisterActivity extends AppCompatActivity implements
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptRegister() {
         if (mAuthTask != null) {
             return;
         }
@@ -278,16 +295,33 @@ public class RegisterActivity extends AppCompatActivity implements
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String lastName = mLastNameView.getText().toString();
+        String firstName = mFirstNameView.getText().toString();
         String email = mEmailView.getText().toString();
+        String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String confirmPassword = mConfirmPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
+
+        if(TextUtils.isEmpty(lastName) || TextUtils.isEmpty(firstName) || TextUtils.isEmpty(email)
+            || TextUtils.isEmpty(username) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
+            mLastNameView.setError(getString(R.string.error_field_required));
+            focusView = mLastNameView;
+            cancel = true;
+        }
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
+            cancel = true;
+        }
+
+        if (!password.equals(confirmPassword)){
+            mConfirmPasswordView.setError(getString(R.string.error_different_password));
+            focusView = mConfirmPasswordView;
             cancel = true;
         }
 
@@ -310,8 +344,7 @@ public class RegisterActivity extends AppCompatActivity implements
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask = new RegisterUserTask(lastName, firstName, email, username, password).execute();
         }
     }
 
@@ -421,53 +454,74 @@ public class RegisterActivity extends AppCompatActivity implements
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
+     * Represents an asynchronous registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class RegisterUserTask extends AsyncTask<Void, Void, Boolean> {
 
+        private Communicator communicator;
+
+        private final String mLastName;
+        private final String mFirstName;
         private final String mEmail;
+        private final String mUsername;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        RegisterUserTask(String lastName, String firstName, String email, String username, String password) {
+            mLastName = lastName;
+            mFirstName = firstName;
             mEmail = email;
+            mUsername = username;
             mPassword = password;
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        protected Boolean doInBackground(Void... params) { // params[0] = username; params[1] = password
+            boolean successful;
+            // Retrofit HTTP call to login
+
+            // for debug worker thread
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                communicator = new Communicator();
+                communicator.registerUserPost(mUsername, mEmail, mFirstName, mLastName, mPassword);
+
+                successful = communicator.successful;
+
+                Log.d(TAG, "Query isSuccessful: " + communicator.successful);
+                Log.d(TAG, "QUERYTASK_SUCCESSFUL: " + successful);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            Log.d(TAG, "successful2: " + successful);
+            return successful;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Boolean successful) {
             mAuthTask = null;
             showProgress(false);
+            Log.d(TAG, "inside onPostExecute");
 
-            if (success) {
-                finish();
+            if (successful) {
+                Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
+								Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
+                startActivity(i);
+								finish();
             } else {
+                Toast.makeText(getApplicationContext(), "Query was not Successful!",
+                        Toast.LENGTH_SHORT).show();
+
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
+
         }
 
         @Override
