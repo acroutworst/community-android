@@ -261,7 +261,6 @@ public class Communicator {
             Log.d(TAG, "Response Email: " + response.body().getEmail());
             Log.d(TAG, "Response FName: " + response.body().getFirstName());
             Log.d(TAG, "Response LName: " + response.body().getLastName());
-            Log.d(TAG, "Response Token: " + response.body().getToken());
             Log.d(TAG, "Response Email: " + response.body().getEmail());
         } catch (IOException e) {
             e.printStackTrace();
