@@ -124,10 +124,14 @@ public class RegisterActivity extends AppCompatActivity implements
 
         // Set up the register form.
 
+				mLastNameView = (EditText) findViewById(R.id.last_name);
+				mFirstNameView = (EditText) findViewById(R.id.first_name);
+				mConfirmPasswordView = (EditText) findViewById(R.id.password_confirm);
+
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password2);
+        mPasswordView = (EditText) findViewById(R.id.password_register);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -145,8 +149,9 @@ public class RegisterActivity extends AppCompatActivity implements
         mNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
-                RegisterActivity.this.startActivity(i);
+//                Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
+//                RegisterActivity.this.startActivity(i);
+                attemptRegister();
             }
         });
         mNext.setTypeface(mCopperplateFont);
@@ -300,6 +305,13 @@ public class RegisterActivity extends AppCompatActivity implements
         boolean cancel = false;
         View focusView = null;
 
+        if(TextUtils.isEmpty(lastName) || TextUtils.isEmpty(firstName) || TextUtils.isEmpty(email)
+            || TextUtils.isEmpty(username) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
+            mLastNameView.setError(getString(R.string.error_field_required));
+            focusView = mLastNameView;
+            cancel = true;
+        }
+
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
@@ -307,7 +319,7 @@ public class RegisterActivity extends AppCompatActivity implements
             cancel = true;
         }
 
-        if (password != confirmPassword){
+        if (!password.equals(confirmPassword)){
             mConfirmPasswordView.setError(getString(R.string.error_different_password));
             focusView = mConfirmPasswordView;
             cancel = true;
@@ -332,8 +344,7 @@ public class RegisterActivity extends AppCompatActivity implements
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new RegisterUserTask(lastName, firstName, email, username, password);
-            mAuthTask.execute((Void) null);
+            mAuthTask = new RegisterUserTask(lastName, firstName, email, username, password).execute();
         }
     }
 
@@ -494,13 +505,21 @@ public class RegisterActivity extends AppCompatActivity implements
 
         @Override
         protected void onPostExecute(final Boolean successful) {
+            mAuthTask = null;
+            showProgress(false);
             Log.d(TAG, "inside onPostExecute");
 
             if (successful) {
                 Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
+								Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
+                startActivity(i);
+								finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Query was not Successful!",
                         Toast.LENGTH_SHORT).show();
+
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
             }
 
         }

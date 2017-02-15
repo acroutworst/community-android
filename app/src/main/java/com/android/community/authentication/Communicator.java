@@ -90,6 +90,34 @@ public class Communicator {
         getToken(service, username, password);
     }
 
+    public void clientLoginPost() {
+
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+        httpClient.connectTimeout(60, TimeUnit.SECONDS);
+
+        //Gson object
+        Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+            .create();
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(SERVER_URL)
+            .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        getToken(service, "", "");
+    }
+
+
     public void signoutPost() {
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -248,7 +276,7 @@ public class Communicator {
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {
-        return String.format("registerAccount(lastName:\"{0}\", firstName:\"{1}\", email:\"{2}\", username:\"{3}\", password:\"{4}\"){ok, account{username, email, firstName, lastName}}", lastName, firstName, email, username, password);
+        return String.format("mutation{\nregisterAccount(lastName:\"{0}\", firstName:\"{1}\", email:\"{2}\", username:\"{3}\", password:\"{4}\"){ok, account{username, email, firstName, lastName}}}", lastName, firstName, email, username, password);
     }
 
     @Produce
