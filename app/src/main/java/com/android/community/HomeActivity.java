@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -28,6 +26,7 @@ import com.android.community.fragment.EventFragment;
 import com.android.community.fragment.HomeFragment;
 import com.android.community.fragment.MeetupFragment;
 import com.android.community.fragment.NotifFragment;
+import com.android.community.tasks.ProfileQueryTask;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -62,6 +61,14 @@ public class HomeActivity extends AppCompatActivity {
 
     /* Search Fields */
     MaterialSearchView searchView;
+    private String mEmail;
+    private String mFullname;
+    private String mFname;
+    private String mLname;
+    private String mInterests;
+
+    /* Query */
+    AsyncTask mProfileQuery = null;
 
     private static final String TAG = "HomeActivity";
 
@@ -72,6 +79,8 @@ public class HomeActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         final PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.action_About);
         final PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.action_Profile);
@@ -85,7 +94,10 @@ public class HomeActivity extends AppCompatActivity {
         item3.withIcon(GoogleMaterial.Icon.gmd_language);
         item4.withIcon(GoogleMaterial.Icon.gmd_power_settings_new);
 
-        ProfileDrawerItem profileItem = new ProfileDrawerItem().withName("Adam Croutworst").withEmail("mikepenz@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile2));
+        ProfileDrawerItem profileItem = new ProfileDrawerItem()
+            .withName(AccountService.Instance().mAccount.firstName)
+            .withEmail(AccountService.Instance().mAccount.email)
+            .withIcon(getResources().getDrawable(R.drawable.profile2));
 
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
@@ -96,7 +108,10 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
 
-                        AsyncTask mQuery = new QueryTask().execute();
+                        new ProfileQueryTask().execute();
+
+                        profile.withName(AccountService.Instance().mAccount.firstName);
+                        profile.withEmail(AccountService.Instance().mAccount.email);
 
                         return true;
                     }
@@ -186,18 +201,23 @@ public class HomeActivity extends AppCompatActivity {
         tabLayout.getTabAt(3).setIcon(R.drawable.group_tab);
         tabLayout.getTabAt(4).setIcon(R.drawable.notif_tab);
 
+        mProfileQuery = new ProfileQueryTask().execute();
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "This is a floating action button", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        // Set DI variables
+        mFname = AccountService.Instance().mAccount.firstName;
+        mLname = AccountService.Instance().mAccount.lastName;
+        mEmail = AccountService.Instance().mAccount.email;
+        mFullname = String.format("%s %s", mFname, mLname);
 
+        profileItem.withName(mFname).withEmail(mEmail);
+
+        Log.d(TAG, "First name: " + AccountService.Instance().mAccount.firstName);
+        Log.d(TAG, "Last name: " + AccountService.Instance().mAccount.lastName);
+        Log.d(TAG, "Email: " + AccountService.Instance().mAccount.email);
+        Log.d(TAG, "Full: " + AccountService.Instance().mAccount.firstName + " " + AccountService.Instance().mAccount.lastName);
     }
 
+    /* Search Filters */
     private void filterSearchFor(String query) {
     }
 
@@ -302,57 +322,6 @@ public class HomeActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Signout was not Successful!",
-                        Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
-
-    public class QueryTask extends AsyncTask<String, Void, Boolean> {
-        private Communicator communicator;
-        public String email;
-
-        @Override
-        protected Boolean doInBackground(String... params) { // params[0] = username; params[1] = password
-            boolean successful;
-            // Retrofit HTTP call to login
-
-            // for debug worker thread
-            if(android.os.Debug.isDebuggerConnected())
-                android.os.Debug.waitForDebugger();
-
-            try {
-                communicator = new Communicator();
-                communicator.queryPost();
-
-                successful = communicator.successful;
-                email = communicator.email;
-
-                Log.d(TAG, "Query email: " + email);
-                Log.d(TAG, "Query isSuccessful: " + communicator.successful);
-                Log.d(TAG, "QUERYTASK_SUCCESSFUL: " + successful);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
-
-                return false;
-            }
-
-            Log.d(TAG, "successful2: " + successful);
-            return successful;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d(TAG, "inside onPostExecute");
-
-            if (successful) {
-                Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
-
-                Toast.makeText(getApplicationContext(), "Email: " + email,
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Query was not Successful!",
                         Toast.LENGTH_SHORT).show();
             }
 

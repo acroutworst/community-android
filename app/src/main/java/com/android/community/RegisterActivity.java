@@ -151,8 +151,6 @@ public class RegisterActivity extends AppCompatActivity implements
         mNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(RegisterActivity.this, RegProfilePhotoActivity.class);
-//                RegisterActivity.this.startActivity(i);
                 attemptRegister();
             }
         });
