@@ -2,9 +2,13 @@ package com.android.community.authentication;
 
 import android.util.Log;
 
+import com.android.community.AccountService;
+import com.android.community.deserializer.ProfileDeserializer;
+import com.android.community.deserializer.UserDeserializer;
 import com.android.community.models.AccountRegistration;
 import com.android.community.deserializer.AccountDeserializer;
 import com.android.community.models.Account;
+import com.android.community.models.Profile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
@@ -146,6 +150,8 @@ public class Communicator {
 
             successful = response.isSuccessful();
             USER_TOKEN = "";
+            AccountService.Instance().mAuthToken = "";
+
             Log.d(TAG, "Response isSuccessful(): " + successful);
             Log.d(TAG, "USER_TOKEN: " + USER_TOKEN);
         } catch(IOException e) {
@@ -167,6 +173,11 @@ public class Communicator {
 
             successful = response.isSuccessful();
             USER_TOKEN = response.body().getToken();
+
+            AccountService.Instance().mAuthToken = USER_TOKEN;
+
+            Log.d(TAG, "AccountService: " + AccountService.Instance().mAuthToken);
+
             Log.d(TAG, "Response isSuccessful(): " + response.isSuccessful());
             Log.d(TAG, "Access Token: " + response.body().getToken());
             Log.d(TAG, "Refresh Token: " + response.body().getRefreshToken());
@@ -181,7 +192,7 @@ public class Communicator {
         Log.d(TAG, "GET_TOKEN_SUCCESSFUL_2: " + successful);
     }
 
-    public void queryPost() {
+    public void queryProfilePost() {
         successful = false;
 
         //Here a logging interceptor is created
@@ -192,33 +203,40 @@ public class Communicator {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
 
-        //The Retrofit builder will have the client attached, in order to get connection logs
+        Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Account.class, new UserDeserializer())
+            .create();
+
+        API_TOKEN = "Bearer " + USER_TOKEN;
+
         Retrofit retrofit = new Retrofit.Builder()
-                .client(httpClient.build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(SERVER_URL)
-                .build();
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(SERVER_URL)
+            .build();
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
 
-        Call<Account> call = null;
-        API_TOKEN = "Bearer " + USER_TOKEN;
-        call = service.apiPost(API_TOKEN, makeProfileQuery());
+        Call<Account> user_call = null;
+        user_call = service.apiAccountPost(API_TOKEN, makeUserQuery());
 
         try {
-            Response<Account> response = call.execute();
+            Response<Account> response = user_call.execute();
 
             successful = response.isSuccessful();
-            email = response.body().getEmail();
+
+            AccountService.Instance().mAccount.email = response.body().getEmail();
+            AccountService.Instance().mAccount.lastName = response.body().getLastName();
+            AccountService.Instance().mAccount.firstName = response.body().getFirstName();
+            AccountService.Instance().mAccount.id = response.body().getId();
+            AccountService.Instance().mAccount.username = response.body().getUsername();
+            AccountService.Instance().mAccount.isActive = response.body().getIsActive();
 
             Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
-            Log.d(TAG, "Response Token: " + response.body().getToken());
-            Log.d(TAG, "Response Message: " + response.message());
+            Log.d(TAG, "AccountService Email: " + AccountService.Instance().mAccount.email);
             Log.d(TAG, "Response Email: " + response.body().getEmail());
             Log.d(TAG, "Response FName: " + response.body().getFirstName());
             Log.d(TAG, "Response ID: " + response.body().getId());
-            Log.d(TAG, "Response Interests: " + response.body().getInterests());
             Log.d(TAG, "Response LName: " + response.body().getLastName());
-            Log.d(TAG, "Response Phone Number: " + response.body().getPhoneNumber());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -276,9 +294,11 @@ public class Communicator {
     }
 
     private String makeProfileQuery() {
-//      return "{\n  myProfile {\n    id\n    user {\n      email\n    }\n    interests\n    phoneNumber \n  }\n}";
-      return "{myProfile {id, user{email}, interests, phoneNumber }}";
-//      return "{\n  myProfile {\n    id\n    user {\n      email\n    user{\n firstname\n lastname\n}}\n    interests\n    phoneNumber \n  }\n}";
+      return "{myProfile {id, interests }}";
+    }
+
+    private String makeUserQuery() {
+        return "{myProfile { user {lastLogin, username, firstName, lastName, email, isActive, dateJoined }}}";
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {

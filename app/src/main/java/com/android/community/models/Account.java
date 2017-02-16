@@ -1,21 +1,23 @@
 package com.android.community.models;
 
+import java.util.Date;
+
 /**
  * Created by adamc on 1/26/17.
  */
 
 public class Account {
-    private String id = null;
-    private String firstName = null;
-    private String lastName = null;
-    private String username = null;
-    private String email = null;
-    private String token = null;
-    private String interests = null;
-    private String phoneNumber = null;
+    public String id = null;
+    public String firstName = null;
+    public String lastName = null;
+    public String username = null;
+    public String email = null;
+    public Date lastLogin = null;
+    public Boolean isActive = null;
+    public Date dateJoined = null;
 
-    public String getToken() {
-        return this.token;
+    public Date getLastLogin() {
+        return this.lastLogin;
     }
     public String getId() {
         return this.id;
@@ -29,11 +31,11 @@ public class Account {
     public String getEmail() {
         return this.email;
     }
-    public String getInterests() {
-        return this.interests;
+    public Boolean getIsActive() {
+        return this.isActive;
     }
-    public String getPhoneNumber() {
-        return this.phoneNumber;
+    public Date getDateJoined() {
+        return this.dateJoined;
     }
     public String getUsername() {
         return this.username;

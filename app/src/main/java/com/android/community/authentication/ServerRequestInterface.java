@@ -2,6 +2,7 @@ package com.android.community.authentication;
 
 import com.android.community.models.AccountRegistration;
 import com.android.community.models.Account;
+import com.android.community.models.Profile;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -61,11 +62,20 @@ public interface ServerRequestInterface {
     );
 
     //This method is used for "POST"
+    // TODO: Need to make this api post call generic
     @FormUrlEncoded
     @POST("/api/")
-    Call<Account> apiPost(
+    Call<Profile> apiPost(
             @Header("authorization") String token,
             @Field("query") String GraphQLQuery
+    );
+
+    //This method is used for "POST"
+    @FormUrlEncoded
+    @POST("/api/")
+    Call<Account> apiAccountPost(
+        @Header("authorization") String token,
+        @Field("query") String GraphQLQuery
     );
 
     //This method is used for "POST"
