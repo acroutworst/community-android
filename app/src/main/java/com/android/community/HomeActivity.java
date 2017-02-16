@@ -94,7 +94,7 @@ public class HomeActivity extends AppCompatActivity {
         item3.withIcon(GoogleMaterial.Icon.gmd_language);
         item4.withIcon(GoogleMaterial.Icon.gmd_power_settings_new);
 
-        final ProfileDrawerItem profileItem = new ProfileDrawerItem()
+        ProfileDrawerItem profileItem = new ProfileDrawerItem()
             .withName(AccountService.Instance().mAccount.firstName)
             .withEmail(AccountService.Instance().mAccount.email)
             .withIcon(getResources().getDrawable(R.drawable.profile2));
