@@ -108,7 +108,7 @@ public class GridAdapter extends EpoxyAdapter {
     int g = RANDOM.nextInt(256);
     int b = RANDOM.nextInt(256);
 
-    return Color.rgb(r, g, b);
+    return Color.HSVToColor(new float[] { r, 18f, 86f});
   }
 
 	private int randomTitle() {
