@@ -3,11 +3,13 @@ package com.android.community.authentication;
 import android.util.Log;
 
 import com.android.community.AccountService;
+import com.android.community.deserializer.MeetupDeserializer;
 import com.android.community.deserializer.ProfileDeserializer;
 import com.android.community.deserializer.UserDeserializer;
 import com.android.community.models.AccountRegistration;
 import com.android.community.deserializer.AccountDeserializer;
 import com.android.community.models.Account;
+import com.android.community.models.Meetup;
 import com.android.community.models.Profile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -243,6 +245,43 @@ public class Communicator {
         }
     }
 
+    public void queryMeetupPost() {
+        successful = false;
+
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Meetup.class, new MeetupDeserializer())
+            .create();
+
+        API_TOKEN = "Bearer " + USER_TOKEN;
+
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(SERVER_URL)
+            .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        Call<Meetup> call = null;
+        call = service.apiMeetupPost(API_TOKEN, makeMeetupQuery() );
+
+        try {
+            Response<Meetup> response = call.execute();
+
+            successful = response.isSuccessful();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void registerUserPost(String username, String email, String firstName, String lastName, String password) {
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -299,6 +338,10 @@ public class Communicator {
 
     private String makeUserQuery() {
         return "{myProfile { user {lastLogin, username, firstName, lastName, email, isActive, dateJoined }}}";
+    }
+
+    private String makeMeetupQuery() {
+        return "{allMeetups { edges { node { id, createdDate, duration, name, description, maxAttendees, private, active, creator { username }, community { title, acronym }}}}}";
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {
