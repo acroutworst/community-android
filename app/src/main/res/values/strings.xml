@@ -60,7 +60,8 @@
     </string-array>
 
     <!-- Grid Content -->
-    <string name="epoxy">Meetups</string>
+    <string name="epoxy">Groups</string>
+    <string name="epoxy_meetups">Meetups</string>
     <string name="header_subtitle">Welcome to Community Groups!</string>
     <string name="button_add">Add</string>
     <string name="button_grid_hiking">HIKING</string>

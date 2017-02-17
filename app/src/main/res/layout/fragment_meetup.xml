@@ -3,14 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.android.community.fragment.MeetupFragment">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/recycler_view_meetup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Sit down for a cup of coffee with a new friend" />
+        android:layout_alignParentTop="true"
+        android:paddingBottom="16dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_meetup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white"/>
 
 </FrameLayout>
