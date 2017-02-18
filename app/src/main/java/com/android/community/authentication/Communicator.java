@@ -9,6 +9,7 @@ import com.android.community.deserializer.UserDeserializer;
 import com.android.community.models.AccountRegistration;
 import com.android.community.deserializer.AccountDeserializer;
 import com.android.community.models.Account;
+import com.android.community.models.EventResponse;
 import com.android.community.models.Meetup;
 import com.android.community.models.Profile;
 import com.google.gson.Gson;

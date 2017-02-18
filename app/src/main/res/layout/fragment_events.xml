@@ -8,9 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.android.community.fragment.EventFragment">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/card_recycler_view_events"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Welcome to Events" />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
