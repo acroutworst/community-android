@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -95,8 +96,17 @@ public class EventFragment extends Fragment {
             @Override
             public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
                 EventResponse eventResponse = response.body();
-                data = new ArrayList<>(Arrays.asList(eventResponse.getEvent()));
-                adapter = new DataAdapter(data);
+                //data = new ArrayList<>(Arrays.asList(eventResponse.getEvent()));
+                ArrayList<Event> event = new ArrayList<>();
+
+                event.add(new Event("Batman vs Superman","Movie","ARC"));
+                event.add(new Event("Basketball","5v5","Basketball courts"));
+                event.add(new Event("Prom","HighSchool","Cruise"));
+                event.add(new Event("Pizza Party","PizzaTime","ARC"));
+                event.add(new Event("WorkoutChallenge","Workout","Gym"));
+                event.add(new Event("La La Land","Movie","ARC"));
+
+                adapter = new DataAdapter(event);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -105,7 +115,19 @@ public class EventFragment extends Fragment {
                 Log.d(TAG, t.getMessage());
                 Log.d(TAG, "onFailure in enqueue");
             }
+
         });
+        ArrayList<Event> event = new ArrayList<>();
+
+        event.add(new Event("Batman vs Superman","Movie","ARC"));
+        event.add(new Event("Basketball","5v5","Basketball courts"));
+        event.add(new Event("Prom","HighSchool","Cruise"));
+        event.add(new Event("Pizza Party","PizzaTime","ARC"));
+        event.add(new Event("WorkoutChallenge","Workout","Gym"));
+        event.add(new Event("La La Land","Movie","ARC"));
+
+        adapter = new DataAdapter(event);
+        recyclerView.setAdapter(adapter);
     }
 
     private String makeEventQuery() {
