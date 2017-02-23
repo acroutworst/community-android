@@ -94,8 +94,8 @@ public class EventFragment extends Fragment {
         call.enqueue(new Callback<EventResponse>() {
             @Override
             public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-                EventResponse eventResponse = response.body();
-                data = new ArrayList<>(Arrays.asList(eventResponse.getEvent()));
+//                EventResponse eventResponse = response.body();
+                data = new ArrayList<>(Arrays.asList(response.body().getEvent()));
                 adapter = new DataAdapter(data);
                 recyclerView.setAdapter(adapter);
             }
