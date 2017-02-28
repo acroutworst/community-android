@@ -2,6 +2,9 @@ package com.android.community.authentication;
 
 import com.android.community.models.AccountRegistration;
 import com.android.community.models.Account;
+import com.android.community.models.Event;
+import com.android.community.models.EventResponse;
+import com.android.community.models.Meetup;
 import com.android.community.models.Profile;
 
 import retrofit2.Call;
@@ -74,6 +77,22 @@ public interface ServerRequestInterface {
     @FormUrlEncoded
     @POST("/api/")
     Call<Account> apiAccountPost(
+        @Header("authorization") String token,
+        @Field("query") String GraphQLQuery
+    );
+
+    //This method is used for "POST"
+    @FormUrlEncoded
+    @POST("/api/")
+    Call<Meetup> apiMeetupPost(
+        @Header("authorization") String token,
+        @Field("query") String GraphQLQuery
+    );
+
+    //This method is used for "POST"
+    @FormUrlEncoded
+    @POST("/api/")
+    Call<EventResponse> apiEventPost(
         @Header("authorization") String token,
         @Field("query") String GraphQLQuery
     );
