@@ -98,18 +98,16 @@ public class EventFragment extends Fragment {
 //                EventResponse eventResponse = response.body();
 //                data = new ArrayList<>(Arrays.asList(response.body().getEvent()));
 //                adapter = new DataAdapter(data);
-//                EventResponse eventResponse = response.body();
-//                //data = new ArrayList<>(Arrays.asList(eventResponse.getEvent()));
-//                ArrayList<Event> event = new ArrayList<>();
-//
-//                event.add(new Event("Batman vs Superman","Movie","ARC"));
-//                event.add(new Event("Basketball","5v5","Basketball courts"));
-//                event.add(new Event("Prom","HighSchool","Cruise"));
-//                event.add(new Event("Pizza Party","PizzaTime","ARC"));
-//                event.add(new Event("WorkoutChallenge","Workout","Gym"));
-//                event.add(new Event("La La Land","Movie","ARC"));
+                ArrayList<Event> event = new ArrayList<>();
 
-//                adapter = new DataAdapter(data);
+                event.add(new Event("Batman vs Superman","Movie","ARC"));
+                event.add(new Event("Basketball","5v5","Basketball courts"));
+                event.add(new Event("Prom","HighSchool","Cruise"));
+                event.add(new Event("Pizza Party","PizzaTime","ARC"));
+                event.add(new Event("WorkoutChallenge","Workout","Gym"));
+                event.add(new Event("La La Land","Movie","ARC"));
+
+                adapter = new DataAdapter(event);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -120,17 +118,17 @@ public class EventFragment extends Fragment {
             }
 
         });
-        ArrayList<Event> event = new ArrayList<>();
-
-        event.add(new Event("Batman vs Superman","Movie","ARC"));
-        event.add(new Event("Basketball","5v5","Basketball courts"));
-        event.add(new Event("Prom","HighSchool","Cruise"));
-        event.add(new Event("Pizza Party","PizzaTime","ARC"));
-        event.add(new Event("WorkoutChallenge","Workout","Gym"));
-        event.add(new Event("La La Land","Movie","ARC"));
-
-        adapter = new DataAdapter(event);
-        recyclerView.setAdapter(adapter);
+//        ArrayList<Event> event = new ArrayList<>();
+//
+//        event.add(new Event("Batman vs Superman","Movie","ARC"));
+//        event.add(new Event("Basketball","5v5","Basketball courts"));
+//        event.add(new Event("Prom","HighSchool","Cruise"));
+//        event.add(new Event("Pizza Party","PizzaTime","ARC"));
+//        event.add(new Event("WorkoutChallenge","Workout","Gym"));
+//        event.add(new Event("La La Land","Movie","ARC"));
+//
+//        adapter = new DataAdapter(event);
+//        recyclerView.setAdapter(adapter);
     }
 
     private String makeEventQuery() {
