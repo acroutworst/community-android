@@ -8,4 +8,6 @@ public class EventResponse {
 	private Event[] event;
 
 	public Event[] getEvent() { return this.event; }
+
+
 }
