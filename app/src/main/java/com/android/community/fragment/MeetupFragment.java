@@ -3,6 +3,7 @@ package com.android.community.fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -37,12 +38,28 @@ public class MeetupFragment extends Fragment {
     private RecyclerView recyclerView;
     private ViewGroup view;
     private CardAdapter adapter;
+    private FloatingActionButton fab;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = (ViewGroup) inflater.inflate(R.layout.fragment_meetup, container, false);
+
+        initView();
+        setupClickListeners();
+        queryMeetupPost();
+
+        return view;
+    }
+
+    private void initView() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.meetup_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_meetup);
 
         adapter = new CardAdapter();
@@ -54,18 +71,24 @@ public class MeetupFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         recyclerView.getRecycledViewPool().setMaxRecycledViews(R.layout.model_meetup, 50);
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_meetup);
+    private void setupClickListeners() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                queryMeetupPost();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        fab = (FloatingActionButton) view.findViewById(R.id.fab_meetup);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 queryMeetupPost();
             }
         });
-
-        queryMeetupPost();
-
-        return view;
     }
 
     private void queryMeetupPost() {
