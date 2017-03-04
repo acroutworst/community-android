@@ -26,23 +26,35 @@ public class CardAdapter extends EpoxyAdapter {
 
 		headerModel = new HeaderModel_()
 				.title(R.string.epoxy_meetups)
-				.caption(R.string.header_subtitle);
+				.caption(R.string.meetup_header_subtitle);
 
 		addModels(
 				headerModel
 		);
 	}
 
+	private void updateVisibility() {
+		if(headerModel.isShown()) {
+			headerModel.hide();
+		}
+	}
+
 	public final void onAddClicked() {
-		insertModelAfter(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()), headerModel);
+//		insertModelAfter(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()), headerModel);
+		updateVisibility();
+		addModel(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()));
 	}
 
 	public void addMeetup(Meetup meetup) {
-		insertModelAfter(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()), headerModel);
+//		insertModelAfter(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()), headerModel);
+		updateVisibility();
+		addModel(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()));
 	}
 
 	public void removeMeetup() {
-		removeAllAfterModel(headerModel);
+//		removeAllAfterModel(headerModel);
+		removeAllModels();
+		headerModel.show();
 	}
 
 	private int randomColor() {

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.android.community.AccountService;
 import com.android.community.DataAdapter;
@@ -21,12 +22,14 @@ import com.android.community.deserializer.EventDeserializer;
 import com.android.community.models.AccountRegistration;
 import com.android.community.models.Event;
 import com.android.community.models.EventResponse;
+import com.android.community.models.HeaderModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +58,10 @@ public class EventFragment extends Fragment {
 		private SwipeRefreshLayout mSwipeRefreshLayout;
 		private FloatingActionButton fab;
 
-	private Boolean successful = false;
+		private TextView titleTextView;
+		private TextView captionTextView;
+
+		private Boolean successful = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,7 +89,14 @@ public class EventFragment extends Fragment {
 
 				fab = (FloatingActionButton) view.findViewById(R.id.fab_events);
 
-        queryEventPost();
+				titleTextView = (TextView) view.findViewById(R.id.events_title_text);
+				titleTextView.setText(R.string.epoxy_events);
+				titleTextView.setVisibility(View.GONE);
+				captionTextView = (TextView) view.findViewById(R.id.events_caption_text);
+				captionTextView.setText(R.string.event_header_subtitle);
+				captionTextView.setVisibility(View.GONE);
+
+				queryEventPost();
     }
 
 		private void setupClickListeners() {
@@ -142,6 +155,15 @@ public class EventFragment extends Fragment {
 											Gson gson = new Gson();
 											try {
 												JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allEvents").getJSONArray("edges");
+
+												if(jsonEvents.length() == 0) {
+													titleTextView.setVisibility(View.VISIBLE);
+													captionTextView.setVisibility(View.VISIBLE);
+												} else {
+													titleTextView.setVisibility(View.GONE);
+													captionTextView.setVisibility(View.GONE);
+												}
+
 												for (int i = 0; i < jsonEvents.length(); ++i) {
 													JSONObject event = jsonEvents.getJSONObject(i).getJSONObject("node");
 													adapter.addEvent(gson.fromJson(event.toString(), Event.class));

@@ -65,6 +65,12 @@ public class GridAdapter extends EpoxyAdapter {
     int colorCount = getAllModelsAfter(changeColorsButton).size();
   }
 
+	private void updateVisibility() {
+		if(headerModel.isShown()) {
+			headerModel.hide();
+		}
+	}
+
   private final OnClickListener onAddClicked = new OnClickListener() {
     @Override
     public void onClick(View v) {
@@ -74,16 +80,18 @@ public class GridAdapter extends EpoxyAdapter {
   };
 
   public final void onAddClicked() {
-      insertModelAfter(new GroupModel_().text("").image(randomPicture()), headerModel);
+      addModel(new GroupModel_().text("").image(randomPicture()));
       updateButtonVisibility();
+			updateVisibility();
   }
 
 	public void addGroup(Group group) {
-			insertModelAfter(new GroupModel_().text(group.getTitle()).image(randomPicture()), headerModel);
+			updateVisibility();
+			addModel(new GroupModel_().text(group.getTitle()).image(randomPicture()));
 	}
 
 	public void removeGroup() {
-			removeAllAfterModel(headerModel);
+			removeAllModels();
 	}
 
   private final OnClickListener onClearClicked = new OnClickListener() {
