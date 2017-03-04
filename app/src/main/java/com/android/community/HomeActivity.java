@@ -1,10 +1,12 @@
 package com.android.community;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -80,8 +82,6 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         final PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.action_About);
         final PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.action_Profile);
         final PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.action_Notif);
@@ -132,11 +132,27 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         if(drawerItem == item4) {
-                            Toast.makeText(getApplicationContext(), "Signout",
-                                        Toast.LENGTH_SHORT).show();
-                            new SignoutTask().execute();
-                        }
 
+                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                            builder.setTitle("Signout");
+
+                            builder.setPositiveButton("YES",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new SignoutTask().execute();
+                                    }
+                            });
+
+                            builder.setNegativeButton("NO",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.d(TAG, "NO Alert");
+                                    }
+                            });
+
+                            builder.show();
+                        }
+                        
                         return true;
                     }
                 })
@@ -153,7 +169,7 @@ public class HomeActivity extends AppCompatActivity {
                 .withDrawerGravity(Gravity.END)
                 .append(drawer);
 
-        drawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Drawer Footer"));
+        drawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Community"));
 
         searchView = (MaterialSearchView) findViewById(R.id.search);
         searchView.setVoiceSearch(true);
