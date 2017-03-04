@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.android.community.AccountService;
 import com.android.community.DataAdapter;
@@ -27,6 +28,7 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -46,8 +48,10 @@ public class EventFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<Event> data;
     private DataAdapter adapter;
+		private ListView listView;
+		ArrayList<HashMap<String, String>> eventList;
 
-		private SwipeRefreshLayout mSwipeRefreshLayout;
+	//		private SwipeRefreshLayout mSwipeRefreshLayout;
 		private FloatingActionButton fab;
 
 	private Boolean successful = false;
@@ -57,22 +61,31 @@ public class EventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = (ViewGroup) inflater.inflate(R.layout.fragment_events, container, false);
-        initViews();
-				setupClickListeners();
 
-        return view;
+				eventList = new ArrayList<>();
+				listView = (ListView) view.findViewById(R.id.list_events);
+				fab = (FloatingActionButton) view.findViewById(R.id.fab_events);
+				fab.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					queryEventPost();
+				}
+			});
+				queryEventPost();
+
+				return view;
     }
 
     private void initViews() {
-				mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
-				mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-						android.R.color.holo_green_light,
-						android.R.color.holo_orange_light,
-						android.R.color.holo_red_light);
-				recyclerView = (RecyclerView) view.findViewById(R.id.card_recycler_view_events);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setLayoutManager(layoutManager);
+//				mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
+//				mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+//						android.R.color.holo_green_light,
+//						android.R.color.holo_orange_light,
+//						android.R.color.holo_red_light);
+//				recyclerView = (RecyclerView) view.findViewById(R.id.card_recycler_view_events);
+//        recyclerView.setHasFixedSize(true);
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+//        recyclerView.setLayoutManager(layoutManager);
 
 				fab = (FloatingActionButton) view.findViewById(R.id.fab_events);
 
@@ -80,13 +93,13 @@ public class EventFragment extends Fragment {
     }
 
 		private void setupClickListeners() {
-				mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-					@Override
-					public void onRefresh() {
-						queryEventPost();
-						mSwipeRefreshLayout.setRefreshing(false);
-					}
-				});
+//				mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//					@Override
+//					public void onRefresh() {
+//						queryEventPost();
+//						mSwipeRefreshLayout.setRefreshing(false);
+//					}
+//				});
 
 			fab.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -123,42 +136,28 @@ public class EventFragment extends Fragment {
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
         Call<EventResponse> call = service.apiEventPost(API_TOKEN, makeEventQuery());
 
-//				try {
-//					call.execute();
-//					ArrayList<Event> event = new ArrayList<>();
-//
-//					event.add(new Event("Batman vs Superman","Movie","ARC"));
-//					event.add(new Event("Basketball","5v5","Basketball courts"));
-//					event.add(new Event("Prom","HighSchool","Cruise"));
-//					event.add(new Event("Pizza Party","PizzaTime","ARC"));
-//					event.add(new Event("WorkoutChallenge","Workout","Gym"));
-//					event.add(new Event("La La Land","Movie","ARC"));
-//
-//					adapter = new DataAdapter(event);
-//					recyclerView.setAdapter(adapter);
-//					Log.d(TAG, "EventFragment Execute SUCCESSFUL");
-//				}	catch(Exception e) {
-//					e.getMessage();
-//					Log.d(TAG, "EventFragment Execute ERROR");
-//				}
-
         call.enqueue(new Callback<EventResponse>() {
             @Override
             public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+
+							if(response.body() != null) {
+
+							}
+
 //                EventResponse eventResponse = response.body();
 //                data = new ArrayList<>(Arrays.asList(response.body().getEvent()));
 //                adapter = new DataAdapter(data);
-                ArrayList<Event> event = new ArrayList<>();
-
-                event.add(new Event("Batman vs Superman","Movie","ARC"));
-                event.add(new Event("Basketball","5v5","Basketball courts"));
-                event.add(new Event("Prom","HighSchool","Cruise"));
-                event.add(new Event("Pizza Party","PizzaTime","ARC"));
-                event.add(new Event("WorkoutChallenge","Workout","Gym"));
-                event.add(new Event("La La Land","Movie","ARC"));
-
-                adapter = new DataAdapter(event);
-                recyclerView.setAdapter(adapter);
+//                ArrayList<Event> event = new ArrayList<>();
+//
+//                event.add(new Event("Batman vs Superman","Movie","ARC"));
+//                event.add(new Event("Basketball","5v5","Basketball courts"));
+//                event.add(new Event("Prom","HighSchool","Cruise"));
+//                event.add(new Event("Pizza Party","PizzaTime","ARC"));
+//                event.add(new Event("WorkoutChallenge","Workout","Gym"));
+//                event.add(new Event("La La Land","Movie","ARC"));
+//
+//                adapter = new DataAdapter(event);
+//                recyclerView.setAdapter(adapter);
             }
 
             @Override
