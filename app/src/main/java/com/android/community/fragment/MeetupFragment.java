@@ -5,14 +5,34 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.community.AccountService;
 import com.android.community.CardAdapter;
 import com.android.community.R;
+import com.android.community.authentication.ServerRequestInterface;
+import com.android.community.models.Group;
+import com.android.community.models.Meetup;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MeetupFragment extends Fragment {
+    final private String TAG = "MeetupFragment";
 
     private RecyclerView recyclerView;
     private ViewGroup view;
@@ -39,11 +59,81 @@ public class MeetupFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapter.onAddClicked();
+                queryMeetupPost();
             }
         });
 
+        queryMeetupPost();
 
         return view;
+    }
+
+    private void queryMeetupPost() {
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
+
+        Log.d(TAG, "MeetupFragment AuthToken: " + API_TOKEN);
+
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://community-ci.herokuapp.com")
+            .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+        Call<ResponseBody> call = service.apiEventPost(API_TOKEN, makeMeetupQuery());
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                try {
+                    final String body = response.body().string();
+
+                    adapter.removeMeetup();
+
+                    if(!body.isEmpty()) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Gson gson = new Gson();
+                                try {
+                                    JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allMeetups").getJSONArray("edges");
+                                    for (int i = 0; i < jsonEvents.length(); ++i) {
+                                        JSONObject meetup = jsonEvents.getJSONObject(i).getJSONObject("node");
+                                        adapter.addMeetup(gson.fromJson(meetup.toString(), Meetup.class));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "Response Body is null");
+                        Log.d(TAG, "Response Body: " + body);
+                    }
+
+                } catch(Exception e) {
+                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, "Meetups Body ERROR");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, t.getMessage());
+                Log.d(TAG, "onFailure in enqueue");
+            }
+        });
+    }
+
+    private String makeMeetupQuery() {
+        return "{allMeetups {\nedges{\nnode { name, description }}}}";
     }
 }

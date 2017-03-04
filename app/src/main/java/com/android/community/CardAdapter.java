@@ -6,6 +6,7 @@ import com.airbnb.epoxy.EpoxyAdapter;
 import com.android.community.models.GroupModel_;
 import com.android.community.models.HeaderModel;
 import com.android.community.models.HeaderModel_;
+import com.android.community.models.Meetup;
 import com.android.community.models.MeetupModel_;
 
 import java.util.Random;
@@ -33,7 +34,15 @@ public class CardAdapter extends EpoxyAdapter {
 	}
 
 	public final void onAddClicked() {
-		insertModelAfter(new MeetupModel_().title(R.string.epoxy_meetups).subtitle(R.string.header_subtitle).color(randomColor()), headerModel);
+		insertModelAfter(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()), headerModel);
+	}
+
+	public void addMeetup(Meetup meetup) {
+		insertModelAfter(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()), headerModel);
+	}
+
+	public void removeMeetup() {
+		removeAllAfterModel(headerModel);
 	}
 
 	private int randomColor() {

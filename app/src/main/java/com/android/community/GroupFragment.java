@@ -117,7 +117,7 @@ public class GroupFragment extends Fragment {
 
         String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-        Log.d(TAG, "EventFragment AuthToken: " + API_TOKEN);
+        Log.d(TAG, "MeetupFragment AuthToken: " + API_TOKEN);
 
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())

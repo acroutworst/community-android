@@ -21,8 +21,8 @@ import butterknife.BindView;
 @EpoxyModelClass(layout = R.layout.model_meetup)
 public abstract class MeetupModel extends EpoxyModelWithHolder<MeetupHolder> {
 	@EpoxyAttribute @ColorInt int color;
-	@EpoxyAttribute @StringRes int title;
-	@EpoxyAttribute @StringRes int subtitle;
+	@EpoxyAttribute String title;
+	@EpoxyAttribute String subtitle;
 	@EpoxyAttribute @DrawableRes int image;
 
 	@Override
