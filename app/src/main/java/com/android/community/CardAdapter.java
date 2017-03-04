@@ -46,10 +46,25 @@ public class CardAdapter extends EpoxyAdapter {
 	}
 
 	private int randomColor() {
-		int r = RANDOM.nextInt(360);
-		int g = RANDOM.nextInt(256);
-		int b = RANDOM.nextInt(256);
+		int r = RANDOM.nextInt(8);
 
-		return Color.HSVToColor(new float[] { r, 18f, 86f});
+		switch (r) {
+			case 0:
+				return Color.parseColor("#B4B7DC");
+			case 1:
+				return Color.parseColor("#DCB4C3");
+			case 2:
+				return Color.parseColor("#B4D3DC");
+			case 3:
+				return Color.parseColor("#B4DCCD");
+			case 4:
+				return Color.parseColor("#D3DCB4");
+			case 5:
+				return Color.parseColor("#DCC5B4");
+			case 6:
+				return Color.parseColor("#DCB4B4");
+			default:
+				return Color.parseColor("#D0B4DC");
+		}
 	}
 }
