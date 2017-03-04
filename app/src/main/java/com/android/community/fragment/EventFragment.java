@@ -118,10 +118,6 @@ public class EventFragment extends Fragment {
 
         Log.d(TAG, "EventFragment AuthToken: " + API_TOKEN);
 
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(EventResponse.class, new EventDeserializer())
-            .create();
-
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())
             .addConverterFactory(GsonConverterFactory.create())
@@ -159,22 +155,9 @@ public class EventFragment extends Fragment {
 								}
 
 							} catch(Exception e) {
-
+									Log.d(TAG, e.getMessage());
+									Log.d(TAG, "Events Body ERROR");
 							}
-//                EventResponse eventResponse = response.body();
-//                data = new ArrayList<>(Arrays.asList(response.body().getEvent()));
-//                adapter = new DataAdapter(data);
-//                ArrayList<Event> event = new ArrayList<>();
-//
-//                event.add(new Event("Batman vs Superman","Movie","ARC"));
-//                event.add(new Event("Basketball","5v5","Basketball courts"));
-//                event.add(new Event("Prom","HighSchool","Cruise"));
-//                event.add(new Event("Pizza Party","PizzaTime","ARC"));
-//                event.add(new Event("WorkoutChallenge","Workout","Gym"));
-//                event.add(new Event("La La Land","Movie","ARC"));
-//
-//                adapter = new DataAdapter(event);
-//                recyclerView.setAdapter(adapter);
             }
 
             @Override
@@ -182,7 +165,6 @@ public class EventFragment extends Fragment {
                 Log.d(TAG, t.getMessage());
                 Log.d(TAG, "onFailure in enqueue");
             }
-
         });
     }
 
