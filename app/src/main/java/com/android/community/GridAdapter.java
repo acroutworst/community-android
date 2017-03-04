@@ -9,6 +9,7 @@ import com.airbnb.epoxy.EpoxyAdapter;
 import com.airbnb.epoxy.EpoxyModel;
 import com.android.community.models.ButtonModel;
 import com.android.community.models.ButtonModel_;
+import com.android.community.models.Group;
 import com.android.community.models.GroupModel_;
 import com.android.community.models.HeaderModel;
 import com.android.community.models.HeaderModel_;
@@ -67,15 +68,23 @@ public class GridAdapter extends EpoxyAdapter {
   private final OnClickListener onAddClicked = new OnClickListener() {
     @Override
     public void onClick(View v) {
-      insertModelAfter(new GroupModel_().text(randomTitle()).image(randomPicture()), changeColorsButton);
+      insertModelAfter(new GroupModel_().text("").image(randomPicture()), changeColorsButton);
       updateButtonVisibility();
     }
   };
 
   public final void onAddClicked() {
-      insertModelAfter(new GroupModel_().text(randomTitle()).image(randomPicture()), headerModel);
+      insertModelAfter(new GroupModel_().text("").image(randomPicture()), headerModel);
       updateButtonVisibility();
   }
+
+	public void addGroup(Group group) {
+			insertModelAfter(new GroupModel_().text(group.getTitle()).image(randomPicture()), headerModel);
+	}
+
+	public void removeGroup() {
+			removeAllAfterModel(headerModel);
+	}
 
   private final OnClickListener onClearClicked = new OnClickListener() {
     @Override

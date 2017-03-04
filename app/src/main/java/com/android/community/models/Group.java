@@ -13,6 +13,8 @@ public class Group {
 	// Change this to support Picasso when we query for group pics
 	private int image = -1;
 
+	public Group() { }
+
 	public String getTitle() { return this.title; }
 	public String getDescription() { return this.description; }
 	public int getImage() { return this.image; }

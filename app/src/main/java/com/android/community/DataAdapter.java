@@ -34,7 +34,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 	public void onBindViewHolder(ViewHolder viewHolder, int i) {
 		Event event = eventList.get(i);
 
-
 		viewHolder.event_name.setText(event.getTitle());
 		viewHolder.event_desciption.setText(event.getDescription());
 		viewHolder.event_location.setText(event.getLocation());
@@ -48,6 +47,12 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 	public void addEvent(Event post) {
 		this.eventList.add(post);
 		this.notifyDataSetChanged();
+	}
+
+	public void removeEvent() {
+		int size = this.eventList.size();
+		this.eventList.clear();
+		notifyItemRangeRemoved(0, size);
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {

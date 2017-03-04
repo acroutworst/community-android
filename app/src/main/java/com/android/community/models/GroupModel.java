@@ -29,7 +29,7 @@ import butterknife.BindView;
 @EpoxyModelClass(layout = R.layout.model_group)
 public abstract class GroupModel extends EpoxyModelWithHolder<GroupHolder> {
 	@EpoxyAttribute @ColorInt int color;
-	@EpoxyAttribute @StringRes int text;
+	@EpoxyAttribute String text;
 	@EpoxyAttribute @DrawableRes int image;
 
 	@Override

@@ -7,12 +7,32 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.community.authentication.ServerRequestInterface;
+import com.android.community.models.Event;
+import com.android.community.models.Group;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class GroupFragment extends Fragment {
+    final private String TAG = "GroupFragment";
 
     private RecyclerView recyclerView;
     private ViewGroup view;
@@ -56,7 +76,78 @@ public class GroupFragment extends Fragment {
             }
         });
 
+				queryGroupPost();
+
         return view;
+    }
+
+    private void queryGroupPost() {
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
+
+        Log.d(TAG, "EventFragment AuthToken: " + API_TOKEN);
+
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://community-ci.herokuapp.com")
+            .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+        Call<ResponseBody> call = service.apiEventPost(API_TOKEN, makeGroupQuery());
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                try {
+                    final String body = response.body().string();
+
+                    adapter.removeGroup();
+
+                    if(!body.isEmpty()) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Gson gson = new Gson();
+                                try {
+                                    JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allGroups").getJSONArray("edges");
+                                    for (int i = 0; i < jsonEvents.length(); ++i) {
+                                        JSONObject group = jsonEvents.getJSONObject(i).getJSONObject("node");
+                                        adapter.addGroup(gson.fromJson(group.toString(), Group.class));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "Response Body is null");
+                        Log.d(TAG, "Response Body: " + body);
+                    }
+
+                } catch(Exception e) {
+                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, "Events Body ERROR");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, t.getMessage());
+                Log.d(TAG, "onFailure in enqueue");
+            }
+        });
+    }
+
+    private String makeGroupQuery() {
+        return "{allGroups {\nedges{\nnode { title }}}}";
     }
 
     private int getSpanCount() {

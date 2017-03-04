@@ -133,6 +133,8 @@ public class EventFragment extends Fragment {
 							try {
 								final String body = response.body().string();
 
+								adapter.removeEvent();
+
 								if(!body.isEmpty()) {
 									getActivity().runOnUiThread(new Runnable() {
 										@Override
