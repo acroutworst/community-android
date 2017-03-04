@@ -7,6 +7,7 @@ import com.android.community.models.EventResponse;
 import com.android.community.models.Meetup;
 import com.android.community.models.Profile;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -92,7 +93,7 @@ public interface ServerRequestInterface {
     //This method is used for "POST"
     @FormUrlEncoded
     @POST("/api/")
-    Call<EventResponse> apiEventPost(
+    Call<ResponseBody> apiEventPost(
         @Header("authorization") String token,
         @Field("query") String GraphQLQuery
     );

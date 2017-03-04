@@ -16,7 +16,9 @@ import java.util.ArrayList;
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
-	private ArrayList<Event> eventList;
+	private ArrayList<Event> eventList = new ArrayList<>();
+
+	public DataAdapter() {}
 
 	public DataAdapter(ArrayList<Event> eventList) {
 		this.eventList = eventList;
@@ -30,15 +32,22 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
 	@Override
 	public void onBindViewHolder(ViewHolder viewHolder, int i) {
+		Event event = eventList.get(i);
 
-		viewHolder.event_name.setText(eventList.get(i).getTitle());
-		viewHolder.event_desciption.setText(eventList.get(i).getDescription());
-		viewHolder.event_location.setText(eventList.get(i).getLocation());
+
+		viewHolder.event_name.setText(event.getTitle());
+		viewHolder.event_desciption.setText(event.getDescription());
+		viewHolder.event_location.setText(event.getLocation());
 	}
 
 	@Override
 	public int getItemCount() {
 		return eventList.size();
+	}
+
+	public void addEvent(Event post) {
+		this.eventList.add(post);
+		this.notifyDataSetChanged();
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {

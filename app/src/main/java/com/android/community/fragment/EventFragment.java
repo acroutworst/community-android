@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.android.community.AccountService;
 import com.android.community.DataAdapter;
@@ -25,13 +24,17 @@ import com.android.community.models.EventResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,10 +51,8 @@ public class EventFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<Event> data;
     private DataAdapter adapter;
-		private ListView listView;
-		ArrayList<HashMap<String, String>> eventList;
 
-	//		private SwipeRefreshLayout mSwipeRefreshLayout;
+		private SwipeRefreshLayout mSwipeRefreshLayout;
 		private FloatingActionButton fab;
 
 	private Boolean successful = false;
@@ -61,45 +62,38 @@ public class EventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = (ViewGroup) inflater.inflate(R.layout.fragment_events, container, false);
+        initViews();
+				setupClickListeners();
 
-				eventList = new ArrayList<>();
-				listView = (ListView) view.findViewById(R.id.list_events);
-				fab = (FloatingActionButton) view.findViewById(R.id.fab_events);
-				fab.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					queryEventPost();
-				}
-			});
-				queryEventPost();
-
-				return view;
+        return view;
     }
 
     private void initViews() {
-//				mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
-//				mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-//						android.R.color.holo_green_light,
-//						android.R.color.holo_orange_light,
-//						android.R.color.holo_red_light);
-//				recyclerView = (RecyclerView) view.findViewById(R.id.card_recycler_view_events);
-//        recyclerView.setHasFixedSize(true);
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
-//        recyclerView.setLayoutManager(layoutManager);
+				mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
+				mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+						android.R.color.holo_green_light,
+						android.R.color.holo_orange_light,
+						android.R.color.holo_red_light);
+				recyclerView = (RecyclerView) view.findViewById(R.id.card_recycler_view_events);
+        recyclerView.setHasFixedSize(true);
+				adapter = new DataAdapter();
+				recyclerView.setAdapter(adapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
 				fab = (FloatingActionButton) view.findViewById(R.id.fab_events);
 
-//        queryEventPost();
+        queryEventPost();
     }
 
 		private void setupClickListeners() {
-//				mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//					@Override
-//					public void onRefresh() {
-//						queryEventPost();
-//						mSwipeRefreshLayout.setRefreshing(false);
-//					}
-//				});
+				mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+					@Override
+					public void onRefresh() {
+						queryEventPost();
+						mSwipeRefreshLayout.setRefreshing(false);
+					}
+				});
 
 			fab.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -130,20 +124,43 @@ public class EventFragment extends Fragment {
 
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://community-ci.herokuapp.com")
             .build();
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
-        Call<EventResponse> call = service.apiEventPost(API_TOKEN, makeEventQuery());
+        Call<ResponseBody> call = service.apiEventPost(API_TOKEN, makeEventQuery());
 
-        call.enqueue(new Callback<EventResponse>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-							if(response.body() != null) {
+							try {
+								final String body = response.body().string();
+
+								if(!body.isEmpty()) {
+									getActivity().runOnUiThread(new Runnable() {
+										@Override
+										public void run() {
+											Gson gson = new Gson();
+											try {
+												JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allEvents").getJSONArray("edges");
+												for (int i = 0; i < jsonEvents.length(); ++i) {
+													JSONObject event = jsonEvents.getJSONObject(i).getJSONObject("node");
+													adapter.addEvent(gson.fromJson(event.toString(), Event.class));
+												}
+											} catch (JSONException e) {
+												e.printStackTrace();
+											}
+										}
+									});
+								} else {
+									Log.d(TAG, "Response Body is null");
+									Log.d(TAG, "Response Body: " + body);
+								}
+
+							} catch(Exception e) {
 
 							}
-
 //                EventResponse eventResponse = response.body();
 //                data = new ArrayList<>(Arrays.asList(response.body().getEvent()));
 //                adapter = new DataAdapter(data);
@@ -161,7 +178,7 @@ public class EventFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<EventResponse> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d(TAG, t.getMessage());
                 Log.d(TAG, "onFailure in enqueue");
             }
