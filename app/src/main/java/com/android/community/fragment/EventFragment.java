@@ -58,9 +58,6 @@ public class EventFragment extends Fragment {
 		private SwipeRefreshLayout mSwipeRefreshLayout;
 		private FloatingActionButton fab;
 
-		private TextView titleTextView;
-		private TextView captionTextView;
-
 		private Boolean successful = false;
 
     @Override
@@ -88,13 +85,6 @@ public class EventFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
 				fab = (FloatingActionButton) view.findViewById(R.id.fab_events);
-
-				titleTextView = (TextView) view.findViewById(R.id.events_title_text);
-				titleTextView.setText(R.string.epoxy_events);
-				titleTextView.setVisibility(View.GONE);
-				captionTextView = (TextView) view.findViewById(R.id.events_caption_text);
-				captionTextView.setText(R.string.event_header_subtitle);
-				captionTextView.setVisibility(View.GONE);
 
 				queryEventPost();
     }
@@ -155,15 +145,6 @@ public class EventFragment extends Fragment {
 											Gson gson = new Gson();
 											try {
 												JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allEvents").getJSONArray("edges");
-
-												if(jsonEvents.length() == 0) {
-													titleTextView.setVisibility(View.VISIBLE);
-													captionTextView.setVisibility(View.VISIBLE);
-												} else {
-													titleTextView.setVisibility(View.GONE);
-													captionTextView.setVisibility(View.GONE);
-												}
-
 												for (int i = 0; i < jsonEvents.length(); ++i) {
 													JSONObject event = jsonEvents.getJSONObject(i).getJSONObject("node");
 													adapter.addEvent(gson.fromJson(event.toString(), Event.class));

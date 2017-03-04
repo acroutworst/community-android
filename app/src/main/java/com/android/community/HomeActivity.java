@@ -87,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
         final PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.action_Notif);
         final PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.action_signout);
 
-        item3.withBadge("8").withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.colorPrimaryDark));
+//        item3.withBadge("").withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.colorPrimaryDark));
 
         item1.withIcon(GoogleMaterial.Icon.gmd_flare);
         item2.withIcon(GoogleMaterial.Icon.gmd_perm_identity);
@@ -131,8 +131,12 @@ public class HomeActivity extends AppCompatActivity {
                 ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if(drawerItem == item4) {
 
+                        if(drawerItem == item2) {
+                                
+                        }
+
+                        if(drawerItem == item4) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                             builder.setTitle("Signout");
 
@@ -152,7 +156,7 @@ public class HomeActivity extends AppCompatActivity {
 
                             builder.show();
                         }
-                        
+
                         return true;
                     }
                 })
