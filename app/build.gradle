@@ -34,6 +34,17 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.8.1@aar') {
         transitive = true
     }
+    // AppCompat Libs
+    compile 'com.android.support:appcompat-v7:24.3.0'
+    compile 'com.android.support:design:24.3.0'
+
+    // Load Images
+    compile 'com.squareup.picasso:picasso:2.4.0'
+
+    // GSON with Retrofit
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar' //Google Material Icons
     compile 'com.google.android.gms:play-services-auth:9.0.0'
     compile 'com.cocosw:bottomsheet:1.+@aar'
