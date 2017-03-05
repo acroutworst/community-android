@@ -160,6 +160,8 @@ public class HomeActivity extends AppCompatActivity {
         item2.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                new ProfileQueryTask().execute();
+
                 drawer.closeDrawer();
 
                 int[] startingLocation = new int[2];

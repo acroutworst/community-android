@@ -16,6 +16,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.community.utils.CircleTransformation;
 import com.android.community.views.RevealBackgroundView;
@@ -29,24 +30,19 @@ public class ProfileActivity extends AppCompatActivity implements RevealBackgrou
 	private static final int USER_OPTIONS_ANIMATION_DELAY = 300;
 	private static final Interpolator INTERPOLATOR = new DecelerateInterpolator();
 
-//	@BindView(R.id.vRevealBackground)
 	RevealBackgroundView vRevealBackground;
-//	@BindView(R.id.rvUserProfile)
 	RecyclerView rvUserProfile;
-
-//	@BindView(R.id.tlUserProfileTabs)
 	TabLayout tlUserProfileTabs;
-
-//	@BindView(R.id.ivUserProfilePhoto)
 	ImageView ivUserProfilePhoto;
-//	@BindView(R.id.vUserDetails)
 	View vUserDetails;
-//	@BindView(R.id.btnFollow)
 	Button btnFollow;
-//	@BindView(R.id.vUserStats)
 	View vUserStats;
-//	@BindView(R.id.vUserProfileRoot)
 	View vUserProfileRoot;
+	Toolbar toolbar;
+
+	TextView profileName;
+	TextView profileUsername;
+	TextView profileEmail;
 
 	private int avatarSize;
 	private String profilePhoto;
@@ -63,6 +59,25 @@ public class ProfileActivity extends AppCompatActivity implements RevealBackgrou
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
 
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+		toolbar.setNavigationIcon(R.drawable.ic_back);
+		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent homeIntent = new Intent(ProfileActivity.this, HomeActivity.class);
+				startActivity(homeIntent);
+				finish();
+			}
+		});
+
+		profileName = (TextView) findViewById(R.id.profile_name);
+		profileName.setText(String.format("%s %s", AccountService.Instance().mAccount.firstName, AccountService.Instance().mAccount.lastName));
+		profileUsername = (TextView) findViewById(R.id.profile_username);
+		profileUsername.setText(AccountService.Instance().mAccount.username);
+		profileEmail = (TextView) findViewById(R.id.profile_email);
+		profileEmail.setText(AccountService.Instance().mAccount.email);
+
 		vRevealBackground = (RevealBackgroundView) findViewById(R.id.vRevealBackground);
 		tlUserProfileTabs = (TabLayout) findViewById(R.id.tlUserProfileTabs);
 		ivUserProfilePhoto = (ImageView) findViewById(R.id.ivUserProfilePhoto);
@@ -74,15 +89,14 @@ public class ProfileActivity extends AppCompatActivity implements RevealBackgrou
 
 		this.avatarSize = getResources().getDimensionPixelSize(R.dimen.user_profile_avatar_size);
 		this.profilePhoto = getString(R.string.user_profile_photo);
-		ivUserProfilePhoto.setImageResource(R.drawable.img_circle_placeholder);
 
-//		Picasso.with(this)
-//				.load(profilePhoto)
-//				.placeholder(R.drawable.img_circle_placeholder)
-//				.resize(avatarSize, avatarSize)
-//				.centerCrop()
-//				.transform(new CircleTransformation())
-//				.into(ivUserProfilePhoto);
+		Picasso.with(this)
+				.load(profilePhoto)
+				.placeholder(R.drawable.img_circle_placeholder)
+				.resize(avatarSize, avatarSize)
+				.centerCrop()
+				.transform(new CircleTransformation())
+				.into(ivUserProfilePhoto);
 
 		setupTabs();
 		setupUserProfileGrid();

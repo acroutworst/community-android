@@ -73,6 +73,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/profile_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="John Smith"
@@ -80,13 +81,15 @@
                             android:textSize="24sp" />
 
                         <TextView
+                            android:id="@+id/profile_username"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="\@jsmith"
-                            android:textColor="#bbbbbb"
+                            android:textColor="#5be5ad"
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/profile_email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Mobile development passionate."
@@ -100,7 +103,7 @@
                             android:layout_marginRight="24dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/btn_following"
-                            android:text="following"
+                            android:text="update"
                             android:textColor="#ffffff"
                             android:textSize="12sp" />
 
@@ -213,7 +216,7 @@
                 android:id="@+id/tlUserProfileTabs"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="?attr/colorAccent"
+                android:background="@color/colorWhite"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="#5be5ad"
                 app:tabIndicatorHeight="4dp"
@@ -223,19 +226,19 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btnCreate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="@dimen/btn_fab_margins"
-            android:layout_marginRight="@dimen/btn_fab_margins"
-            android:src="@drawable/ic_instagram_white"
-            app:borderWidth="0dp"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp" />
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/btnCreate"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_gravity="bottom|right"-->
+            <!--android:layout_marginBottom="@dimen/btn_fab_margins"-->
+            <!--android:layout_marginRight="@dimen/btn_fab_margins"-->
+            <!--android:src="@drawable/ic_instagram_white"-->
+            <!--app:borderWidth="0dp"-->
+            <!--app:elevation="6dp"-->
+            <!--app:pressedTranslationZ="12dp" />-->
 
     </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>
