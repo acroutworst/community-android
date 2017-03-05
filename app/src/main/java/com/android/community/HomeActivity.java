@@ -119,7 +119,7 @@ public class HomeActivity extends AppCompatActivity {
                 .build();
 
 
-        Drawer drawer = new DrawerBuilder()
+        final Drawer drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult)
@@ -131,11 +131,6 @@ public class HomeActivity extends AppCompatActivity {
                 ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-
-                        if(drawerItem == item2) {
-                                
-                        }
-
                         if(drawerItem == item4) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                             builder.setTitle("Signout");
@@ -161,6 +156,21 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 })
                 .build();
+
+        item2.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                drawer.closeDrawer();
+
+                int[] startingLocation = new int[2];
+                view.getLocationOnScreen(startingLocation);
+                startingLocation[0] += view.getWidth() / 2;
+                ProfileActivity.startUserProfileFromLocation(startingLocation, HomeActivity.this);
+                overridePendingTransition(0, 0);
+
+                return true;
+            }
+        });
 
         new DrawerBuilder()
                 .withActivity(this)
