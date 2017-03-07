@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.community.AccountService;
 import com.android.community.DataAdapter;
 import com.android.community.deserializer.EventDeserializer;
+import com.android.community.deserializer.GroupDeserializer;
 import com.android.community.deserializer.MeetupDeserializer;
 import com.android.community.deserializer.ProfileDeserializer;
 import com.android.community.deserializer.UserDeserializer;
@@ -293,6 +294,44 @@ public class Communicator {
         }
     }
 
+    public void addGroupPost(String title) {
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        Gson gson = new GsonBuilder()
+            .registerTypeAdapter(AccountRegistration.class, new GroupDeserializer())
+            .create();
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(SERVER_URL)
+            .build();
+
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        Call<ResponseBody> call = null;
+        API_TOKEN = "Bearer " + USER_TOKEN;
+        call = service.apiEventPost(API_TOKEN, registerGroup(title));
+
+        try {
+            Response<ResponseBody> response = call.execute();
+
+            successful = response.isSuccessful();
+
+            Log.d(TAG, "Response Group: " + response.body().toString());
+            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String makeQuery(String user, String pass, String email) {
         return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"{2}\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",
                 user,
@@ -311,6 +350,10 @@ public class Communicator {
 
     private String makeMeetupQuery() {
         return "{allMeetups { edges { node { id, createdDate, duration, name, description, maxAttendees, private, active, creator { username }, community { title, acronym }}}}}";
+    }
+
+    private String registerGroup(String title) {
+        return String.format("mutation{\nregisterGroup(community:\"%s\", title:\"%s\", description:\"%s\"){ok, group{id, title, description}}}", "Q29tbXVuaXR5Tm9kZTox", title, "");
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {
