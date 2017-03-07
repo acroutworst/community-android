@@ -21,14 +21,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.community.authentication.Communicator;
 import com.android.community.authentication.ServerRequestInterface;
+import com.android.community.models.Community;
 import com.android.community.models.Event;
 import com.android.community.models.Group;
 import com.google.gson.Gson;
@@ -36,6 +40,9 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -63,6 +70,10 @@ public class GroupFragment extends Fragment {
 
 		private Dialog dialog;
 		private EditText groupName;
+		private EditText groupDescription;
+		private Spinner dropdown;
+		private ArrayList<String> c_options = new ArrayList<>();
+		private HashMap<String, String> comm_options = new HashMap<>();
 
 	@Nullable
     @Override
@@ -122,6 +133,7 @@ public class GroupFragment extends Fragment {
 			fab.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
+					queryCommIDPost();
 					showMyDialog(getContext());
 				}
 			});
@@ -166,7 +178,7 @@ public class GroupFragment extends Fragment {
                                     JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allGroups").getJSONArray("edges");
                                     for (int i = 0; i < jsonEvents.length(); ++i) {
                                         JSONObject group = jsonEvents.getJSONObject(i).getJSONObject("node");
-                                        adapter.addGroup(gson.fromJson(group.toString(), Group.class));
+																				adapter.addGroup(gson.fromJson(group.toString(), Group.class));
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -196,6 +208,77 @@ public class GroupFragment extends Fragment {
         return "{allGroups {\nedges{\nnode { title }}}}";
     }
 
+	private void queryCommIDPost() {
+		//Here a logging interceptor is created
+		HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+		logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+		//The logging interceptor will be added to the http client
+		OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+		httpClient.addInterceptor(logging);
+
+		String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
+
+		Log.d(TAG, "GroupFragment HashMap: " + API_TOKEN);
+
+		Retrofit retrofit = new Retrofit.Builder()
+				.client(httpClient.build())
+				.addConverterFactory(GsonConverterFactory.create())
+				.baseUrl("https://community-ci.herokuapp.com")
+				.build();
+		ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+		Call<ResponseBody> call = service.apiEventPost(API_TOKEN, makeCommunityIDQuery());
+
+		call.enqueue(new Callback<ResponseBody>() {
+			@Override
+			public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+				try {
+					final String body = response.body().string();
+
+					comm_options.clear();
+
+					if(!body.isEmpty()) {
+						getActivity().runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Gson gson = new Gson();
+								try {
+									JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("myCommunities").getJSONArray("edges");
+									for (int i = 0; i < jsonEvents.length(); ++i) {
+										JSONObject group = jsonEvents.getJSONObject(i).getJSONObject("node");
+										comm_options.put(gson.fromJson(group.toString(), Community.class).getId(), gson.fromJson(group.toString(), Community.class).getTitle());
+
+//										adapter.addGroup(gson.fromJson(group.toString(), Group.class));
+									}
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+					} else {
+						Log.d(TAG, "Response Body is null");
+						Log.d(TAG, "Response Body: " + body);
+					}
+
+				} catch(Exception e) {
+					Log.d(TAG, e.getMessage());
+					Log.d(TAG, "Events Body ERROR");
+				}
+			}
+
+			@Override
+			public void onFailure(Call<ResponseBody> call, Throwable t) {
+				Log.d(TAG, t.getMessage());
+				Log.d(TAG, "onFailure in enqueue");
+			}
+		});
+	}
+
+	private String makeCommunityIDQuery() {
+		return "{myCommunities {\nedges{\nnode { id, title, acronym }}}}";
+	}
+
     private int getSpanCount() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
@@ -215,11 +298,30 @@ public class GroupFragment extends Fragment {
 		ListView listView = (ListView) dialog.findViewById(R.id.listView);
 		Button btnBtmLeft = (Button) dialog.findViewById(R.id.btnBtmLeft);
 		groupName = (EditText) dialog.findViewById(R.id.groupname);
+		groupDescription = (EditText) dialog.findViewById(R.id.groupdescription);
+		dropdown = (Spinner) dialog.findViewById(R.id.group_spinner);
+		dropdown.setVisibility(View.INVISIBLE);
+		ArrayAdapter<HashMap<String, String>> hashAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
+		hashAdapter.add(comm_options);
+		dropdown.setAdapter(hashAdapter);
+
+		dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+//				Toast.makeText(getContext(), parentView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				// your code here
+			}
+
+		});
 
 		btnBtmLeft.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mAuthTask = new AddGroupTask(groupName.getText().toString()).execute();
+				mAuthTask = new AddGroupTask(groupName.getText().toString(), groupDescription.getText().toString()).execute();
 				dialog.dismiss();
 			}
 		});
@@ -244,9 +346,12 @@ public class GroupFragment extends Fragment {
 		private Communicator communicator;
 
 		private final String mTitle;
+		private final String mDescription;
 
-		AddGroupTask(String mTitle) {
+
+		AddGroupTask(String mTitle, String mDescription) {
 			this.mTitle = mTitle;
+			this.mDescription = mDescription;
 		}
 
 		@Override
@@ -260,7 +365,7 @@ public class GroupFragment extends Fragment {
 			try {
 				// Retrofit HTTP call to login
 				communicator = new Communicator();
-				communicator.addGroupPost(mTitle);
+				communicator.addGroupPost(mTitle, mDescription);
 
 				successful = communicator.successful;
 

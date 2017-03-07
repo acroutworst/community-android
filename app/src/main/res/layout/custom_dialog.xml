@@ -30,10 +30,31 @@
             android:gravity="center_horizontal">
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/groupname"
-                style="@style/CommunityEditText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"
+                android:background="@drawable/edittext_background"
                 android:inputType="text"
                 android:hint="@string/prompt_groupname"/>
         </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/groupdescription"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"
+                android:background="@drawable/edittext_background"
+                android:inputType="text"
+                android:hint="@string/prompt_groupdescription"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/group_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
 
         <ListView
             android:layout_width="wrap_content"

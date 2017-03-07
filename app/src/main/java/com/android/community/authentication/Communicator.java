@@ -294,7 +294,7 @@ public class Communicator {
         }
     }
 
-    public void addGroupPost(String title) {
+    public void addGroupPost(String title, String description) {
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -318,7 +318,7 @@ public class Communicator {
 
         Call<ResponseBody> call = null;
         API_TOKEN = "Bearer " + USER_TOKEN;
-        call = service.apiEventPost(API_TOKEN, registerGroup(title));
+        call = service.apiEventPost(API_TOKEN, registerGroup(title, description));
 
         try {
             Response<ResponseBody> response = call.execute();
@@ -352,8 +352,8 @@ public class Communicator {
         return "{allMeetups { edges { node { id, createdDate, duration, name, description, maxAttendees, private, active, creator { username }, community { title, acronym }}}}}";
     }
 
-    private String registerGroup(String title) {
-        return String.format("mutation{\nregisterGroup(community:\"%s\", title:\"%s\", description:\"%s\"){ok, group{id, title, description}}}", "Q29tbXVuaXR5Tm9kZTox", title, "");
+    private String registerGroup(String title, String description) {
+        return String.format("mutation{\nregisterGroup(community:\"%s\", title:\"%s\", description:\"%s\"){ok, group{id, title, description}}}", "Q29tbXVuaXR5Tm9kZTox", title, description);
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {

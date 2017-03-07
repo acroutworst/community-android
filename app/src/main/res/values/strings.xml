@@ -38,6 +38,7 @@
 
     <!-- Dialog Prompts -->
     <string name="prompt_groupname">Group Name</string>
+    <string name="prompt_groupdescription">Description</string>
 
     <!-- Bottom Sheet -->
     <string name="action_take_photo">Take Photo</string>
