@@ -1,15 +1,21 @@
 package com.android.community.fragment;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.community.AccountService;
@@ -98,10 +104,17 @@ public class EventFragment extends Fragment {
 					}
 				});
 
+//			fab.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View view) {
+//						queryEventPost();
+//				}
+//			});
+
 			fab.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View view) {
-						queryEventPost();
+				public void onClick(View v) {
+					showMyDialog(getContext());
 				}
 			});
 		}
@@ -176,4 +189,35 @@ public class EventFragment extends Fragment {
     private String makeEventQuery() {
         return "{allEvents {\nedges{\nnode { title, description, location }}}}";
     }
+
+	private void showMyDialog(Context context) {
+		final Dialog dialog = new Dialog(context);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.custom_dialog);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.setCancelable(true);
+
+		TextView textView = (TextView) dialog.findViewById(R.id.txtTitle);
+		ListView listView = (ListView) dialog.findViewById(R.id.listView);
+		Button btnBtmLeft = (Button) dialog.findViewById(R.id.btnBtmLeft);
+
+		btnBtmLeft.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				/* TODO: Make mutation call here and query */
+				dialog.dismiss();
+			}
+		});
+
+		/**
+		 * if you want the dialog to be specific size, do the following
+		 * this will cover 85% of the screen (85% width and 85% height)
+		 */
+		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+		int dialogWidth = (int)(displayMetrics.widthPixels * 0.85);
+		int dialogHeight = (int)(displayMetrics.heightPixels * 0.85);
+		dialog.getWindow().setLayout(dialogWidth, dialogHeight);
+
+		dialog.show();
+	}
 }

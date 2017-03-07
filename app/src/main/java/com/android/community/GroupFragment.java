@@ -1,5 +1,13 @@
 package com.android.community;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,7 +20,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.community.authentication.Communicator;
 import com.android.community.authentication.ServerRequestInterface;
 import com.android.community.models.Event;
 import com.android.community.models.Group;
@@ -42,6 +57,12 @@ public class GroupFragment extends Fragment {
 		private SwipeRefreshLayout mSwipeRefreshLayout;
 		private FloatingActionButton fab;
 
+		private View scrollView;
+		private View mProgressView;
+		private AsyncTask mAuthTask = null;
+
+		private Dialog dialog;
+		private EditText groupName;
 
 	@Nullable
     @Override
@@ -101,7 +122,7 @@ public class GroupFragment extends Fragment {
 			fab.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					queryGroupPost();
+					showMyDialog(getContext());
 				}
 			});
 		}
@@ -180,4 +201,116 @@ public class GroupFragment extends Fragment {
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         return (int) (dpWidth / 100);
     }
+
+	private void showMyDialog(Context context) {
+		dialog = new Dialog(context);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.custom_dialog);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.setCancelable(true);
+
+		mProgressView = dialog.findViewById(R.id.login_progress);
+
+		TextView textView = (TextView) dialog.findViewById(R.id.txtTitle);
+		ListView listView = (ListView) dialog.findViewById(R.id.listView);
+		Button btnBtmLeft = (Button) dialog.findViewById(R.id.btnBtmLeft);
+		groupName = (EditText) dialog.findViewById(R.id.groupname);
+
+		btnBtmLeft.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mAuthTask = new AddGroupTask(groupName.getText().toString()).execute();
+				dialog.dismiss();
+			}
+		});
+
+		/**
+		 * if you want the dialog to be specific size, do the following
+		 * this will cover 85% of the screen (85% width and 85% height)
+		 */
+		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+		int dialogWidth = (int)(displayMetrics.widthPixels * 0.85);
+		int dialogHeight = (int)(displayMetrics.heightPixels * 0.85);
+		dialog.getWindow().setLayout(dialogWidth, dialogHeight);
+
+		dialog.show();
+	}
+
+	/**
+	 * Represents an asynchronous registration task used to authenticate
+	 * the user.
+	 */
+	private class AddGroupTask extends AsyncTask<Void, Void, Boolean> {
+		private Communicator communicator;
+
+		private final String mTitle;
+
+		AddGroupTask(String mTitle) {
+			this.mTitle = mTitle;
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) { // params[0] = username; params[1] = password
+			boolean successful;
+
+			// for debug worker thread
+			if(android.os.Debug.isDebuggerConnected())
+				android.os.Debug.waitForDebugger();
+
+			try {
+				// Retrofit HTTP call to login
+				communicator = new Communicator();
+				communicator.addGroupPost(mTitle);
+
+				successful = communicator.successful;
+
+				Log.d(TAG, "ADD_GROUP_TASK_SUCCESSFUL: " + successful);
+			} catch (Exception e) {
+				Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+
+				e.printStackTrace();
+
+				return false;
+			}
+			return successful;
+		}
+
+		@Override
+		protected void onPostExecute(final Boolean successful) {
+			mAuthTask = null;
+			showProgress(false);
+		}
+
+		@Override
+		protected void onCancelled() {
+			mAuthTask = null;
+			showProgress(false);
+		}
+	}
+
+	/**
+	 * Shows the progress UI and hides the login form.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	private void showProgress(final boolean show) {
+		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+		// for very easy animations. If available, use these APIs to fade-in
+		// the progress spinner.
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+			mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+			mProgressView.animate().setDuration(shortAnimTime).alpha(
+					show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+				}
+			});
+		} else {
+			// The ViewPropertyAnimator APIs are not available, so simply show
+			// and hide the relevant UI components.
+			mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+		}
+	}
 }

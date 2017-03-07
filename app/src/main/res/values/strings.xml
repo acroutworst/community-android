@@ -36,6 +36,9 @@
     <string name="prompt_last_name">Last Name</string>
     <string name="prompt_username">Username</string>
 
+    <!-- Dialog Prompts -->
+    <string name="prompt_groupname">Group Name</string>
+
     <!-- Bottom Sheet -->
     <string name="action_take_photo">Take Photo</string>
     <string name="action_upload_photo">Upload Photo</string>
