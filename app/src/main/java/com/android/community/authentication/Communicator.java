@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -250,43 +251,6 @@ public class Communicator {
         }
     }
 
-    public void queryMeetupPost() {
-        successful = false;
-
-        //Here a logging interceptor is created
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        //The logging interceptor will be added to the http client
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);
-
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Meetup.class, new MeetupDeserializer())
-            .create();
-
-        API_TOKEN = "Bearer " + USER_TOKEN;
-
-        Retrofit retrofit = new Retrofit.Builder()
-            .client(httpClient.build())
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl(SERVER_URL)
-            .build();
-        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
-
-        Call<Meetup> call = null;
-        call = service.apiMeetupPost(API_TOKEN, makeMeetupQuery() );
-
-        try {
-            Response<Meetup> response = call.execute();
-
-            successful = response.isSuccessful();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void registerUserPost(String username, String email, String firstName, String lastName, String password) {
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -351,6 +315,10 @@ public class Communicator {
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {
         return String.format("mutation{\nregisterAccount(lastName:\"%s\", firstName:\"%s\", email:\"%s\", username:\"%s\", password:\"%s\"){ok, account{username, email, firstName, lastName}}}", lastName, firstName, email, username, password);
+    }
+
+    private String registerMeetup(String name, String community, String description, int maxAttendees, int duration, boolean mPrivate) {
+        return String.format("mutation{\nregisterMeetup(name:\"%s\", community:\"%s\", description:\"%s\", maxAttendees:\"%s\", duration:\"%s\", private:\"%s\"){ok, meetup{name, community, description, maxAttendees, duration, private}}}", name, community, description, maxAttendees, duration, mPrivate);
     }
 
     @Produce

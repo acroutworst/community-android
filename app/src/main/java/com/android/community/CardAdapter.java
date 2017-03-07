@@ -29,7 +29,7 @@ public class CardAdapter extends EpoxyAdapter {
 				.caption(R.string.meetup_header_subtitle);
 
 		addModels(
-				headerModel
+				headerModel.hide()
 		);
 	}
 

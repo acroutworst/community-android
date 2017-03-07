@@ -24,11 +24,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.community.authentication.Communicator;
+import com.android.community.authentication.ServerRequestInterface;
 import com.android.community.fragment.EventFragment;
 import com.android.community.fragment.HomeFragment;
 import com.android.community.fragment.MeetupFragment;
 import com.android.community.fragment.NotifFragment;
+import com.android.community.models.Community;
+import com.android.community.models.Event;
 import com.android.community.tasks.ProfileQueryTask;
+import com.google.gson.Gson;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -42,7 +46,20 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -69,6 +86,9 @@ public class HomeActivity extends AppCompatActivity {
     private String mLname;
     private String mInterests;
 
+    private ArrayList<Community> communities = new ArrayList<>();
+    private ArrayList<IDrawerItem> items;
+
     /* Query */
     AsyncTask mProfileQuery = null;
 
@@ -81,6 +101,17 @@ public class HomeActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        queryCommunityPost();
+        items = new ArrayList<>(communities.size());
+
+        Log.d(TAG, "Community Size: " + communities.size());
+
+        for(int i = 0; i < communities.size(); i++) {
+            items.add(new PrimaryDrawerItem().withIdentifier(i).withName(communities.get(i).getTitle()));
+        }
+
+        Log.d(TAG, "Items Size: " + items.size());
 
         final PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.action_About);
         final PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.action_Profile);
@@ -176,12 +207,7 @@ public class HomeActivity extends AppCompatActivity {
 
         new DrawerBuilder()
                 .withActivity(this)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withIdentifier(1).withName("Communities"),
-                        new SecondaryDrawerItem().withIdentifier(2).withName("University of Washington"),
-                        new SecondaryDrawerItem().withIdentifier(3).withName("UW"),
-                        new SecondaryDrawerItem().withIdentifier(4).withName("Apple")
-                )
+                .withDrawerItems(items)
                 .withDrawerGravity(Gravity.END)
                 .append(drawer);
 
@@ -242,6 +268,17 @@ public class HomeActivity extends AppCompatActivity {
         mFullname = String.format("%s %s", mFname, mLname);
 
         profileItem.withName(mFname).withEmail(mEmail);
+
+        item3.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                drawer.closeDrawer();
+
+                // TODO: Show notifications
+
+                return true;
+            }
+        });
 
         Log.d(TAG, "First name: " + AccountService.Instance().mAccount.firstName);
         Log.d(TAG, "Last name: " + AccountService.Instance().mAccount.lastName);
@@ -309,6 +346,77 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void queryCommunityPost() {
+
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
+
+        Log.d(TAG, "HomeActivity Communities: " + API_TOKEN);
+
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://community-ci.herokuapp.com")
+            .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+        Call<ResponseBody> call = service.apiEventPost(API_TOKEN, makeEventQuery());
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                try {
+                    final String body = response.body().string();
+
+                    communities.clear();
+
+                    if(!body.isEmpty()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Gson gson = new Gson();
+                                try {
+                                    JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("myCommunities").getJSONArray("edges");
+                                    for (int i = 0; i < jsonEvents.length(); ++i) {
+                                        JSONObject community = jsonEvents.getJSONObject(i).getJSONObject("node");
+                                        communities.add(gson.fromJson(community.toString(), Community.class));
+//                                        adapter.addEvent(gson.fromJson(event.toString(), Event.class));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "Response Body is null");
+                        Log.d(TAG, "Response Body: " + body);
+                    }
+
+                } catch(Exception e) {
+                    Log.d(TAG, e.getMessage());
+                    Log.d(TAG, "Events Body ERROR");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TAG, t.getMessage());
+                Log.d(TAG, "onFailure in enqueue");
+            }
+        });
+    }
+
+    private String makeEventQuery() {
+        return "{myCommunities {\nedges{\nnode { id, title, description, acronym, slug, dateCreated, phoneNumber }}}}";
     }
 
     public class SignoutTask extends AsyncTask<String, Void, Boolean> {

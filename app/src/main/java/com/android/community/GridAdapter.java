@@ -51,7 +51,7 @@ public class GridAdapter extends EpoxyAdapter {
         .clickListener(onChangeColorsClicked);
 
     addModels(
-        headerModel,
+        headerModel.hide(),
         addButton.hide(),
         clearButton.hide(),
         shuffleButton.hide(),
