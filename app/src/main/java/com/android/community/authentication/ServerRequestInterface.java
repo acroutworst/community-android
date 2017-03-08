@@ -44,6 +44,27 @@ public interface ServerRequestInterface {
     );
 
     @FormUrlEncoded
+    @POST("/api/")
+    Call<APIAuthResponse> postGoogleAuthToken(
+            @Field("client_id") String client_id,
+            @Field("client_secret") String client_secret,
+            @Field("grant_type") String grant_type,
+            @Field("id_token") String id_token
+    );
+
+    @FormUrlEncoded
+    @POST("/api/")
+    Call<APIAuthResponse> postGoogleUserToken(
+            @Field("client_id") String client_id,
+            @Field("client_secret") String client_secret,
+            @Field("grant_type") String grant_type,
+            @Field("username") String username,
+            @Field("email") String email,
+            @Field("first_name") String first_name,
+            @Field("last_name") String last_name
+    );
+
+    @FormUrlEncoded
     @POST("/o/token/")
     Call<APIAuthResponse> postRefreshToken(
             @Field("client_id") String client_id,

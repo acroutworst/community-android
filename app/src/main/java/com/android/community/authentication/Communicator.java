@@ -25,7 +25,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Communicator {
     private static final String TAG = "Communicator";
-    private static final String SERVER_URL = "https://community-ci.herokuapp.com";
+//    private static final String SERVER_URL = "https://community-ci.herokuapp.com";
+    private static final String SERVER_URL = "http://192.168.1.7:8000";
     private static String USER_TOKEN = "";
     private static String API_TOKEN = "";
     private static String CLIENT_ID = "gBP4u4xwAiB1WaaDZGbNxGCPS8upLQsdkXP1avE4";
@@ -58,6 +59,64 @@ public class Communicator {
 
     public int getServerResponseCode(){
         return serverResponse.getResponseCode();
+    }
+
+    public boolean authenticateGoogleIdTokenPost(String idToken){
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        //Gson object
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(httpClient.build())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(SERVER_URL)
+                .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        boolean success = authenticateGoogleIdToken(service, idToken);
+
+        return success;
+    }
+
+    public boolean googleLoginPost(String idToken, String username, String email, String firstName, String lastName){
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        //Gson object
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(httpClient.build())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(SERVER_URL)
+                .build();
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        boolean success = authenticateGoogleIdToken(service, idToken);
+
+        if (success) {
+            success = registerGoogleUser(service, username, email, firstName, lastName);
+            return success;
+        }
+        return false;
     }
 
     public void loginPost(String username, String password) {
@@ -151,6 +210,63 @@ public class Communicator {
         } catch(IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+     * Authenticates user's Google account's ID Token with backend server
+     * TODO: add code on backend to verify the ID Token
+     */
+    private boolean authenticateGoogleIdToken(ServerRequestInterface service, String idToken){
+        Log.d(TAG, "inside authenticateGoogleIdToken");
+        Call<APIAuthResponse> apiCall = service.postGoogleAuthToken(client.clientID, client.clientSecret, client.grantType,
+                idToken);
+        try {
+            Log.d(TAG, "before apiCall.execute()");
+            Response<APIAuthResponse> response = apiCall.execute();
+            Log.d(TAG, "after apiCall.execute()");
+
+            if (response.body() != null){
+                if (response.isSuccessful()){
+                    USER_TOKEN = response.body().getToken();
+//                    Log.d(TAG, "Access Token: " + response.body().getToken());
+//                    Log.d(TAG, "Refresh Token: " + response.body().getRefreshToken());
+//                    Log.d(TAG, "Token Type: " + response.body().getAccessType());
+//                    Log.d(TAG, "Scope: " + response.body().getScope());
+//                    Log.d(TAG, "Expire Time: " + response.body().getExpireTime());
+                    Log.d(TAG, "USER_TOKEN: " + USER_TOKEN);
+                    Log.d(TAG, "GET_TOKEN_SUCCESSFUL_1: " + successful);
+                    return true;
+                } else{
+                    Log.d(TAG, "Unsuccessful API call");
+                }
+            } else{
+                Log.d(TAG, "Bad API call");
+            }
+
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /*
+     * Registers user who signed in via Google
+     * TODO: test it once authenticateGoogleIdToken is working
+     */
+    private boolean registerGoogleUser(ServerRequestInterface service, String username, String email, String firstName, String lastName){
+        Call<APIAuthResponse> apiCall = service.postGoogleUserToken(client.clientID, client.clientSecret, client.grantType,
+                username, email, firstName, lastName);
+
+        try {
+            Response<APIAuthResponse> response = apiCall.execute();
+            boolean success = response.isSuccessful();
+            Log.d(TAG, "registerGoogleUser's response: " + success);
+            return success;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void getToken(ServerRequestInterface service, String username, String password) {
