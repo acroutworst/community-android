@@ -93,6 +93,14 @@ public interface ServerRequestInterface {
     //This method is used for "POST"
     @FormUrlEncoded
     @POST("/api/")
+    Call<ResponseBody> apiCreateMeetupPost(
+            @Header("authorization") String token,
+            @Field("query") String GraphQLQuery
+    );
+
+    //This method is used for "POST"
+    @FormUrlEncoded
+    @POST("/api/")
     Call<ResponseBody> apiEventPost(
         @Header("authorization") String token,
         @Field("query") String GraphQLQuery
