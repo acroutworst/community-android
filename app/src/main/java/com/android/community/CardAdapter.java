@@ -11,6 +11,8 @@ import com.android.community.models.MeetupModel_;
 
 import java.util.Random;
 
+import butterknife.OnClick;
+
 /**
  * Created by adamc on 2/16/17.
  */
@@ -33,22 +35,25 @@ public class CardAdapter extends EpoxyAdapter {
 		);
 	}
 
-	private void updateVisibility() {
-		if(headerModel.isShown()) {
-			headerModel.hide();
-		}
-	}
+//	private void updateVisibility() {
+//		if(headerModel.isShown()) {
+//			headerModel.hide();
+//		}
+//	}
 
 	public final void onAddClicked() {
 //		insertModelAfter(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()), headerModel);
-		updateVisibility();
+//		updateVisibility();
 		addModel(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()));
 	}
 
 	public void addMeetup(Meetup meetup) {
 //		insertModelAfter(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()), headerModel);
-		updateVisibility();
-		addModel(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()));
+//		updateVisibility();
+		addModel(new MeetupModel_()
+				.title(meetup.getName())
+				.subtitle(meetup.getDescription())
+				.color(randomColor()));
 	}
 
 	public void removeMeetup() {

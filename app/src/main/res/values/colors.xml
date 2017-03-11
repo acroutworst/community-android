@@ -31,4 +31,6 @@
 
     <color name="btn_send_normal">#02c754</color>
     <color name="btn_send_pressed">#006633</color>
+
+    <color name="colorError">#FF0000</color>
 </resources>

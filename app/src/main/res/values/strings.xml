@@ -15,6 +15,10 @@
     <string name="error_different_password">The password must match</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_meetup_name_required">Meetup name is required</string>
+    <string name="error_meetup_max_attendees_value">Must be 2 or more</string>
+    <string name="error_meetup_duration_value">Must be 1 hour long or more</string>
+    <string name="error_community_for_meetup_required">Community required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -37,8 +41,17 @@
     <string name="prompt_username">Username</string>
 
     <!-- Dialog Prompts -->
+    <string name="prompt_add_meetup_title">Add a meetup</string>
     <string name="prompt_groupname">Group Name</string>
+    <string name="prompt_meetup_name">Meetup Name *</string>
     <string name="prompt_groupdescription">Description</string>
+    <string name="prompt_meetup_description">Description</string>
+    <string name="prompt_meetup_location">Location</string>
+    <string name="prompt_meetup_duration">Duration (default: 1 hr)</string>
+    <string name="prompt_meetup_max_attendees">Max. Attendees (default: 20)</string>
+    <string name="prompt_private_meetup">Private?</string>
+    <string name="prompt_add_meetup_on_community_spinner_hint">Which Community? *</string>
+    <string name="prompt_add_button">ADD</string>
 
     <!-- Bottom Sheet -->
     <string name="action_take_photo">Take Photo</string>
