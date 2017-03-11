@@ -85,7 +85,7 @@ public interface ServerRequestInterface {
     //This method is used for "POST"
     @FormUrlEncoded
     @POST("/api/")
-    Call<Meetup> apiMeetupPost(
+    Call<ResponseBody> apiMeetupPost(
         @Header("authorization") String token,
         @Field("query") String GraphQLQuery
     );

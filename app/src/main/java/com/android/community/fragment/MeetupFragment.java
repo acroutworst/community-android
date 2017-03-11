@@ -109,6 +109,9 @@ public class MeetupFragment extends Fragment {
 
         final TextView mMeetupTitle = (TextView) dialog.findViewById(R.id.meetup_name);
         final TextView mMeetupDescription = (TextView) dialog.findViewById(R.id.meetup_description);
+        final TextView mMeetupLocation = (TextView) dialog.findViewById(R.id.meetup_location);
+        final TextView mMeetupDuration = (TextView) dialog.findViewById(R.id.meetup_duration);
+        final TextView mMeetupMaxAttendees = (TextView) dialog.findViewById(R.id.meetup_max_attendees);
 
         final CheckBox mPrivateMeetupCheckBox = (CheckBox) dialog.findViewById(R.id.meetup_private_checkbox);
         if(mPrivateMeetupCheckBox.isChecked()){
@@ -128,7 +131,7 @@ public class MeetupFragment extends Fragment {
 
         mAddMeetupButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
 
                 // Variables for error checking purposes
                 View focusView = null;
@@ -137,15 +140,44 @@ public class MeetupFragment extends Fragment {
                 // Grabbing info from View classes
                 String meetupTitle = mMeetupTitle.getText().toString();
                 String meetupDescription = mMeetupDescription.getText().toString();
+                String meetupLocation = mMeetupLocation.getText().toString();
+
+                int meetupMaxAttendees;
+                String meetupMaxAttendeesString = mMeetupMaxAttendees.getText().toString();
+                if (meetupMaxAttendeesString.isEmpty()) {
+                    meetupMaxAttendees = 20;
+                } else{
+                    meetupMaxAttendees = Integer.parseInt(meetupMaxAttendeesString);
+                }
+
                 boolean privateMeetup = mPrivateMeetupCheckBox.isChecked();
-                // TODO: change duration's value to match design
-                int duration = 3600;
+
+                int meetupDuration;
+                String meetupDurationString = mMeetupDuration.getText().toString();
+                if (meetupDurationString.isEmpty()) {
+                    meetupDuration = 1 * 3600; // 1 hour by default
+                } else{
+                    meetupDuration = Integer.parseInt(meetupDurationString) * 3600;
+                }
+
                 String meetupInCommunity = mMeetupSpinner.getText().toString();
 
                 // Error checking
                 if(TextUtils.isEmpty(meetupTitle)){
                     mMeetupTitle.setError(getString(R.string.error_meetup_name_required));
                     focusView = mMeetupTitle;
+                    cancel = true;
+                }
+
+                if(meetupDuration <= 0){
+                    mMeetupDuration.setError(getString(R.string.error_meetup_duration_value));
+                    focusView = mMeetupDuration;
+                    cancel = true;
+                }
+
+                if(meetupMaxAttendees <= 1){
+                    mMeetupMaxAttendees.setError(getString(R.string.error_meetup_max_attendees_value));
+                    focusView = mMeetupMaxAttendees;
                     cancel = true;
                 }
 
@@ -159,7 +191,7 @@ public class MeetupFragment extends Fragment {
                 if(cancel){
                     focusView.requestFocus();
                 } else{
-                    createMeetupPost(meetupTitle, meetupDescription, privateMeetup, duration, meetupInCommunity); // HTTP call to create a new meetup M for a certain community C
+                    createMeetupPost(meetupTitle, meetupDescription, meetupLocation, meetupMaxAttendees, privateMeetup, meetupDuration, meetupInCommunity); // HTTP call to create a new meetup M for a certain community C
                     dialog.dismiss();
                 }
             }
@@ -177,7 +209,7 @@ public class MeetupFragment extends Fragment {
         dialog.show();
     }
 
-    private void createMeetupPost(String meetupTitle, String meetupDescription, boolean privateMeetup, int duration, String communityId){
+    private void createMeetupPost(String meetupTitle, String meetupDescription, String meetupLocation, int meetupMaxAttendees, boolean privateMeetup, int meetupDuration, String communityId){
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -196,7 +228,7 @@ public class MeetupFragment extends Fragment {
                 .baseUrl("https://community-ci.herokuapp.com")
                 .build();
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
-        Call<ResponseBody> call = service.apiCreateMeetupPost(API_TOKEN, makeMeetupMutation(meetupTitle, meetupDescription, privateMeetup, duration, communityId));
+        Call<ResponseBody> call = service.apiCreateMeetupPost(API_TOKEN, makeMeetupMutation(meetupTitle, meetupDescription, meetupLocation, meetupMaxAttendees, privateMeetup, meetupDuration, communityId));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -240,9 +272,9 @@ public class MeetupFragment extends Fragment {
         });
     }
 
-    private String makeMeetupMutation(String meetupTitle, String meetupDescription, boolean privateMeetup, int duration, String communityId) {
-        return String.format("mutation{ registerMeetup(name:\"%s\", description:\"%s\", private:%s, duration:%s, community:\"%s\"){ ok } }",
-                meetupTitle, meetupDescription, privateMeetup, duration, communityId);
+    private String makeMeetupMutation(String meetupTitle, String meetupDescription, String meetupLocation, int meetupMaxAttendees, boolean privateMeetup, int meetupDuration, String communityId) {
+        return String.format("mutation{ registerMeetup(name:\"%s\", description:\"%s\", location:\"%s\", maxAttendees:%d, private:%s, duration:%d, community:\"%s\"){ ok } }",
+                meetupTitle, meetupDescription, meetupLocation, meetupMaxAttendees, privateMeetup, meetupDuration, communityId);
     }
 
     private void queryMeetupPost() {
@@ -264,7 +296,7 @@ public class MeetupFragment extends Fragment {
             .baseUrl("https://community-ci.herokuapp.com")
             .build();
         ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
-        Call<ResponseBody> call = service.apiEventPost(API_TOKEN, makeMeetupQuery());
+        Call<ResponseBody> call = service.apiMeetupPost(API_TOKEN, makeMeetupQuery());
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -311,6 +343,7 @@ public class MeetupFragment extends Fragment {
     }
 
     private String makeMeetupQuery() {
-        return "{allMeetups {\nedges{\nnode { name, description }}}}";
+//        return "{allMeetups {\nedges{\nnode { name, description }}}}";
+        return "query{ allMeetups{ edges{ node{ id\n name\n description\n location\n maxAttendees\n private } } } }";
     }
 }
