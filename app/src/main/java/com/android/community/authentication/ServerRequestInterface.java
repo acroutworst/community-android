@@ -106,6 +106,13 @@ public interface ServerRequestInterface {
         @Field("query") String GraphQLQuery
     );
 
+    Call<ResponseBody> apiCreateEventPost(
+            @Header("authorization") String token,
+            @Field("query") String GraphQLQuery
+    );
+
+
+
     //This method is used for "POST"
     @FormUrlEncoded
     @POST("/api/")

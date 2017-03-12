@@ -16,6 +16,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_meetup_name_required">Meetup name is required</string>
+    <string name="error_event_name_required">Event name is required</string>
     <string name="error_meetup_max_attendees_value">Must be 2 or more</string>
     <string name="error_meetup_duration_value">Must be 1 hour long or more</string>
     <string name="error_community_for_meetup_required">Community required</string>
@@ -52,6 +53,11 @@
     <string name="prompt_private_meetup">Private?</string>
     <string name="prompt_add_meetup_on_community_spinner_hint">Which Community? *</string>
     <string name="prompt_add_button">ADD</string>
+    <string name="prompt_add_event_title">Add a meetup</string>
+    <string name="prompt_event_name">Event Name *</string>
+    <string name="prompt_event_description">Description</string>
+    <string name="prompt_event_location">Location</string>
+    <string name="prompt_add_event_on_community_spinner_hint">Which Community? *</string>
 
     <!-- Bottom Sheet -->
     <string name="action_take_photo">Take Photo</string>

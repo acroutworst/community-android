@@ -364,6 +364,10 @@ public class Communicator {
         return String.format("mutation{\nregisterMeetup(name:\"%s\", community:\"%s\", description:\"%s\", maxAttendees:\"%s\", duration:\"%s\", private:\"%s\"){ok, meetup{name, community, description, maxAttendees, duration, private}}}", name, community, description, maxAttendees, duration, mPrivate);
     }
 
+    private String registerEvent(String title, String description, String location, String community) {
+        return String.format("mutation{\nregisterEvent(title:\"%s\", description:\"%s\", location:\"%s\",community:\"%s\"){ok, event{title,description,location, id}}}", title, description, location, "Q29tbXVuaXR5Tm9kZTox");
+    }
+
     @Produce
     public ServerEvent produceServerEvent(ServerResponse serverResponse) {
         return new ServerEvent(serverResponse);
