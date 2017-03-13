@@ -21,7 +21,12 @@ import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -354,6 +359,15 @@ public class Communicator {
 
     private String registerGroup(String title, String description) {
         return String.format("mutation{\nregisterGroup(community:\"%s\", title:\"%s\", description:\"%s\"){ok, group{id, title, description}}}", "Q29tbXVuaXR5Tm9kZTox", title, description);
+    }
+
+    private String registerEvent(String title, String description, String location) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("dd-MM-yyy HH:mm:ss z");
+        date.setTimeZone(TimeZone.getTimeZone("PST"));
+        String localTime = date.format(currentLocalTime);
+        return String.format("mutation{\nregisterEvent(community:\"%s\", title:\"%s\", description:\"%s\", location:\"%s\", startDatetime:\"%s\", endDatetime:\"%s\", private:\"%s\"){ok, event{id, title, description}}}", "Q29tbXVuaXR5Tm9kZTox", title, description, location, localTime, localTime, false);
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {
