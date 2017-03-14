@@ -21,22 +21,17 @@ import okhttp3.ResponseBody;
  * Created by adamc on 2/17/17.
  */
 
-public class EventDeserializer implements JsonDeserializer<Collection<ResponseBody>> {
-	private static final String TAG = "EventDeserializer";
+public class EventDeserializer implements JsonDeserializer<Event> {
+	private static final String TAG = "GroupDeserializer";
 
 	@Override
-	public Collection<ResponseBody> deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+	public Event deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
 		// Get the "account" element from the parsed JSON
-		JsonElement event = je.getAsJsonObject().get("data").getAsJsonObject().get("allEvents").getAsJsonObject().get("edges");
-
-		Log.d(TAG, "event: " + event);
-
-		Type collectionType = new TypeToken<Collection<EventResponse>>(){}.getType();
-		Collection<ResponseBody> enums = new Gson().fromJson(event, collectionType);
+		JsonElement account = je.getAsJsonObject().get("data").getAsJsonObject().get("registerEvent").getAsJsonObject().get("event");
+		Log.d(TAG, "group: " + account);
 
 		// Deserialize it. You use a new instance of Gson to avoid infinite recursion
 		// to this deserializer
-//		return new Gson().fromJson(event, EventResponse.class);
-		return enums;
+		return new Gson().fromJson(account, Event.class);
 	}
 }

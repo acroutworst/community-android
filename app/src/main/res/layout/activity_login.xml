@@ -46,7 +46,7 @@
                     android:id="@+id/email"
                     android:layout_width="@dimen/edittext_width"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
+                    android:hint="@string/prompt_username"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:layout_marginBottom="@dimen/edittext_bottom"
