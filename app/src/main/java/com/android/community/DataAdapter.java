@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.community.models.Community;
 import com.android.community.models.Event;
 
 import java.util.ArrayList;
@@ -17,13 +18,14 @@ import java.util.ArrayList;
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
 	private ArrayList<Event> eventList = new ArrayList<>();
+	private ArrayList<Community> communityList = new ArrayList<>();
 
 	public DataAdapter() {}
 
 	public DataAdapter(ArrayList<Event> eventList) {
 		this.eventList = eventList;
 	}
-
+	//public DataAdapter1 (ArrayList<Community> communityList){this.communityList = communityList; }
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 		View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_row, viewGroup, false);
@@ -53,6 +55,18 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 		int size = this.eventList.size();
 		this.eventList.clear();
 		notifyItemRangeRemoved(0, size);
+	}
+
+	public void addCommunity(Community post) {
+		this.communityList.add(post);
+		this.notifyDataSetChanged();
+	}
+
+	public void removeCommunity()
+	{
+		int size = this.communityList.size();
+		this.eventList.clear();
+		notifyItemRangeRemoved(0,size);
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {
