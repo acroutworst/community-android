@@ -87,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
     private String mInterests;
 
     private ArrayList<Community> communities = new ArrayList<>();
-    private ArrayList<IDrawerItem> items;
+    private ArrayList<IDrawerItem> items = new ArrayList<>();
 
     /* Query */
     AsyncTask mProfileQuery = null;
@@ -204,6 +204,8 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        items.add(new SecondaryDrawerItem().withIdentifier(1).withName("University of Washington"));
 
         new DrawerBuilder()
                 .withActivity(this)

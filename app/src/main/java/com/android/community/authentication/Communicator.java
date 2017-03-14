@@ -21,7 +21,12 @@ import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -332,6 +337,44 @@ public class Communicator {
         }
     }
 
+    public void addEventPost(String title, String description, String location) {
+        //Here a logging interceptor is created
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //The logging interceptor will be added to the http client
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(logging);
+
+        Gson gson = new GsonBuilder()
+            .registerTypeAdapter(AccountRegistration.class, new EventDeserializer())
+            .create();
+
+        //The Retrofit builder will have the client attached, in order to get connection logs
+        Retrofit retrofit = new Retrofit.Builder()
+            .client(httpClient.build())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(SERVER_URL)
+            .build();
+
+        ServerRequestInterface service = retrofit.create(ServerRequestInterface.class);
+
+        Call<ResponseBody> call = null;
+        API_TOKEN = "Bearer " + USER_TOKEN;
+        call = service.apiEventPost(API_TOKEN, registerEvent(title, description, location));
+
+        try {
+            Response<ResponseBody> response = call.execute();
+
+            successful = response.isSuccessful();
+
+            Log.d(TAG, "Response Event: " + response.body().toString());
+            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String makeQuery(String user, String pass, String email) {
         return String.format("mutation{\nloginUser (input: {\n    username: \"{0}\"\n    password: \"{1}\"\n    email: \"{2}\"\n  }) {\n    ok\n    user {\n    token\n    }\n  }\n}\n",
                 user,
@@ -354,6 +397,15 @@ public class Communicator {
 
     private String registerGroup(String title, String description) {
         return String.format("mutation{\nregisterGroup(community:\"%s\", title:\"%s\", description:\"%s\"){ok, group{id, title, description}}}", "Q29tbXVuaXR5Tm9kZTox", title, description);
+    }
+
+    private String registerEvent(String title, String description, String location) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        Date currentLocalTime = cal.getTime();
+        DateFormat date = new SimpleDateFormat("dd-MM-yyy HH:mm:ss z");
+        date.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String localTime = date.format(currentLocalTime);
+        return String.format("mutation{\nregisterGroup(community:\"%s\", title:\"%s\", description:\"%s\", location:\"%s\", private:\"%s\", startDatetime:\"%s\", endDatetime:\"%s\"){ok, event{id, title, description, location}}}", "Q29tbXVuaXR5Tm9kZTox", title, description, location, false, localTime, localTime);
     }
 
     private String registerUserQuery(String username, String email, String firstName, String lastName, String password) {

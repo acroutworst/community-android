@@ -42,8 +42,10 @@
 
     <!-- Dialog Prompts -->
     <string name="prompt_add_meetup_title">Add a meetup</string>
+    <string name="prompt_add_event_title">Add an event</string>
     <string name="prompt_groupname">Group Name</string>
     <string name="prompt_meetup_name">Meetup Name *</string>
+    <string name="prompt_event_name">Event Name *</string>
     <string name="prompt_groupdescription">Description</string>
     <string name="prompt_meetup_description">Description</string>
     <string name="prompt_meetup_location">Location</string>

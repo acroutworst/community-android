@@ -8,6 +8,9 @@ public class Event {
 	private String title;
 	private String description;
 	private String location;
+	private String endDatetime;
+	private String startDatetime;
+	private String id;
 
 	public Event() { }
 
@@ -30,4 +33,8 @@ public class Event {
 	public String getTitle() { return title; }
 	public String getDescription() { return description; }
 	public String getLocation() { return location; }
+	public String getEndDatetime() { return endDatetime; }
+	public String getStartDatetime() { return startDatetime; }
+	public String getId() { return id; }
+
 }
