@@ -145,7 +145,7 @@ public class MeetupFragment extends Fragment {
                 int meetupMaxAttendees;
                 String meetupMaxAttendeesString = mMeetupMaxAttendees.getText().toString();
                 if (meetupMaxAttendeesString.isEmpty()) {
-                    meetupMaxAttendees = 20;
+                    meetupMaxAttendees = 20; // 20 attendees by default
                 } else{
                     meetupMaxAttendees = Integer.parseInt(meetupMaxAttendeesString);
                 }
@@ -155,9 +155,9 @@ public class MeetupFragment extends Fragment {
                 int meetupDuration;
                 String meetupDurationString = mMeetupDuration.getText().toString();
                 if (meetupDurationString.isEmpty()) {
-                    meetupDuration = 1 * 3600; // 1 hour by default
+                    meetupDuration = 1; // 1 hour by default
                 } else{
-                    meetupDuration = Integer.parseInt(meetupDurationString) * 3600;
+                    meetupDuration = Integer.parseInt(meetupDurationString);
                 }
 
                 String meetupInCommunity = mMeetupSpinner.getText().toString();
@@ -317,8 +317,6 @@ public class MeetupFragment extends Fragment {
                                     for (int i = 0; i < jsonEvents.length(); ++i) {
                                         JSONObject meetup = jsonEvents.getJSONObject(i).getJSONObject("node");
                                         Meetup m = gson.fromJson(meetup.toString(), Meetup.class);
-                                        Log.d(TAG, "Meetup name? " + m.getName());
-                                        Log.d(TAG, "Meetup isPrivate? " + m.isPrivate());
                                         adapter.addMeetup(m);
                                     }
                                 } catch (JSONException e) {
@@ -346,7 +344,7 @@ public class MeetupFragment extends Fragment {
     }
 
     private String makeMeetupQuery() {
-        return "query{ myMeetups{ edges{ node{ id\n name\n description\n location\n maxAttendees\n privateMeetup: private } } } }";
+        return "query{ myMeetups(active:true){ edges{ node{ id\n name\n description\n location\n maxAttendees\n privateMeetup: private } } } }";
     }
 
     public void queryMeetupDetailsPost(){

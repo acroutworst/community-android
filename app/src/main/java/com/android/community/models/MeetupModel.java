@@ -26,15 +26,15 @@ public abstract class MeetupModel extends EpoxyModelWithHolder<MeetupHolder> {
 	@EpoxyAttribute @ColorInt int color;
 	@EpoxyAttribute String title;
 	@EpoxyAttribute String subtitle;
-	@EpoxyAttribute @DrawableRes int image;
+//	@EpoxyAttribute @DrawableRes int image;
 	@EpoxyAttribute OnClickListener clickListener;
 
 	@Override
 	public void bind(MeetupHolder holder) {
 		holder.cardView.setBackgroundColor(color);
-//		holder.cardView.setBackgroundResource(image);
 		holder.textView.setText(title);
 		holder.subtitleTextView.setText(subtitle);
+//		holder.cardView.setBackgroundResource(image);
 		holder.cardView.setOnClickListener(clickListener);
 	}
 

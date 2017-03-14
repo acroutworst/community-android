@@ -53,6 +53,8 @@ public class CardAdapter extends EpoxyAdapter {
 	public void addMeetup(Meetup meetup) {
 //		insertModelAfter(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()), headerModel);
 		updateVisibility();
+
+		// instead of this
 		addModel(new MeetupModel_()
 				.title(meetup.getName())
 				.subtitle(meetup.getDescription())
@@ -60,10 +62,10 @@ public class CardAdapter extends EpoxyAdapter {
 				.clickListener(onMeetupClicked));
 	}
 
-	private final View.OnClickListener onMeetupClicked = new View.OnClickListener() {
+	public View.OnClickListener onMeetupClicked = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			Toast.makeText(v.getContext(), "You clicked me!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(v.getContext(), "Meetup clicked", Toast.LENGTH_LONG).show();
 		}
 	};
 
