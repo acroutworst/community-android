@@ -313,10 +313,13 @@ public class MeetupFragment extends Fragment {
                             public void run() {
                                 Gson gson = new Gson();
                                 try {
-                                    JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allMeetups").getJSONArray("edges");
+                                    JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("myMeetups").getJSONArray("edges");
                                     for (int i = 0; i < jsonEvents.length(); ++i) {
                                         JSONObject meetup = jsonEvents.getJSONObject(i).getJSONObject("node");
-                                        adapter.addMeetup(gson.fromJson(meetup.toString(), Meetup.class));
+                                        Meetup m = gson.fromJson(meetup.toString(), Meetup.class);
+                                        Log.d(TAG, "Meetup name? " + m.getName());
+                                        Log.d(TAG, "Meetup isPrivate? " + m.isPrivate());
+                                        adapter.addMeetup(m);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -343,7 +346,10 @@ public class MeetupFragment extends Fragment {
     }
 
     private String makeMeetupQuery() {
-//        return "{allMeetups {\nedges{\nnode { name, description }}}}";
-        return "query{ allMeetups{ edges{ node{ id\n name\n description\n location\n maxAttendees\n private } } } }";
+        return "query{ myMeetups{ edges{ node{ id\n name\n description\n location\n maxAttendees\n privateMeetup: private } } } }";
+    }
+
+    public void queryMeetupDetailsPost(){
+
     }
 }
