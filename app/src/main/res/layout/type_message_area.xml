@@ -15,9 +15,9 @@
         android:textColor="#CFD8DC"
         android:lines="1"
         android:windowSoftInputMode="stateHidden"
-        android:hint="Write a message" />
+        />
 
-    <ImageView
+    <ImageButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="5"

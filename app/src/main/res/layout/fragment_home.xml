@@ -9,203 +9,76 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.android.community.fragment.HomeFragment">
 
-    <!--&lt;!&ndash; A CardView that contains a TextView &ndash;&gt;-->
-    <!--<android.support.v7.widget.CardView-->
-        <!--xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/card_view"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="75dp"-->
-        <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
-        <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
-        <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
-        <!--android:paddingTop="@dimen/activity_vertical_margin"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--card_view:cardElevation="16dp"-->
-        <!--card_view:cardMaxElevation="10dp"-->
-        <!--card_view:cardCornerRadius="4dp">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/section_label"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
-            <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
-            <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
-            <!--android:paddingTop="@dimen/activity_vertical_margin"-->
-            <!--android:text="Hello this is the Community's home!"/>-->
-    <!--</android.support.v7.widget.CardView>-->
-
-    <ScrollView
+    <!-- A CardView that contains a TextView -->
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_weight="20"
-        android:layout_height="wrap_content">
+        android:layout_height="75dp"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:gravity="center_horizontal"
+        card_view:cardCornerRadius="4dp">
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/section_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin">
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:text="Hello this is the Community's home!"/>
+    </android.support.v7.widget.CardView>
 
-            <LinearLayout
-                android:id="@+id/layout1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/rounded_corner"
-                    android:padding="16dp"
-                    android:text="Android charting application xml ui design tutorial with example. Android charting application xml ui design tutorial with example. Android charting application xml ui design tutorial with example. Android charting application xml ui design tutorial with example."
-                    android:textColor="#000" />
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="-15dp"
-                    android:layout_marginTop="6.5dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/arrow_bg1" />
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_weight="3"
-                    android:src="@drawable/user_pacific" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout1"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_weight="3"
-                    android:src="@drawable/user_pacific" />
-
-                <ImageView
-                    android:id="@+id/imageView1"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="-15dp"
-                    android:layout_marginTop="6.5dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/arrow_bg2" />
-
-                <TextView
-                    android:id="@+id/textView1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/rounded_corner_1"
-                    android:padding="16dp"
-                    android:text="Android charting application xml ui design. Android charting application xml ui design tutorial with example. Android charting application xml ui design. Android charting application xml ui design. "
-                    android:textColor="#000" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout2"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/rounded_corner"
-                    android:padding="16dp"
-                    android:text="Android charting application xml ui design tutorial with example. Android charting application xml ui design tutorial with example. Android charting application xml ui design tutorial with example. Android charting application xml ui design tutorial with example."
-                    android:textColor="#000" />
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="-15dp"
-                    android:layout_marginTop="6.5dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/arrow_bg1" />
-
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_weight="3"
-                    android:src="@drawable/user_pacific" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout3"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_weight="3"
-                    android:src="@drawable/user_pacific" />
-
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="-15dp"
-                    android:layout_marginTop="6.5dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/arrow_bg2" />
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="6"
-                    android:background="@drawable/rounded_corner_1"
-                    android:padding="16dp"
-                    android:text="Android charting application xml ui design. Android charting application xml ui design tutorial with example. Android charting application xml ui design. Android charting application xml ui design. "
-                    android:textColor="#000" />
-            </LinearLayout>
-        </RelativeLayout>
-    </ScrollView>
-
-    <include
-        layout="@layout/type_message_area"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
+    <ListView
+        android:id="@+id/msgListView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="bottom" />
+        android:layout_above="@+id/form"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10.0sp"
+        android:paddingBottom="10dp"
+        android:text="@string/hello_blank_fragment" />
+
+    <LinearLayout
+        android:id="@+id/form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="#91f1f1f1"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp" >
+
+        <EditText
+            android:id="@+id/messageEditText"
+            android:layout_width="252dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/button1"
+            android:layout_toLeftOf="@+id/sendMessageButton"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="#000"
+            android:layout_weight="0.72"
+            android:ems="10"
+            android:lines="1"
+            android:maxHeight="80dp"/>
+
+        <ImageButton
+            android:id="@+id/sendMessageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@android:drawable/ic_menu_send"
+            android:text="d" />
+
+    </LinearLayout>
 
  </RelativeLayout>
