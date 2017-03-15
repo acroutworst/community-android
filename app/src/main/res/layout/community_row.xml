@@ -19,9 +19,14 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:textSize="18sp"
+            android:textColor="#808080"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="5dp"/>
 
 </android.support.v7.widget.CardView>
