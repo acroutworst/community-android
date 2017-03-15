@@ -212,11 +212,23 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        items.add(new SecondaryDrawerItem().withIdentifier(1).withName("University of Washington"));
+        items.add(new SecondaryDrawerItem().withIdentifier(1).withName("Communities"));
 
-        new DrawerBuilder()
+         new DrawerBuilder()
                 .withActivity(this)
                 .withDrawerItems(items)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if(drawerItem == item1) {
+                            Intent homeIntent = new Intent(HomeActivity.this, HomeActivity.class);
+                            startActivity(homeIntent);
+                            finish();
+                        }
+
+                        return true;
+                    }
+                })
                 .withDrawerGravity(Gravity.END)
                 .append(drawer);
 
