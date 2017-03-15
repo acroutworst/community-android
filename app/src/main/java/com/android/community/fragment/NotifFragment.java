@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.android.community.AccountService;
 import com.android.community.CardAdapter;
+import com.android.community.CommunityAdapter;
 import com.android.community.DataAdapter;
 import com.android.community.R;
 import com.android.community.authentication.ServerRequestInterface;
@@ -38,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -53,30 +55,21 @@ public class NotifFragment extends Fragment {
 
     private static String TAG = "CommunityFragment";
 
-
-    //Array of communities:
-
-    String[] communities = {};
-
     private RecyclerView recyclerView;
     private ViewGroup view;
-    private DataAdapter adapter;
+    private CommunityAdapter adapter;
+    private ArrayList<Community> communities;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-
         view = (ViewGroup) inflater.inflate(R.layout.fragment_notif, container, false);
 
         initViews();
         setupClickListeners();
+
         return view;
     }
-
-    //private void setupClickListeners(){
-    //   queryCommunityPost();
-    //}
-
 
     private void initViews()
     {
@@ -85,19 +78,25 @@ public class NotifFragment extends Fragment {
                 getResources().getColor(R.color.md_black_1000),
                 getResources().getColor(R.color.md_blue_grey_500),
                 getResources().getColor(R.color.md_deep_purple_100));
-
         recyclerView = (RecyclerView) view.findViewById(R.id.card_recycler_view_communities);
-        adapter = new DataAdapter();
+        communities = new ArrayList<>();
+        adapter = new CommunityAdapter();
         recyclerView.setAdapter(adapter);
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager((this.getContext()));
         recyclerView.setLayoutManager(layoutManager);
+
         queryCommunityPost();
     }
 
 
     private void setupClickListeners() {
-        queryCommunityPost();
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                queryCommunityPost();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
 
@@ -129,7 +128,7 @@ public class NotifFragment extends Fragment {
                 try {
                     final String body = response.body().string();
 
-
+                    adapter.removeCommunity();
 
                     if(!body.isEmpty()) {
                         getActivity().runOnUiThread(new Runnable() {
@@ -137,7 +136,7 @@ public class NotifFragment extends Fragment {
                             public void run() {
                                 Gson gson = new Gson();
                                 try {
-                                    JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allCommunities").getJSONArray("edges");
+                                    JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("myCommunities").getJSONArray("edges");
                                     for (int i = 0; i < jsonEvents.length(); ++i) {
                                         JSONObject communities = jsonEvents.getJSONObject(i).getJSONObject("node");
                                         adapter.addCommunity(gson.fromJson(communities.toString(), Community.class));
@@ -167,7 +166,6 @@ public class NotifFragment extends Fragment {
     }
 
     private String makeCommunityQuery() {
-
         return "{myCommunities {\nedges{\nnode { id, title, acronym }}}}";
     }
 
