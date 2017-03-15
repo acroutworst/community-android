@@ -85,6 +85,7 @@ public class HomeActivity extends AppCompatActivity {
     private String mFname;
     private String mLname;
     private String mInterests;
+    private ProfileDrawerItem profileItem;
 
     private ArrayList<Community> communities = new ArrayList<>();
     private ArrayList<IDrawerItem> items = new ArrayList<>();
@@ -125,10 +126,15 @@ public class HomeActivity extends AppCompatActivity {
         item3.withIcon(GoogleMaterial.Icon.gmd_language);
         item4.withIcon(GoogleMaterial.Icon.gmd_power_settings_new);
 
-        ProfileDrawerItem profileItem = new ProfileDrawerItem()
+        new ProfileQueryTask().execute();
+
+        profileItem = new ProfileDrawerItem()
             .withName(AccountService.Instance().mAccount.firstName)
             .withEmail(AccountService.Instance().mAccount.email)
             .withIcon(getResources().getDrawable(R.drawable.profile2));
+
+        Log.d(TAG, "Name: " + AccountService.Instance().mAccount.firstName);
+        Log.d(TAG, "Email: " + AccountService.Instance().mAccount.firstName);
 
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
@@ -143,12 +149,13 @@ public class HomeActivity extends AppCompatActivity {
 
                         profile.withName(AccountService.Instance().mAccount.firstName);
                         profile.withEmail(AccountService.Instance().mAccount.email);
+                        profileItem.withName(AccountService.Instance().mAccount.firstName)
+                            .withEmail(AccountService.Instance().mAccount.email);
 
                         return true;
                     }
                 })
                 .build();
-
 
         final Drawer drawer = new DrawerBuilder()
                 .withActivity(this)
