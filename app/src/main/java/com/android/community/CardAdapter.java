@@ -1,8 +1,11 @@
 package com.android.community;
 
 import android.graphics.Color;
+import android.view.View;
+import android.widget.Toast;
 
 import com.airbnb.epoxy.EpoxyAdapter;
+import com.android.community.fragment.MeetupFragment;
 import com.android.community.models.GroupModel_;
 import com.android.community.models.HeaderModel;
 import com.android.community.models.HeaderModel_;
@@ -35,26 +38,36 @@ public class CardAdapter extends EpoxyAdapter {
 		);
 	}
 
-//	private void updateVisibility() {
-//		if(headerModel.isShown()) {
-//			headerModel.hide();
-//		}
-//	}
+	private void updateVisibility() {
+		if(headerModel.isShown()) {
+			headerModel.hide();
+		}
+	}
 
 	public final void onAddClicked() {
 //		insertModelAfter(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()), headerModel);
-//		updateVisibility();
+		updateVisibility();
 		addModel(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()));
 	}
 
 	public void addMeetup(Meetup meetup) {
 //		insertModelAfter(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()), headerModel);
-//		updateVisibility();
+		updateVisibility();
+
+		// instead of this
 		addModel(new MeetupModel_()
 				.title(meetup.getName())
 				.subtitle(meetup.getDescription())
-				.color(randomColor()));
+				.color(randomColor())
+				.clickListener(onMeetupClicked));
 	}
+
+	public View.OnClickListener onMeetupClicked = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Toast.makeText(v.getContext(), "Meetup clicked", Toast.LENGTH_LONG).show();
+		}
+	};
 
 	public void removeMeetup() {
 //		removeAllAfterModel(headerModel);
