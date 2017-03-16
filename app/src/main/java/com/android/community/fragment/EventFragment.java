@@ -14,7 +14,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +64,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class EventFragment extends Fragment {
 
@@ -152,7 +152,7 @@ public class EventFragment extends Fragment {
 
         String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-        Log.d(TAG, "EventFragment AuthToken: " + API_TOKEN);
+			Timber.d("EventFragment AuthToken: " + API_TOKEN);
 
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())
@@ -188,20 +188,20 @@ public class EventFragment extends Fragment {
 										}
 									});
 								} else {
-									Log.d(TAG, "Response Body is null");
-									Log.d(TAG, "Response Body: " + body);
+									Timber.d("Response Body is null");
+									Timber.d("Response Body: " + body);
 								}
 
 							} catch(Exception e) {
-									Log.d(TAG, e.getMessage());
-									Log.d(TAG, "Events Body ERROR");
+								Timber.d(e.getMessage());
+								Timber.d("Events Body ERROR");
 							}
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, t.getMessage());
-                Log.d(TAG, "onFailure in enqueue");
+							Timber.d(t.getMessage());
+							Timber.d("onFailure in enqueue");
             }
         });
     }
@@ -238,9 +238,9 @@ public class EventFragment extends Fragment {
 		btnBtmLeft.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "Event Name: " + eventName.getText().toString());
-				Log.d(TAG, "Event Description: " + eventDescription.getText().toString());
-				Log.d(TAG, "Event Location: " + eventLocation.getText().toString());
+				Timber.d("Event Name: " + eventName.getText().toString());
+				Timber.d("Event Description: " + eventDescription.getText().toString());
+				Timber.d("Event Location: " + eventLocation.getText().toString());
 
 //				mAuthTask = new AddEventTask(eventName.getText().toString(), eventDescription.getText().toString(), eventLocation.getText().toString());
 				createEventPost(eventName.getText().toString(), eventDescription.getText().toString(), eventLocation.getText().toString());
@@ -293,9 +293,9 @@ public class EventFragment extends Fragment {
 
 				successful = communicator.successful;
 
-				Log.d(TAG, "ADD_EVENT_TASK_SUCCESSFUL: " + successful);
+				Timber.d("ADD_EVENT_TASK_SUCCESSFUL: " + successful);
 			} catch (Exception e) {
-				Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+				Timber.d("THE QUERY WAS A FAILURE");
 
 				e.printStackTrace();
 
@@ -355,7 +355,7 @@ public class EventFragment extends Fragment {
 
 		String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-		Log.d(TAG, "EventFragment AuthToken: " + API_TOKEN);
+		Timber.d("EventFragment AuthToken: " + API_TOKEN);
 
 		Retrofit retrofit = new Retrofit.Builder()
 				.client(httpClient.build())
@@ -380,7 +380,7 @@ public class EventFragment extends Fragment {
 							public void run() {
 								try {
 									boolean meetupCreated = new JSONObject(body).getJSONObject("data").getJSONObject("registerEvent").getBoolean("ok");
-									Log.d(TAG, "eventCreated : " + meetupCreated);
+									Timber.d(TAG, "eventCreated : " + meetupCreated);
 
 									queryEventPost();
 								} catch (JSONException e) {
@@ -389,20 +389,20 @@ public class EventFragment extends Fragment {
 							}
 						});
 					} else {
-						Log.d(TAG, "Response Body is null");
-						Log.d(TAG, "Response Body: " + body);
+						Timber.d("Response Body is null");
+						Timber.d("Response Body: " + body);
 					}
 
 				} catch(Exception e) {
-					Log.d(TAG, e.getMessage());
-					Log.d(TAG, "Events Body ERROR");
+					Timber.d(e.getMessage());
+					Timber.d("Events Body ERROR");
 				}
 			}
 
 			@Override
 			public void onFailure(Call<ResponseBody> call, Throwable t){
-				Log.d(TAG, t.getMessage());
-				Log.d(TAG, "Failed creating the event");
+				Timber.d(t.getMessage());
+				Timber.d("Failed creating the event");
 			}
 		});
 	}

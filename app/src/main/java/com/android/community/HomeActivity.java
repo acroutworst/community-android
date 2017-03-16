@@ -16,7 +16,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,6 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -106,13 +106,13 @@ public class HomeActivity extends AppCompatActivity {
         queryCommunityPost();
         items = new ArrayList<>(communities.size());
 
-        Log.d(TAG, "Community Size: " + communities.size());
+        Timber.d("Community Size: " + communities.size());
 
         for(int i = 0; i < communities.size(); i++) {
             items.add(new PrimaryDrawerItem().withIdentifier(i).withName(communities.get(i).getTitle()));
         }
 
-        Log.d(TAG, "Items Size: " + items.size());
+        Timber.d("Items Size: " + items.size());
 
         final PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.action_About);
         final PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.action_Profile);
@@ -133,8 +133,8 @@ public class HomeActivity extends AppCompatActivity {
             .withEmail(AccountService.Instance().mAccount.email)
             .withIcon(getResources().getDrawable(R.drawable.profile2));
 
-        Log.d(TAG, "Name: " + AccountService.Instance().mAccount.firstName);
-        Log.d(TAG, "Email: " + AccountService.Instance().mAccount.firstName);
+        Timber.d("Name: " + AccountService.Instance().mAccount.firstName);
+        Timber.d("Email: " + AccountService.Instance().mAccount.firstName);
 
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
@@ -183,7 +183,7 @@ public class HomeActivity extends AppCompatActivity {
                             builder.setNegativeButton("NO",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Log.d(TAG, "NO Alert");
+                                        Timber.d("NO Alert");
                                     }
                             });
 
@@ -299,10 +299,10 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        Log.d(TAG, "First name: " + AccountService.Instance().mAccount.firstName);
-        Log.d(TAG, "Last name: " + AccountService.Instance().mAccount.lastName);
-        Log.d(TAG, "Email: " + AccountService.Instance().mAccount.email);
-        Log.d(TAG, "Full: " + AccountService.Instance().mAccount.firstName + " " + AccountService.Instance().mAccount.lastName);
+        Timber.d("First name: " + AccountService.Instance().mAccount.firstName);
+        Timber.d("Last name: " + AccountService.Instance().mAccount.lastName);
+        Timber.d("Email: " + AccountService.Instance().mAccount.email);
+        Timber.d("Full: " + AccountService.Instance().mAccount.firstName + " " + AccountService.Instance().mAccount.lastName);
     }
 
     /* Search Filters */
@@ -379,7 +379,7 @@ public class HomeActivity extends AppCompatActivity {
 
         String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-        Log.d(TAG, "HomeActivity Communities: " + API_TOKEN);
+        Timber.d("HomeActivity Communities: " + API_TOKEN);
 
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())
@@ -416,20 +416,20 @@ public class HomeActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Log.d(TAG, "Response Body is null");
-                        Log.d(TAG, "Response Body: " + body);
+                        Timber.d("Response Body is null");
+                        Timber.d("Response Body: " + body);
                     }
 
                 } catch(Exception e) {
-                    Log.d(TAG, e.getMessage());
-                    Log.d(TAG, "Events Body ERROR");
+                    Timber.d(e.getMessage());
+                    Timber.d("Events Body ERROR");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, t.getMessage());
-                Log.d(TAG, "onFailure in enqueue");
+                Timber.d(t.getMessage());
+                Timber.d("onFailure in enqueue");
             }
         });
     }
@@ -456,25 +456,25 @@ public class HomeActivity extends AppCompatActivity {
 
                 successful = communicator.successful;
 
-                Log.d(TAG, "Signout isSuccessful: " + communicator.successful);
-                Log.d(TAG, "SIGNOUTTASK_SUCCESSFUL: " + successful);
+                Timber.d("Signout isSuccessful: " + communicator.successful);
+                Timber.d("SIGNOUTTASK_SUCCESSFUL: " + successful);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("SIGNOUT_POST_FAILURE", "THE SIGNOUT WAS A FAILURE");
+                Timber.d("THE SIGNOUT WAS A FAILURE");
 
                 return false;
             }
 
-            Log.d(TAG, "successful2: " + successful);
+            Timber.d("successful2: " + successful);
             return successful;
         }
 
         @Override
         protected void onPostExecute(final Boolean successful) {
-            Log.d(TAG, "inside onPostExecute");
+            Timber.d("inside onPostExecute");
 
             if (successful) {
-                Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
+                Timber.d("inside onPostExecute isSuccessful: " + successful);
 
                 Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
                 startActivity(loginIntent);

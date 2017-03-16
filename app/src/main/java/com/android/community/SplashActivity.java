@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.android.community.authentication.Communicator;
+
+import timber.log.Timber;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -58,10 +59,10 @@ public class SplashActivity extends AppCompatActivity {
                 communicator.clientLoginPost();
 
                 successful = communicator.successful;
-                Log.d(TAG, "CLIENT_LOGIN_POST_SUCCESSFUL: " + successful);
+                Timber.d("CLIENT_LOGIN_POST_SUCCESSFUL: " + successful);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("CLIENT_LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
+                Timber.d("THE LOGIN POST WAS A FAILURE");
 
                 return false;
             }
@@ -77,7 +78,7 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Log.d(TAG, "Client Token POST not successful");
+                Timber.d("Client Token POST not successful");
             }
         }
 

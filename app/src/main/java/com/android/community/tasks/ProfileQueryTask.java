@@ -1,9 +1,10 @@
 package com.android.community.tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.android.community.authentication.Communicator;
+
+import timber.log.Timber;
 
 /**
  * Created by adamc on 2/15/17.
@@ -29,28 +30,28 @@ public class ProfileQueryTask extends AsyncTask<String, Void, Boolean> {
 
 			successful = communicator.successful;
 
-			Log.d(TAG, "Query isSuccessful: " + communicator.successful);
-			Log.d(TAG, "QUERYTASK_SUCCESSFUL: " + successful);
+			Timber.d("Query isSuccessful: " + communicator.successful);
+			Timber.d("QUERYTASK_SUCCESSFUL: " + successful);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+			Timber.d("THE QUERY WAS A FAILURE");
 
 			return false;
 		}
 
-		Log.d(TAG, "successful2: " + successful);
+		Timber.d(TAG, "successful2: " + successful);
 		return successful;
 	}
 
 	@Override
 	protected void onPostExecute(final Boolean successful) {
-		Log.d(TAG, "inside onPostExecute");
+		Timber.d("inside onPostExecute");
 
 		if (successful) {
-			Log.d(TAG, "inside onPostExecute isSuccessful: " + successful);
+			Timber.d("inside onPostExecute isSuccessful: " + successful);
 
 		} else {
-			Log.d(TAG, "inside onPostExecute isFailure: " + successful);
+			Timber.d("inside onPostExecute isFailure: " + successful);
 
 		}
 

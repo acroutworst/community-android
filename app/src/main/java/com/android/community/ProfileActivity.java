@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
@@ -39,6 +38,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class ProfileActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener {
 	public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
@@ -206,7 +206,7 @@ public class ProfileActivity extends AppCompatActivity implements RevealBackgrou
 
 		String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-		Log.d(TAG, "MeetupFragment AuthToken: " + API_TOKEN);
+		Timber.d("MeetupFragment AuthToken: " + API_TOKEN);
 
 		Retrofit retrofit = new Retrofit.Builder()
 				.client(httpClient.build())
@@ -242,20 +242,20 @@ public class ProfileActivity extends AppCompatActivity implements RevealBackgrou
 							}
 						});
 					} else {
-						Log.d(TAG, "Response Body is null");
-						Log.d(TAG, "Response Body: " + body);
+						Timber.d("Response Body is null");
+						Timber.d("Response Body: " + body);
 					}
 
 				} catch(Exception e) {
-					Log.d(TAG, e.getMessage());
-					Log.d(TAG, "Events Body ERROR");
+					Timber.d(e.getMessage());
+					Timber.d("Events Body ERROR");
 				}
 			}
 
 			@Override
 			public void onFailure(Call<ResponseBody> call, Throwable t) {
-				Log.d(TAG, t.getMessage());
-				Log.d(TAG, "onFailure in enqueue");
+				Timber.d(t.getMessage());
+				Timber.d("onFailure in enqueue");
 			}
 		});
 	}

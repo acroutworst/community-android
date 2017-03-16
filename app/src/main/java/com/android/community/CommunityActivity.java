@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,6 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class CommunityActivity extends AppCompatActivity {
 
@@ -100,7 +100,7 @@ public class CommunityActivity extends AppCompatActivity {
 
 		String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-		Log.d(TAG, "Community AuthToken: " + API_TOKEN);
+		Timber.d("Community AuthToken: " + API_TOKEN);
 
 		Retrofit retrofit = new Retrofit.Builder()
 				.client(httpClient.build())
@@ -125,7 +125,7 @@ public class CommunityActivity extends AppCompatActivity {
 							public void run() {
 								Gson gson = new Gson();
 								try {
-									JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("myCommunities").getJSONArray("edges");
+									JSONArray jsonEvents = new JSONObject(body).getJSONObject("data").getJSONObject("allCommunities").getJSONArray("edges");
 									for (int i = 0; i < jsonEvents.length(); ++i) {
 										JSONObject communities = jsonEvents.getJSONObject(i).getJSONObject("node");
 										adapter.addCommunity(gson.fromJson(communities.toString(), Community.class));
@@ -136,25 +136,25 @@ public class CommunityActivity extends AppCompatActivity {
 							}
 						});
 					} else {
-						Log.d(TAG, "Response Body is null");
-						Log.d(TAG, "Response Body: " + body);
+						Timber.d("Response Body is null");
+						Timber.d("Response Body: " + body);
 					}
 
 				} catch(Exception e) {
-					Log.d(TAG, e.getMessage());
-					Log.d(TAG, "Events Body ERROR");
+					Timber.d(e.getMessage());
+					Timber.d("Events Body ERROR");
 				}
 			}
 
 			@Override
 			public void onFailure(Call<ResponseBody> call, Throwable t) {
-				Log.d(TAG, t.getMessage());
-				Log.d(TAG, "onFailure in enqueue");
+				Timber.d(t.getMessage());
+				Timber.d("onFailure in enqueue");
 			}
 		});
 	}
 
 	private String makeCommunityQuery() {
-		return "{myCommunities {\nedges{\nnode { id, title, acronym }}}}";
+		return "{allCommunities {\nedges{\nnode { id, title, acronym }}}}";
 	}
 }

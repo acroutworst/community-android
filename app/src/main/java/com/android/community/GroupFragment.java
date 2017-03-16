@@ -16,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +51,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 
 public class GroupFragment extends Fragment {
@@ -150,7 +150,7 @@ public class GroupFragment extends Fragment {
 
         String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-        Log.d(TAG, "MeetupFragment AuthToken: " + API_TOKEN);
+				Timber.d("MeetupFragment AuthToken: " + API_TOKEN);
 
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())
@@ -186,20 +186,20 @@ public class GroupFragment extends Fragment {
                             }
                         });
                     } else {
-                        Log.d(TAG, "Response Body is null");
-                        Log.d(TAG, "Response Body: " + body);
+											Timber.d("Response Body is null");
+											Timber.d("Response Body: " + body);
                     }
 
                 } catch(Exception e) {
-                    Log.d(TAG, e.getMessage());
-                    Log.d(TAG, "Events Body ERROR");
+									Timber.d(e.getMessage());
+									Timber.d("Events Body ERROR");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, t.getMessage());
-                Log.d(TAG, "onFailure in enqueue");
+							Timber.d(t.getMessage());
+							Timber.d("onFailure in enqueue");
             }
         });
     }
@@ -219,7 +219,7 @@ public class GroupFragment extends Fragment {
 
 		String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-		Log.d(TAG, "GroupFragment HashMap: " + API_TOKEN);
+		Timber.d("GroupFragment HashMap: " + API_TOKEN);
 
 		Retrofit retrofit = new Retrofit.Builder()
 				.client(httpClient.build())
@@ -257,20 +257,20 @@ public class GroupFragment extends Fragment {
 							}
 						});
 					} else {
-						Log.d(TAG, "Response Body is null");
-						Log.d(TAG, "Response Body: " + body);
+						Timber.d("Response Body is null");
+						Timber.d("Response Body: " + body);
 					}
 
 				} catch(Exception e) {
-					Log.d(TAG, e.getMessage());
-					Log.d(TAG, "Events Body ERROR");
+					Timber.d(e.getMessage());
+					Timber.d("Events Body ERROR");
 				}
 			}
 
 			@Override
 			public void onFailure(Call<ResponseBody> call, Throwable t) {
-				Log.d(TAG, t.getMessage());
-				Log.d(TAG, "onFailure in enqueue");
+				Timber.d(TAG, t.getMessage());
+				Timber.d(TAG, "onFailure in enqueue");
 			}
 		});
 	}
@@ -369,9 +369,9 @@ public class GroupFragment extends Fragment {
 
 				successful = communicator.successful;
 
-				Log.d(TAG, "ADD_GROUP_TASK_SUCCESSFUL: " + successful);
+				Timber.d("ADD_GROUP_TASK_SUCCESSFUL: " + successful);
 			} catch (Exception e) {
-				Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+				Timber.d("THE QUERY WAS A FAILURE");
 
 				e.printStackTrace();
 

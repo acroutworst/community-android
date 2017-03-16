@@ -23,7 +23,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,6 +51,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -168,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
+        Timber.d("onStart");
 //        silentSignIn();
     }
 
@@ -179,7 +179,7 @@ public class RegisterActivity extends AppCompatActivity implements
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.d(TAG, "GoogleSignInResult result = " + result);
+            Timber.d("GoogleSignInResult result = " + result);
             handleSignInResult(result);
         }
     }
@@ -205,7 +205,7 @@ public class RegisterActivity extends AppCompatActivity implements
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        Timber.d("handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
@@ -221,10 +221,10 @@ public class RegisterActivity extends AppCompatActivity implements
     }
 
     private void silentSignIn() {
-        Log.d(TAG, "silentSignIn");
+        Timber.d("silentSignIn");
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.
                 silentSignIn(mGoogleApiClient);
-        Log.d(TAG, "silentSignIn: " + opr.isDone());
+        Timber.d("silentSignIn: " + opr.isDone());
         if (opr.isDone()) {
             GoogleSignInResult googleSignInResult = opr.get();
             handleSignInResult(googleSignInResult);
@@ -440,7 +440,7 @@ public class RegisterActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed");
+        Timber.d("onConnectionFailed");
     }
 
 
@@ -490,9 +490,9 @@ public class RegisterActivity extends AppCompatActivity implements
 
                 successful = communicator.successful;
 
-                Log.d(TAG, "REGISTER_USER_TASK_SUCCESSFUL: " + successful);
+                Timber.d("REGISTER_USER_TASK_SUCCESSFUL: " + successful);
             } catch (Exception e) {
-                Log.d("QUERY_POST_FAILURE", "THE QUERY WAS A FAILURE");
+                Timber.d("THE QUERY WAS A FAILURE");
 
                 e.printStackTrace();
 
