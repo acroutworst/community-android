@@ -21,7 +21,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,6 +41,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -238,7 +239,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
 
-            Log.d(TAG, "Login password before: " + password);
+            Timber.d("Login password before: " + password);
 
 //            final String hashed = Hashing.sha256()
 //                .hashString(password, Charset.forName("UTF-8"))
@@ -249,7 +250,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 .putString(password, Charset.forName("UTF-8"))
                 .hash();
 
-            Log.d(TAG, "Login password after: " + hashed);
+            Timber.d("Login password after: " + hashed);
 
             String.format("\"%s\"\"%s\"", "sha256$$" , hashed);
 
@@ -286,9 +287,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 successful = communicator.successful;
 
-                Log.d(TAG, "LOGIN_POST_SUCCESSFUL: " + successful);
+                Timber.d("LOGIN_POST_SUCCESSFUL: " + successful);
             } catch (Exception e) {
-                Log.d("LOGIN_POST_FAILURE", "THE LOGIN POST WAS A FAILURE");
+                Timber.d("THE LOGIN POST WAS A FAILURE");
 
                 e.printStackTrace();
 

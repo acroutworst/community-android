@@ -5,7 +5,6 @@ import android.media.Image;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -130,7 +130,7 @@ public class HomeFragment extends Fragment {
 
         String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-        Log.d(TAG, "EventFragment AuthToken: " + API_TOKEN);
+        Timber.d("EventFragment AuthToken: " + API_TOKEN);
 
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())
@@ -153,27 +153,27 @@ public class HomeFragment extends Fragment {
                             public void run() {
                                 try {
                                     boolean meetupCreated = new JSONObject(body).getJSONObject("data").getJSONObject("registerPost").getBoolean("ok");
-                                    Log.d(TAG, "postCreated : " + meetupCreated);
+                                    Timber.d("postCreated : " + meetupCreated);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         });
                     } else {
-                        Log.d(TAG, "Response Body is null");
-                        Log.d(TAG, "Response Body: " + body);
+                        Timber.d("Response Body is null");
+                        Timber.d("Response Body: " + body);
                     }
 
                 } catch(Exception e) {
-                    Log.d(TAG, e.getMessage());
-                    Log.d(TAG, "Post Body ERROR");
+                    Timber.d(e.getMessage());
+                    Timber.d("Post Body ERROR");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t){
-                Log.d(TAG, t.getMessage());
-                Log.d(TAG, "Failed creating the post");
+                Timber.d(t.getMessage());
+                Timber.d("Failed creating the post");
             }
         });
     }
@@ -193,7 +193,7 @@ public class HomeFragment extends Fragment {
 
         String API_TOKEN = "Bearer " + AccountService.Instance().mAuthToken;
 
-        Log.d(TAG, "HomeFragment AuthToken: " + API_TOKEN);
+        Timber.d("HomeFragment AuthToken: " + API_TOKEN);
 
         Retrofit retrofit = new Retrofit.Builder()
             .client(httpClient.build())
@@ -231,20 +231,20 @@ public class HomeFragment extends Fragment {
                             }
                         });
                     } else {
-                        Log.d(TAG, "Response Body is null");
-                        Log.d(TAG, "Response Body: " + body);
+                        Timber.d("Response Body is null");
+                        Timber.d("Response Body: " + body);
                     }
 
                 } catch(Exception e) {
-                    Log.d(TAG, e.getMessage());
-                    Log.d(TAG, "Post Body ERROR");
+                    Timber.d(e.getMessage());
+                    Timber.d("Post Body ERROR");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TAG, t.getMessage());
-                Log.d(TAG, "onFailure in enqueue");
+                Timber.d(t.getMessage());
+                Timber.d("onFailure in enqueue");
             }
         });
     }

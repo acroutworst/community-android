@@ -1,6 +1,5 @@
 package com.android.community.deserializer;
 
-import android.util.Log;
 
 import com.android.community.models.AccountRegistration;
 import com.google.gson.Gson;
@@ -10,6 +9,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
+
+import timber.log.Timber;
 
 /**
  * Created by Billy on 2/14/2017.
@@ -22,7 +23,7 @@ public class AccountDeserializer implements JsonDeserializer<AccountRegistration
     public AccountRegistration deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
         // Get the "account" element from the parsed JSON
         JsonElement account = je.getAsJsonObject().get("data").getAsJsonObject().get("registerAccount").getAsJsonObject().get("account");
-        Log.d(TAG, "account: " + account);
+        Timber.d("account: " + account);
 
         // Deserialize it. You use a new instance of Gson to avoid infinite recursion
         // to this deserializer

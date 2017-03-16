@@ -1,7 +1,5 @@
 package com.android.community.deserializer;
 
-import android.util.Log;
-
 import com.android.community.models.AccountRegistration;
 import com.android.community.models.Event;
 import com.android.community.models.EventResponse;
@@ -16,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import okhttp3.ResponseBody;
+import timber.log.Timber;
 
 /**
  * Created by adamc on 2/17/17.
@@ -28,7 +27,7 @@ public class EventDeserializer implements JsonDeserializer<Event> {
 	public Event deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
 		// Get the "account" element from the parsed JSON
 		JsonElement account = je.getAsJsonObject().get("data").getAsJsonObject().get("registerEvent").getAsJsonObject().get("event");
-		Log.d(TAG, "group: " + account);
+		Timber.d("group: " + account);
 
 		// Deserialize it. You use a new instance of Gson to avoid infinite recursion
 		// to this deserializer

@@ -1,7 +1,5 @@
 package com.android.community.authentication;
 
-import android.util.Log;
-
 import com.android.community.AccountService;
 import com.android.community.DataAdapter;
 import com.android.community.deserializer.EventDeserializer;
@@ -36,6 +34,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 /**
  * Created by adamc on 1/21/17.
@@ -82,8 +81,8 @@ public class Communicator {
         USERNAME = username;
         PASSWORD = password;
 
-        Log.d(TAG, "Username: " + USERNAME);
-        Log.d(TAG, "Password: " + PASSWORD);
+        Timber.d("Username: " + USERNAME);
+        Timber.d("Password: " + PASSWORD);
 
         //Here a logging interceptor is created
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -166,8 +165,8 @@ public class Communicator {
             USER_TOKEN = "";
             AccountService.Instance().mAuthToken = "";
 
-            Log.d(TAG, "Response isSuccessful(): " + successful);
-            Log.d(TAG, "USER_TOKEN: " + USER_TOKEN);
+            Timber.d("Response isSuccessful(): " + successful);
+            Timber.d("USER_TOKEN: " + USER_TOKEN);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -190,20 +189,20 @@ public class Communicator {
 
             AccountService.Instance().mAuthToken = USER_TOKEN;
 
-            Log.d(TAG, "AccountService: " + AccountService.Instance().mAuthToken);
+            Timber.d("AccountService: " + AccountService.Instance().mAuthToken);
 
-            Log.d(TAG, "Response isSuccessful(): " + response.isSuccessful());
-            Log.d(TAG, "Access Token: " + response.body().getToken());
-            Log.d(TAG, "Refresh Token: " + response.body().getRefreshToken());
-            Log.d(TAG, "Token Type: " + response.body().getAccessType());
-            Log.d(TAG, "Scope: " + response.body().getScope());
-            Log.d(TAG, "Expire Time: " + response.body().getExpireTime());
-            Log.d(TAG, "USER_TOKEN: " + USER_TOKEN);
-            Log.d(TAG, "GET_TOKEN_SUCCESSFUL_1: " + successful);
+            Timber.d("Response isSuccessful(): " + response.isSuccessful());
+            Timber.d("Access Token: " + response.body().getToken());
+            Timber.d("Refresh Token: " + response.body().getRefreshToken());
+            Timber.d("Token Type: " + response.body().getAccessType());
+            Timber.d("Scope: " + response.body().getScope());
+            Timber.d("Expire Time: " + response.body().getExpireTime());
+            Timber.d("USER_TOKEN: " + USER_TOKEN);
+            Timber.d("GET_TOKEN_SUCCESSFUL_1: " + successful);
         } catch(IOException e){
             e.printStackTrace();
         }
-        Log.d(TAG, "GET_TOKEN_SUCCESSFUL_2: " + successful);
+        Timber.d("GET_TOKEN_SUCCESSFUL_2: " + successful);
     }
 
     public void queryProfilePost() {
@@ -245,12 +244,12 @@ public class Communicator {
             AccountService.Instance().mAccount.username = response.body().getUsername();
             AccountService.Instance().mAccount.isActive = response.body().getIsActive();
 
-            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
-            Log.d(TAG, "AccountService Email: " + AccountService.Instance().mAccount.email);
-            Log.d(TAG, "Response Email: " + response.body().getEmail());
-            Log.d(TAG, "Response FName: " + response.body().getFirstName());
-            Log.d(TAG, "Response ID: " + response.body().getId());
-            Log.d(TAG, "Response LName: " + response.body().getLastName());
+            Timber.d("Response isSuccessful: " + response.isSuccessful());
+            Timber.d("AccountService Email: " + AccountService.Instance().mAccount.email);
+            Timber.d("Response Email: " + response.body().getEmail());
+            Timber.d("Response FName: " + response.body().getFirstName());
+            Timber.d("Response ID: " + response.body().getId());
+            Timber.d("Response LName: " + response.body().getLastName());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -288,12 +287,12 @@ public class Communicator {
 
             successful = response.isSuccessful();
 
-            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
-            Log.d(TAG, "Response username: " + response.body().getUsername());
-            Log.d(TAG, "Response Email: " + response.body().getEmail());
-            Log.d(TAG, "Response FName: " + response.body().getFirstName());
-            Log.d(TAG, "Response LName: " + response.body().getLastName());
-            Log.d(TAG, "Response Email: " + response.body().getEmail());
+            Timber.d("Response isSuccessful: " + response.isSuccessful());
+            Timber.d("Response username: " + response.body().getUsername());
+            Timber.d("Response Email: " + response.body().getEmail());
+            Timber.d("Response FName: " + response.body().getFirstName());
+            Timber.d("Response LName: " + response.body().getLastName());
+            Timber.d("Response Email: " + response.body().getEmail());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -330,8 +329,8 @@ public class Communicator {
 
             successful = response.isSuccessful();
 
-            Log.d(TAG, "Response Group: " + response.body().toString());
-            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
+            Timber.d("Response Group: " + response.body().toString());
+            Timber.d("Response isSuccessful: " + response.isSuccessful());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -368,8 +367,8 @@ public class Communicator {
 
             successful = response.isSuccessful();
 
-            Log.d(TAG, "Response Event: " + response.body().toString());
-            Log.d(TAG, "Response isSuccessful: " + response.isSuccessful());
+            Timber.d("Response Event: " + response.body().toString());
+            Timber.d("Response isSuccessful: " + response.isSuccessful());
         } catch (IOException e) {
             e.printStackTrace();
         }
