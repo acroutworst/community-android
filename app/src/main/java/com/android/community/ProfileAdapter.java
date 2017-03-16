@@ -44,7 +44,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	public ProfileAdapter(Context context) {
 		this.context = context;
 		this.cellSize = Utils.getScreenWidth(context) / 3;
-		this.photos = Arrays.asList(context.getResources().getStringArray(R.array.user_photos));
+//		this.photos = Arrays.asList(context.getResources().getStringArray(R.array.user_photos));
+		this.photos = Arrays.asList(AccountService.Instance().groupModels.toString());
 	}
 
 	@Override

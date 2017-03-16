@@ -54,4 +54,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.weiwangcn.betterspinner:library-material:1.1.0'
+    compile 'com.google.guava:guava:20.0'
 }

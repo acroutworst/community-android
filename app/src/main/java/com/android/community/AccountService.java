@@ -4,7 +4,10 @@ package com.android.community;
 import com.android.community.authentication.Communicator;
 import com.android.community.models.Account;
 import com.android.community.models.AccountRegistration;
+import com.android.community.models.GroupModel_;
 import com.android.community.models.Profile;
+
+import java.util.ArrayList;
 
 /**
  * Created by adamc on 2/15/17.
@@ -32,6 +35,10 @@ public class AccountService {
 	public AccountRegistration mAccountReg = new AccountRegistration();
 	public AccountRegistration getmAccountReg() { return this.mAccountReg; }
 	public void setmAccountReg(AccountRegistration accountReg) { mAccountReg = accountReg; }
+
+	public ArrayList<GroupModel_> groupModels = new ArrayList<>();
+	public ArrayList<GroupModel_> getGroupModels() { return groupModels; }
+	public void setGroupModels(ArrayList<GroupModel_> groupModels) { this.groupModels = groupModels; }
 
 	public Boolean ReadyToSignIn() {
 		return !(mAuthToken.isEmpty());

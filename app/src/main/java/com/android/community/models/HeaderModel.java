@@ -15,12 +15,12 @@ import com.android.community.views.HeaderView;
 @EpoxyModelClass(layout = R.layout.model_header)
 public abstract class HeaderModel extends EpoxyModel<HeaderView> {
   @EpoxyAttribute @StringRes int title;
-  @EpoxyAttribute @StringRes int caption;
+//  @EpoxyAttribute @StringRes int caption;
 
   @Override
   public void bind(HeaderView view) {
     view.setTitle(title);
-    view.setCaption(caption);
+//    view.setCaption(caption);
   }
 
   @Override

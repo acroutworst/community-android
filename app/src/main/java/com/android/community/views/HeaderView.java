@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 public class HeaderView extends LinearLayout {
 
   @BindView(R.id.title_text) TextView title;
-  @BindView(R.id.caption_text) TextView caption;
+//  @BindView(R.id.caption_text) TextView caption;
 
   public HeaderView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -31,7 +31,7 @@ public class HeaderView extends LinearLayout {
     this.title.setText(title);
   }
 
-  public void setCaption(@StringRes int caption) {
-    this.caption.setText(caption);
-  }
+//  public void setCaption(@StringRes int caption) {
+//    this.caption.setText(caption);
+//  }
 }

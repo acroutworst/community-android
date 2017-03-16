@@ -34,7 +34,12 @@ import android.widget.TextView;
 
 import com.android.community.authentication.BusProvider;
 import com.android.community.authentication.Communicator;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -232,6 +237,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
+            Log.d(TAG, "Login password before: " + password);
+
+//            final String hashed = Hashing.sha256()
+//                .hashString(password, Charset.forName("UTF-8"))
+//                .toString();
+
+            HashFunction hf = Hashing.sha256();
+            HashCode hashed = hf.newHasher()
+                .putString(password, Charset.forName("UTF-8"))
+                .hash();
+
+            Log.d(TAG, "Login password after: " + hashed);
+
+            String.format("\"%s\"\"%s\"", "sha256$$" , hashed);
+
             mAuthTask = new UserLoginTask(email, password).execute();
         }
     }
