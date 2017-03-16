@@ -14,6 +14,7 @@ import com.android.community.models.GroupModel_;
 import com.android.community.models.HeaderModel;
 import com.android.community.models.HeaderModel_;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
@@ -34,8 +35,8 @@ public class GridAdapter extends EpoxyAdapter {
     // appended to the class name. These generated classes contain our setter methods, as well as
     // the hashcode methods that tell the diffing algorithm when a model has changed
     headerModel = new HeaderModel_()
-        .title(R.string.epoxy)
-        .caption(R.string.header_subtitle);
+        .title(R.string.epoxy);
+//        .caption(R.string.empty);
 
     ButtonModel addButton = new ButtonModel_()
         .text(R.string.button_add)
@@ -51,7 +52,7 @@ public class GridAdapter extends EpoxyAdapter {
         .clickListener(onChangeColorsClicked);
 
     addModels(
-        headerModel.hide(),
+        headerModel,
         addButton.hide(),
         clearButton.hide(),
         shuffleButton.hide(),
@@ -86,12 +87,17 @@ public class GridAdapter extends EpoxyAdapter {
   }
 
 	public void addGroup(Group group) {
-			updateVisibility();
-			addModel(new GroupModel_().text(group.getTitle()).image(randomPicture()));
+//			updateVisibility();
+			insertModelAfter(new GroupModel_().text(group.getTitle()).image(randomPicture()), headerModel);
+			AccountService.Instance().groupModels.add(new GroupModel_().text(group.getTitle()).image(randomPicture()));
 	}
 
 	public void removeGroup() {
 			removeAllModels();
+
+			addModels(
+					headerModel
+			);
 	}
 
   private final OnClickListener onClearClicked = new OnClickListener() {

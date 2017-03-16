@@ -30,11 +30,11 @@ public class CardAdapter extends EpoxyAdapter {
 		enableDiffing();
 
 		headerModel = new HeaderModel_()
-				.title(R.string.epoxy_meetups)
-				.caption(R.string.meetup_header_subtitle);
+				.title(R.string.epoxy_meetups);
+//				.caption(R.string.empty);
 
 		addModels(
-				headerModel.hide()
+				headerModel
 		);
 	}
 
@@ -46,20 +46,20 @@ public class CardAdapter extends EpoxyAdapter {
 
 	public final void onAddClicked() {
 //		insertModelAfter(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()), headerModel);
-		updateVisibility();
+//		updateVisibility();
 		addModel(new MeetupModel_().title("Meetup").subtitle("Welcome to Community Groups!").color(randomColor()));
 	}
 
 	public void addMeetup(Meetup meetup) {
 //		insertModelAfter(new MeetupModel_().title(meetup.getName()).subtitle(meetup.getDescription()).color(randomColor()), headerModel);
-		updateVisibility();
+//		updateVisibility();
 
 		// instead of this
-		addModel(new MeetupModel_()
+		insertModelAfter(new MeetupModel_()
 				.title(meetup.getName())
 				.subtitle(meetup.getDescription())
 				.color(randomColor())
-				.clickListener(onMeetupClicked));
+				.clickListener(onMeetupClicked), headerModel);
 	}
 
 	public View.OnClickListener onMeetupClicked = new View.OnClickListener() {
@@ -72,6 +72,11 @@ public class CardAdapter extends EpoxyAdapter {
 	public void removeMeetup() {
 //		removeAllAfterModel(headerModel);
 		removeAllModels();
+
+		addModels(
+				headerModel
+		);
+
 		headerModel.show();
 	}
 
