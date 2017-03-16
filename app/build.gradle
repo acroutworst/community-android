@@ -3,6 +3,14 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.jakewharton.butterknife'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'CroutworstAndroidKey'
+            keyPassword 'happyTiger21!'
+            storeFile file('/home/user/keystores/android.jks')
+            storePassword 'lameResortWater67^'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "25.0.2"
     defaultConfig {
@@ -17,12 +25,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -34,7 +43,8 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.8.1@aar') {
         transitive = true
     }
-    compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar' //Google Material Icons
+    compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
+    //Google Material Icons
     compile 'com.google.android.gms:play-services-auth:9.0.0'
     compile 'com.cocosw:bottomsheet:1.+@aar'
     compile 'com.graphql-java:graphql-java:2.3.0'
