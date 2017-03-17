@@ -3,18 +3,10 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.jakewharton.butterknife'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'CroutworstAndroidKey'
-            keyPassword 'happyTiger21!'
-            storeFile file('/home/user/keystores/android.jks')
-            storePassword 'lameResortWater67^'
-        }
-    }
     compileSdkVersion 24
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.android.community"
+        applicationId "com.croutworst.community"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
@@ -22,11 +14,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
-        }
     }
 }
 

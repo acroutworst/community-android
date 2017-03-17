@@ -8,7 +8,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:440403607963:android:9b6abdc17739da51",
         "android_client_info": {
-          "package_name": "com.android.community"
+          "package_name": "com.croutworst.community"
         }
       },
       "oauth_client": [
@@ -16,7 +16,7 @@
           "client_id": "440403607963-ar7c5lo69sg8bnqc8v0rahql1us4jnv4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.android.community",
+            "package_name": "com.croutworst.community",
             "certificate_hash": "198D4E4EFD431FD4E72A01DED3016F6818D6B6CF"
           }
         },

@@ -6,7 +6,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.android.community.fragment.MeetupFragment">
+    tools:context="com.android.community.com.croutworst.community.fragment.MeetupFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/meetup_swipe_refresh_layout"

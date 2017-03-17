@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.android.community.views.RevealBackgroundView
+    <com.croutworst.community.views.RevealBackgroundView
         android:id="@+id/vRevealBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.android.community.ProfileActivity">
+        tools:context="com.android.community.com.croutworst.community.ProfileActivity">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvUserProfile"
